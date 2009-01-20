@@ -1,0 +1,43 @@
+GG Webservices for eZ publish
+========================================
+
+Goals:
+
+Allow to easily execute calls to remote servers using the REST, JSONRPC, XMLRPC and SOAP protocols
+Allow to expose existing functionality as JSONRPC or XMLRPC webservices, much as it can be done with SOAP in any eZ Publish installation
+Provide a proxy module alloing javascript code to execute cross-domain webservice calls
+Keep the same API as the existing eZ SOAP classes for maximum interoperability
+Long term, the existing SOAP client could be replaced with a new one, based either on NuSOAP, eZSOAP, or PHP::SOAP
+
+
+Prerequisites:
+
+PHP 5 / eZP 4.0+
+to execute/receive jsonrpc calls, the php JSON extension is needed
+to execute/receive rest calls, the php SIMPLEXML extension is needed
+to execute/receive xmlrpc calls, the php XMLRPC extension is needed
+
+
+Basics:
+
+- tout serveur de webservices a appeler doit etre defini dans ws_providers.ini
+- to receive xmlrpc or jsonrpc calls, you need to: 1 - modify the configuration in wsproviders.ini and 2 - create a file extension/xxx/jsonrpc/initialize.php with the php cdoe to be exposed as webservice
+- to call remote webservices from within templates use wsSend( 'server', 'metod', $params=array() )
+  please remember to desactivate the view cache where needed for templates that execute webservice calls
+- to call remote webservices from php code use ggeZWebServicesClient::send( $server, $metod, $params=array() );
+
+
+Modules:
+
+- wsproxy: module used to allow javascript code in eZ Publish pages to execute cross-domain webservice calls (ie. execute calls to other servers)
+
+
+Php classes:
+
+- ...
+
+
+Template operators:
+
+- 'washxml', 'washxmlcomment', 'washxmlcdata': operators to be used to properly escape data in different xml contexts
+- 'wsSend': operator used to execute a webservice call to an external server in templates

@@ -1,0 +1,329 @@
+<?php
+/**
+ * generic WebServices client, with ini-based setup and logging
+ *
+ * @author G. Giunta
+ * @version $Id$
+ * @copyright (C) G. Giunta 2008
+ *
+ * @todo move ini file name to class constant
+ * @todo move log file name to ini entry
+ * @todo modify logging mechanism to use debug level instead of useless labels
+ */
+
+class ggeZWebservicesClient
+{
+    const INVALIDSENDERROR = -1;
+    const INVALIDSENDSTRING = 'Http communication with server failed';
+
+    static $errorlevels = array(
+        'info' => 6,
+        'notice' => 5,
+        'debug' => 4,
+        'warning' => 3,
+        'error' => 2,
+        'critical' => 1,
+        'none' => 0);
+
+    static $debuglevel = -1;
+
+    /**
+     * This method sends a XML-RPC/JSON-RPC/SOAP Request to the provider
+     * @param string $server provider name from the ws_providers.ini located in the extension's settings
+     * @param string $method:
+     * @param array $parameters
+     * @return mixed 0 if method call failed, else plain php value (tbd: something more informative?)
+     *
+     * @bug returning 0 for non-error responses is fine as long as the protocol
+     * does not permit empty responses. This is not the case with json-rpc!
+    */
+    static function send( $server, $method, $parameters, $return_reponse_obj = false )
+    {
+        $DEBUG = 0;
+        if( $DEBUG ){ print_r($parameters); }
+
+        //include_once ("lib/ezutils/classes/ezini.php");
+
+        //Gets provider's data from the conf
+        $ini = eZINI::instance( 'ws_providers.ini' );
+
+        /// check: if section $server does not exist, error out here
+        if ( !$ini->hasGroup( $server ) )
+        {
+            ggeZWebservicesClient::appendLogEntry( 'Trying to call service on undefined server: ' . $server, 'error' );
+            return 0;
+        }
+        $providerURI = $ini->variable( $server, 'providerUri' );
+        $providerType = $ini->variable( $server, 'providerType' );
+        $providerAuthtype = $ini->hasVariable( $server, 'providerAuthtype' ) ? $ini->variable( $server, 'providerAuthtype' ) : false; /// @TODO: to be implemented
+        $providerSSLRequired = $ini->hasVariable( $server, 'providerSSLRequired' ) ? $ini->variable( $server, 'providerSSLRequired' ) : false; /// @TODO: to be implemented
+        $providerUsername = $ini->hasVariable( $server, 'providerUsername' ) ? $ini->variable( $server, 'providerUsername' ) : false;
+        $providerPassword = $ini->hasVariable( $server, 'providerPassword' ) ? $ini->variable( $server, 'providerPassword' ) : false;
+        if ( $ini->hasVariable( $server, 'timeout' ) )
+            $timeout = (int)$ini->variable( $server, 'timeout' );
+        else
+            $timeout = false;
+
+        /// @todo inside of this big ugly swith use dynamic class names!!!
+        switch($providerType){
+        case 'REST':
+            ggeZWebservicesClient::appendLogEntry( "Connecting to: $providerURI via REST", 'debug' );
+            $url = parse_url( $providerURI );
+            if  ( !isset( $url['port'] ) )
+            {
+                $url['port'] = 80;
+            }
+            $client = new ggRESTClient( $url['host'], $url['path'], $url['port'] );
+            if ( $providerUsername != '' ) {
+                $client->setCredentials( $providerUsername, $providerPassword );
+            }
+            if ( $timeout )
+            {
+                $client->setTimeout( $timeout );
+            }
+
+            $request = new ggRESTRequest( $method, $parameters );
+            ggeZWebservicesClient::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
+            $response = $client->send( $request );
+
+            if ( !is_object( $response ) )
+            {
+                /*$code = WebServicesOperator :: getCodeError($err);
+                $tab = array ('error' => $err, 'CodeError' => $code, 'parametres' => $parameters);
+                if($DEBUG){print_r($tab);}*/
+
+                ggeZWebservicesClient::appendLogEntry( 'Error in http communication with server: ' . $client->ErrorString, 'error' );
+
+                unset( $client );
+                if ( $return_reponse_obj )
+                {
+                    $response = new ggJSONRPCResponse( $method );
+                    $response->FaultCode = ggeZWebservicesClient::INVALIDSENDERROR;
+                    $response->FaultString =  ggeZWebservicesClient::INVALIDSENDSTRING;
+                }
+                return $response;
+            }
+            else
+            {
+                unset( $client );
+                ggeZWebservicesClient::appendLogEntry( 'Received: ' . $response->rawResponse, 'info' );
+
+                if ( $response->isFault() )
+                {
+                    ggeZWebservicesClient::appendLogEntry( 'REST protocol-level error ' . $response->faultCode(), 'error' );
+                    if ( !$return_reponse_obj )
+                        return 0;
+                }
+
+                if ( $return_reponse_obj )
+                    return $response;
+                else
+                    return $response->value();
+            }
+
+            break;
+
+        case "JSONRPC":
+
+            ggeZWebservicesClient::appendLogEntry( "Connecting to: $providerURI via JSONRPC", 'debug' );
+            $url = parse_url( $providerURI );
+            if ( !isset( $url['port'] ) )
+            {
+                $url['port'] = 80;
+            }
+            $client = new ggJSONRPCClient( $url['host'], $url['path'], $url['port'] );
+            if ( $providerUsername != '' ) {
+                $client->setCredentials( $providerUsername, $providerPassword );
+            }
+            if ( $timeout )
+            {
+                $client->setTimeout( $timeout );
+            }
+
+            $request = new ggJSONRPCRequest( $method, $parameters );
+            ggeZWebservicesClient::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
+
+            $response = $client->send( $request );
+
+            if ( !is_object( $response ) )
+            {
+                /*$code = WebServicesOperator :: getCodeError($err);
+                $tab = array ('error' => $err, 'CodeError' => $code, 'parametres' => $parameters);
+                if($DEBUG){print_r($tab);}*/
+
+                ggeZWebservicesClient::appendLogEntry( 'Error in http communication with server: ' . $client->ErrorString, 'error' );
+
+                unset( $client );
+                if ( $return_reponse_obj )
+                {
+                    $response = new ggJSONRPCResponse( $method );
+                    $response->FaultCode = ggeZWebservicesClient::INVALIDSENDERROR;
+                    $response->FaultString =  ggeZWebservicesClient::INVALIDSENDSTRING;
+                }
+                return $response;
+            }
+            else
+            {
+                unset( $client );
+                ggeZWebservicesClient::appendLogEntry( 'Received: ' . $response->rawResponse, 'info' );
+
+                if ( $response->isFault() )
+                {
+                    ggeZWebservicesClient::appendLogEntry( 'JSONRPC protocol-level error ' . $response->faultCode(), 'error' );
+                    if ( !$return_reponse_obj )
+                        return 0;
+                }
+
+                if ( $return_reponse_obj )
+                    return $response;
+                else
+                    return $response->value();
+            }
+        case "SOAP":
+            ggeZWebservicesClient::appendLogEntry( "Connecting to: $providerURI via SOAP", 'debug' );
+            $url = parse_url( $providerURI );
+            if ( !isset( $url['port'] ) )
+            {
+                $url['port'] = 80;
+            }
+            $client = new ggSOAPClient( $url['host'], $url['path'], $url['port'] );
+            if ( $providerUsername != '' ) {
+                $client->setCredentials( $providerUsername, $providerPassword );
+            }
+            if ( $timeout )
+            {
+                $client->setTimeout( $timeout );
+            }
+
+            if ( is_array( $method ) )
+            {
+                $namespace = $method[1];
+                $method = $method[0];
+            }
+            $request = new ggSOAPRequest( $method, $parameters, $namespace );
+            ggeZWebservicesClient::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
+
+            $response = $client->send( $request );
+
+            if ( !is_object( $response ) )
+            {
+                /*$code = WebServicesOperator :: getCodeError($err);
+                $tab = array ('error' => $err, 'CodeError' => $code, 'parametres' => $parameters);
+                if($DEBUG){print_r($tab);}*/
+
+                ggeZWebservicesClient::appendLogEntry( 'Error in http communication with server: ' . $client->ErrorString, 'error' );
+
+                unset( $client );
+                if ( $return_reponse_obj )
+                {
+                    $response = new ggSOAPResponse( $method );
+                    $response->FaultCode = ggeZWebservicesClient::INVALIDSENDERROR;
+                    $response->FaultString =  ggeZWebservicesClient::INVALIDSENDSTRING;
+                }
+                return $response;
+            }
+            else
+            {
+                unset( $client );
+                ggeZWebservicesClient::appendLogEntry( 'Received: ' . $response->rawResponse, 'info' );
+
+                if ( $response->isFault() )
+                {
+                    ggeZWebservicesClient::appendLogEntry( 'SOAP protocol-level error ' . $response->faultCode(), 'error' );
+                    if ( !$return_reponse_obj )
+                        return 0;
+                }
+
+                if ( $return_reponse_obj )
+                    return $response;
+                else
+                    return $response->value();
+            }
+        case "XMLRPC":
+        default:
+            // unsupported protocol
+            ggeZWebservicesClient::appendLogEntry( 'Error in user request: unsupported protocol ' . $providerType, 'error' );
+            return false;
+        }
+    }
+
+    /*function getCodeError($err)
+    {
+
+        $XMLFormat = 505;
+        $Parametre = 606;
+        $SocketConnection = 707;
+
+        if (stristr($err, 'Erreur de param')) {
+            return $Parametre;
+        }
+        if (stristr($err, 'Response not of type text/xml')) {
+            return $XMLFormat;
+        }
+        if (stristr($err, 'open socket connection to server')) {
+            return $SocketConnection;
+        }
+    }*/
+
+    /**
+      Logs the string $logString to the logfile webdav.log
+      in the current log directory (usually var/log).
+      If logging is disabled, nothing is done.
+    */
+    static function appendLogEntry( $logString, $debuglevel )
+    {
+        if ( !ggeZWebservicesClient::isLoggingEnabled( $debuglevel ) )
+            return false;
+
+        $varDir = eZSys::varDirectory();
+
+        $logDir = 'log';
+        $logName = 'webservices.log';
+        $fileName = $varDir . '/' . $logDir . '/' . $logName;
+        if ( !file_exists( $varDir . '/' . $logDir ) )
+        {
+            //include_once( 'lib/ezfile/classes/ezdir.php' );
+            eZDir::mkdir( $varDir . '/' . $logDir, 0775, true );
+        }
+
+        if ( $logFile = fopen( $fileName, 'a' ) )
+        {
+            $nowTime = date( "Y-m-d H:i:s : " );
+            $text = $nowTime . $logString;
+            /*if ( $label )
+                $text .= ' [' . $label . ']';*/
+            fwrite( $logFile, $text . "\n" );
+            fclose( $logFile );
+        }
+    }
+
+    /**
+      return true if logging is enabled.
+    */
+    static function isLoggingEnabled( $debuglevel )
+    {
+        $logging =& ggeZWebservicesClient::$debuglevel;
+        if ( $logging < 0 )
+        {
+            $logging = 0; // shall we init to 1 or 2 ?
+            $ini = eZINI::instance( 'ws_providers.ini' );
+            if ( $ini->hasvariable( 'GeneralSettings', 'Logging' ) )
+            {
+                $level = $ini->variable( 'GeneralSettings', 'Logging' );
+                if ( array_key_exists( $level, ggeZWebservicesClient::$errorlevels ) )
+                {
+                    $logging = ggeZWebservicesClient::$errorlevels[$level];
+                }
+            }
+            //ggeZWebservicesClient::$debuglevel = $logging;
+        }
+        if ( !array_key_exists( $debuglevel, ggeZWebservicesClient::$errorlevels ) )
+        {
+            return false;
+        }
+        return ggeZWebservicesClient::$errorlevels[$debuglevel] <= $logging;
+    }
+
+}
+
+?>

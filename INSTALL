@@ -1,0 +1,13 @@
+1 - activate the extension following the standard eZ Publish procedures (remember to regenerate the ezp_extension.php file)
+
+2 - there is no fight club!
+
+3 - to receive jsonrpc or xmlrpc webservice calls:
+  + copy the files jsonrpc/xmlrpc in the eZ Publish installation root folder
+  + modify the Apache rewrite rules / the .htaccess file so that they are accessible from the web
+  + define the php functions you want to expose as webservices in the file "initialize.php" in either the phpxmlrpc or jsonrpc folder
+
+4 - to enable js code to call webservices on remote servers:
+  + give access permissions to the wsproxy/callxmlrpc and/or wsproxy/calljsonrpc functions to the desired user
+  + define the remote servers that will be made accessible in the wsproviders.ini.append.php file
+ 
