@@ -3,7 +3,7 @@
  * Class used to wrap soap requests. Code copy'n'pasted from eZ SOAP class
  *
  * @version $Id$
- * @copyright (C) G. Giunta 2008
+ * @copyright (C) G. Giunta 2009
  *
  * @todo add a nusoap and a native soap versions
  */

@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) G. Giunta 2008
+ * @copyright (C) G. Giunta 2009
  *
  * @todo move ini file name to class constant
  * @todo move log file name to ini entry

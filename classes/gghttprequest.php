@@ -3,7 +3,7 @@
  * Class used to wrap http requests.
  *
  * @version $Id$
- * @copyright (C) G. Giunta 2008
+ * @copyright (C) G. Giunta 2009
  */
 
 class ggHTTPRequest extends ggWebservicesRequest

@@ -3,7 +3,7 @@
  * Class used to communicate with jsonrpc servers
  *
  * @version $Id$
- * @copyright (C) G. Giunta 2008
+ * @copyright (C) G. Giunta 2009
  */
 
 class ggJSONRPCClient extends ggWebservicesClient

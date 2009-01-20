@@ -5,7 +5,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) G. Giunta 2008
+ * @copyright (C) G. Giunta 2009
  *
  * @see eZSOAPClient
  *

@@ -3,7 +3,7 @@
  * Module used to proxy webservices calls to other wervices, overcoming the same-domain limitation.
  * General scheme: call a jsonrpc or xmlrpc webservice via a js function in your templates pointing to /wsproxy/jsonrpc or /wsproxy/xmlrpc
  * @version $Id$
- * @copyright (C) G. Giunta 2008
+ * @copyright (C) G. Giunta 2009
  */
 
 $Module = array( 'name' => 'wsproxy', "variable_params" => true );
