@@ -12,7 +12,7 @@ class ggXMLRPCClient extends ggWebservicesClient
     function __construct( $server, $path = '/', $port = 80, $protocol=null )
     {
         $this->ResponseClass = 'ggXMLRPCResponse';
-        $this->UserAgent = 'gg XMLRPC client';
+        $this->UserAgent = 'gg eZ XMLRPC client';
         $this->ContentType = 'text/xml';
         parent::__construct( $server, $path, $port, $protocol );
     }
