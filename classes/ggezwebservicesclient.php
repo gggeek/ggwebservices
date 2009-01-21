@@ -64,16 +64,22 @@ class ggeZWebservicesClient
         else
             $timeout = false;
 
-        /// @todo inside of this big ugly swith use dynamic class names!!!
+        $clientClass = 'gg' . $providerType . 'Client';
+        $requestClass = 'gg' . $providerType . 'Request';
+        $responseClass = 'gg' . $providerType . 'Response';
+
         switch($providerType){
         case 'REST':
-            ggeZWebservicesClient::appendLogEntry( "Connecting to: $providerURI via REST", 'debug' );
+        case 'JSONRPC':
+        case 'SOAP':
+        case 'XMLRPC' :
+            ggeZWebservicesClient::appendLogEntry( "Connecting to: $providerURI via $providerType", 'debug' );
             $url = parse_url( $providerURI );
-            if  ( !isset( $url['port'] ) )
+            if ( !isset( $url['port'] ) )
             {
                 $url['port'] = 80;
             }
-            $client = new ggRESTClient( $url['host'], $url['path'], $url['port'] );
+            $client = new $clientClass( $url['host'], $url['path'], $url['port'] );
             if ( $providerUsername != '' ) {
                 $client->setCredentials( $providerUsername, $providerPassword );
             }
@@ -82,7 +88,19 @@ class ggeZWebservicesClient
                 $client->setTimeout( $timeout );
             }
 
-            $request = new ggRESTRequest( $method, $parameters );
+            if ( $providerType == 'SOAP' )
+            {
+                if ( is_array( $method ) )
+                {
+                    $namespace = $method[1];
+                    $method = $method[0];
+                }
+                $request = new $requestClass( $method, $parameters, $namespace );
+            }
+            else
+            {
+                $request = new $requestClass( $method, $parameters );
+            }
             ggeZWebservicesClient::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
             $response = $client->send( $request );
 
@@ -97,7 +115,7 @@ class ggeZWebservicesClient
                 unset( $client );
                 if ( $return_reponse_obj )
                 {
-                    $response = new ggJSONRPCResponse( $method );
+                    $response = new $responseClass( $method );
                     $response->FaultCode = ggeZWebservicesClient::INVALIDSENDERROR;
                     $response->FaultString =  ggeZWebservicesClient::INVALIDSENDSTRING;
                 }
@@ -110,7 +128,7 @@ class ggeZWebservicesClient
 
                 if ( $response->isFault() )
                 {
-                    ggeZWebservicesClient::appendLogEntry( 'REST protocol-level error ' . $response->faultCode(), 'error' );
+                    ggeZWebservicesClient::appendLogEntry( "$providerType protocol-level error " . $response->faultCode(), 'error' );
                     if ( !$return_reponse_obj )
                         return 0;
                 }
@@ -123,123 +141,6 @@ class ggeZWebservicesClient
 
             break;
 
-        case "JSONRPC":
-
-            ggeZWebservicesClient::appendLogEntry( "Connecting to: $providerURI via JSONRPC", 'debug' );
-            $url = parse_url( $providerURI );
-            if ( !isset( $url['port'] ) )
-            {
-                $url['port'] = 80;
-            }
-            $client = new ggJSONRPCClient( $url['host'], $url['path'], $url['port'] );
-            if ( $providerUsername != '' ) {
-                $client->setCredentials( $providerUsername, $providerPassword );
-            }
-            if ( $timeout )
-            {
-                $client->setTimeout( $timeout );
-            }
-
-            $request = new ggJSONRPCRequest( $method, $parameters );
-            ggeZWebservicesClient::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
-
-            $response = $client->send( $request );
-
-            if ( !is_object( $response ) )
-            {
-                /*$code = WebServicesOperator :: getCodeError($err);
-                $tab = array ('error' => $err, 'CodeError' => $code, 'parametres' => $parameters);
-                if($DEBUG){print_r($tab);}*/
-
-                ggeZWebservicesClient::appendLogEntry( 'Error in http communication with server: ' . $client->ErrorString, 'error' );
-
-                unset( $client );
-                if ( $return_reponse_obj )
-                {
-                    $response = new ggJSONRPCResponse( $method );
-                    $response->FaultCode = ggeZWebservicesClient::INVALIDSENDERROR;
-                    $response->FaultString =  ggeZWebservicesClient::INVALIDSENDSTRING;
-                }
-                return $response;
-            }
-            else
-            {
-                unset( $client );
-                ggeZWebservicesClient::appendLogEntry( 'Received: ' . $response->rawResponse, 'info' );
-
-                if ( $response->isFault() )
-                {
-                    ggeZWebservicesClient::appendLogEntry( 'JSONRPC protocol-level error ' . $response->faultCode(), 'error' );
-                    if ( !$return_reponse_obj )
-                        return 0;
-                }
-
-                if ( $return_reponse_obj )
-                    return $response;
-                else
-                    return $response->value();
-            }
-        case "SOAP":
-            ggeZWebservicesClient::appendLogEntry( "Connecting to: $providerURI via SOAP", 'debug' );
-            $url = parse_url( $providerURI );
-            if ( !isset( $url['port'] ) )
-            {
-                $url['port'] = 80;
-            }
-            $client = new ggSOAPClient( $url['host'], $url['path'], $url['port'] );
-            if ( $providerUsername != '' ) {
-                $client->setCredentials( $providerUsername, $providerPassword );
-            }
-            if ( $timeout )
-            {
-                $client->setTimeout( $timeout );
-            }
-
-            if ( is_array( $method ) )
-            {
-                $namespace = $method[1];
-                $method = $method[0];
-            }
-            $request = new ggSOAPRequest( $method, $parameters, $namespace );
-            ggeZWebservicesClient::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
-
-            $response = $client->send( $request );
-
-            if ( !is_object( $response ) )
-            {
-                /*$code = WebServicesOperator :: getCodeError($err);
-                $tab = array ('error' => $err, 'CodeError' => $code, 'parametres' => $parameters);
-                if($DEBUG){print_r($tab);}*/
-
-                ggeZWebservicesClient::appendLogEntry( 'Error in http communication with server: ' . $client->ErrorString, 'error' );
-
-                unset( $client );
-                if ( $return_reponse_obj )
-                {
-                    $response = new ggSOAPResponse( $method );
-                    $response->FaultCode = ggeZWebservicesClient::INVALIDSENDERROR;
-                    $response->FaultString =  ggeZWebservicesClient::INVALIDSENDSTRING;
-                }
-                return $response;
-            }
-            else
-            {
-                unset( $client );
-                ggeZWebservicesClient::appendLogEntry( 'Received: ' . $response->rawResponse, 'info' );
-
-                if ( $response->isFault() )
-                {
-                    ggeZWebservicesClient::appendLogEntry( 'SOAP protocol-level error ' . $response->faultCode(), 'error' );
-                    if ( !$return_reponse_obj )
-                        return 0;
-                }
-
-                if ( $return_reponse_obj )
-                    return $response;
-                else
-                    return $response->value();
-            }
-        case "XMLRPC":
         default:
             // unsupported protocol
             ggeZWebservicesClient::appendLogEntry( 'Error in user request: unsupported protocol ' . $providerType, 'error' );
