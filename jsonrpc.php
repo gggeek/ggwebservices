@@ -81,7 +81,7 @@ $moduleRepositories = eZModule::activeModuleRepositories();
 eZModule::setGlobalPathList( $moduleRepositories );
 
 // Load jsonrpc extensions
-$wsINI = eZINI::instance( 'ws_providers.ini' );
+$wsINI = eZINI::instance( 'wsproviders.ini' );
 $enable = $wsINI->variable( 'GeneralSettings', 'EnableJSONRPC' );
 
 if ( $enable == 'true' )

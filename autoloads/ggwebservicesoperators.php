@@ -11,7 +11,7 @@ class ggWebServicesOperators {
      Constructor
     */
     function ggWebServicesOperators() {
-        $this->Operators = array ( 'washxml', 'washxmlcomment', 'washxmlcdata', 'ws_send' );
+        $this->Operators = array ( 'washxml', 'washxmlcomment', 'washxmlcdata' );
     }
 
     /**
@@ -78,15 +78,6 @@ class ggWebServicesOperators {
             case 'washxmlcdata':
             {
                 /// @todo
-            } break;
-            case 'ws_send':
-            {
-                $result = ggeZWebServicesClient::send(
-                    $namedParameters['server'],
-                    $namedParameters['method'],
-                    $namedParameters['params'] );
-                /// @todo verify what happens if $result is a simplexml object...
-                $operatorValue = $result;
             } break;
         }
     }

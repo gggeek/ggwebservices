@@ -81,7 +81,7 @@ $moduleRepositories = eZModule::activeModuleRepositories();
 eZModule::setGlobalPathList( $moduleRepositories );
 
 // Load xmlrpc extensions
-$wsINI = eZINI::instance( 'ws_providers.ini' );
+$wsINI = eZINI::instance( 'wsproviders.ini' );
 $enable = $wsINI->variable( 'GeneralSettings', 'EnableXMLRPC' );
 
 if ( $enable == 'true' )

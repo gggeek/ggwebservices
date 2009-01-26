@@ -1,0 +1,9 @@
+- finish porting ws call from tpl op to tpl fetch func (test it)
+
+- finish proxy module
+  => add to server class a method to display a given response
+  => need to create a new sopa server class, too?
+  => move content-type headers generation to a server function (response class)?
+  => add POST/GET (rest) support
+
+- add a module view that does ws execution; time it (memory, time) vs. using index.php

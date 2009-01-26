@@ -28,14 +28,16 @@ class ggeZWebservicesClient
     static $debuglevel = -1;
 
     /**
-     * This method sends a XML-RPC/JSON-RPC/SOAP Request to the provider
-     * @param string $server provider name from the ws_providers.ini located in the extension's settings
+     * This method sends a XML-RPC/JSON-RPC/SOAP Request to the provider,
+     * returning results in a correct format to be used in tpl fetch functions
+     * @param string $server provider name from the wsproviders.ini located in the extension's settings
      * @param string $method:
      * @param array $parameters
-     * @return mixed 0 if method call failed, else plain php value (tbd: something more informative?)
+     * @param boolean $return_reponse_obj
+     * @return array containing value 0 if method call failed, else plain php value (tbd: something more informative?)
      *
      * @bug returning 0 for non-error responses is fine as long as the protocol
-     * does not permit empty responses. This is not the case with json-rpc!
+     *      does not permit empty responses. This is not the case with json-rpc!
     */
     static function send( $server, $method, $parameters, $return_reponse_obj = false )
     {
@@ -45,13 +47,13 @@ class ggeZWebservicesClient
         //include_once ("lib/ezutils/classes/ezini.php");
 
         //Gets provider's data from the conf
-        $ini = eZINI::instance( 'ws_providers.ini' );
+        $ini = eZINI::instance( 'wsproviders.ini' );
 
         /// check: if section $server does not exist, error out here
         if ( !$ini->hasGroup( $server ) )
         {
             ggeZWebservicesClient::appendLogEntry( 'Trying to call service on undefined server: ' . $server, 'error' );
-            return 0;
+            return array( 'error' => 'Trying to call service on undefined server: ' . $server, 'error' );
         }
         $providerURI = $ini->variable( $server, 'providerUri' );
         $providerType = $ini->variable( $server, 'providerType' );
@@ -119,7 +121,7 @@ class ggeZWebservicesClient
                     $response->FaultCode = ggeZWebservicesClient::INVALIDSENDERROR;
                     $response->FaultString =  ggeZWebservicesClient::INVALIDSENDSTRING;
                 }
-                return $response;
+                return array( 'result' => $response );
             }
             else
             {
@@ -130,13 +132,13 @@ class ggeZWebservicesClient
                 {
                     ggeZWebservicesClient::appendLogEntry( "$providerType protocol-level error " . $response->faultCode(), 'error' );
                     if ( !$return_reponse_obj )
-                        return 0;
+                        return array( 'result' => null );
                 }
 
                 if ( $return_reponse_obj )
-                    return $response;
+                    return array( 'result' => $response );
                 else
-                    return $response->value();
+                    return array( 'result' => $response->value() );
             }
 
             break;
@@ -144,7 +146,7 @@ class ggeZWebservicesClient
         default:
             // unsupported protocol
             ggeZWebservicesClient::appendLogEntry( 'Error in user request: unsupported protocol ' . $providerType, 'error' );
-            return false;
+            return array( 'error' => 'Error in user request: unsupported protocol ' . $providerType, 'error' );
         }
     }
 
@@ -207,7 +209,7 @@ class ggeZWebservicesClient
         if ( $logging < 0 )
         {
             $logging = 0; // shall we init to 1 or 2 ?
-            $ini = eZINI::instance( 'ws_providers.ini' );
+            $ini = eZINI::instance( 'wsproviders.ini' );
             if ( $ini->hasvariable( 'GeneralSettings', 'Logging' ) )
             {
                 $level = $ini->variable( 'GeneralSettings', 'Logging' );
