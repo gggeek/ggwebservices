@@ -1,7 +1,11 @@
 - finish proxy module
   => add to server class a method to display a given response
-  => need to create a new sopa server class, too?
+  => need to create a new soap server class, too?
   => move content-type headers generation to a server function (response class)?
   => add POST/GET (rest) support
 
+- add support for system.xxx method calls at least to xmlrpc server
+
 - add a module view that does ws execution; time it (memory, time) vs. using index.php
+
+- add onput parameter type validation
