@@ -41,8 +41,6 @@ class ggeZWebservicesClient
     */
     static function send( $server, $method, $parameters, $return_reponse_obj = false )
     {
-        $DEBUG = 0;
-        if( $DEBUG ){ print_r($parameters); }
 
         //include_once ("lib/ezutils/classes/ezini.php");
 
@@ -118,8 +116,7 @@ class ggeZWebservicesClient
                 if ( $return_reponse_obj )
                 {
                     $response = new $responseClass( $method );
-                    $response->FaultCode = ggeZWebservicesClient::INVALIDSENDERROR;
-                    $response->FaultString =  ggeZWebservicesClient::INVALIDSENDSTRING;
+                    $response->setValue( new ggWebServicesFault( ggeZWebservicesClient::INVALIDSENDERROR, ggeZWebservicesClient::INVALIDSENDSTRING ) );
                 }
                 return array( 'result' => $response );
             }
