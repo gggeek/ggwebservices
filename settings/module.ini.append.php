@@ -3,4 +3,6 @@
 [ModuleSettings]
 ExtensionRepositories[]=ggwebservices
 
+ModuleList[]=webservices
+
 */ ?>
