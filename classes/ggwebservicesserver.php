@@ -168,7 +168,7 @@ abstract class ggWebservicesServer
     }
 
     /// Contains a list over registered functions
-    protected $FunctionList;
+    protected $FunctionList = array();
     /// Contains the RAW HTTP post data information
     public $RawPostData;
 }
