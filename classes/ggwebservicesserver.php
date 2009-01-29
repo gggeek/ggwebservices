@@ -51,7 +51,7 @@ abstract class ggWebservicesServer
 
         /// @todo reinflate, dechunk, correct encoding, check for supported
         /// http features of the client, etc...
-        $data = ggWebservicesResponse::stripHTTPHeader( $this->RawPostData );
+        $data = $this->RawPostData;
 
         $request = $this->parseRequest( $data );
 
