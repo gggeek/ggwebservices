@@ -50,7 +50,7 @@ class ggeZWebservicesClient
         /// check: if section $server does not exist, error out here
         if ( !$ini->hasGroup( $server ) )
         {
-            ggeZWebservicesClient::appendLogEntry( 'Trying to call service on undefined server: ' . $server, 'error' );
+            self::appendLogEntry( 'Trying to call service on undefined server: ' . $server, 'error' );
             return array( 'error' => 'Trying to call service on undefined server: ' . $server, 'error' );
         }
         $providerURI = $ini->variable( $server, 'providerUri' );
@@ -73,7 +73,7 @@ class ggeZWebservicesClient
         case 'JSONRPC':
         case 'SOAP':
         case 'XMLRPC' :
-            ggeZWebservicesClient::appendLogEntry( "Connecting to: $providerURI via $providerType", 'debug' );
+            self::appendLogEntry( "Connecting to: $providerURI via $providerType", 'debug' );
             $url = parse_url( $providerURI );
             if ( !isset( $url['port'] ) )
             {
@@ -101,7 +101,7 @@ class ggeZWebservicesClient
             {
                 $request = new $requestClass( $method, $parameters );
             }
-            ggeZWebservicesClient::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
+            self::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
             $response = $client->send( $request );
 
             if ( !is_object( $response ) )
@@ -110,24 +110,24 @@ class ggeZWebservicesClient
                 $tab = array ('error' => $err, 'CodeError' => $code, 'parametres' => $parameters);
                 if($DEBUG){print_r($tab);}*/
 
-                ggeZWebservicesClient::appendLogEntry( 'Error in http communication with server: ' . $client->ErrorString, 'error' );
+                self::appendLogEntry( 'Error in http communication with server: ' . $client->ErrorString, 'error' );
 
                 unset( $client );
                 if ( $return_reponse_obj )
                 {
                     $response = new $responseClass( $method );
-                    $response->setValue( new ggWebServicesFault( ggeZWebservicesClient::INVALIDSENDERROR, ggeZWebservicesClient::INVALIDSENDSTRING ) );
+                    $response->setValue( new ggWebServicesFault( self::INVALIDSENDERROR, self::INVALIDSENDSTRING ) );
                 }
                 return array( 'result' => $response );
             }
             else
             {
                 unset( $client );
-                ggeZWebservicesClient::appendLogEntry( 'Received: ' . $response->rawResponse, 'info' );
+                self::appendLogEntry( 'Received: ' . $response->rawResponse, 'info' );
 
                 if ( $response->isFault() )
                 {
-                    ggeZWebservicesClient::appendLogEntry( "$providerType protocol-level error " . $response->faultCode(), 'error' );
+                    self::appendLogEntry( "$providerType protocol-level error " . $response->faultCode(), 'error' );
                     if ( !$return_reponse_obj )
                         return array( 'result' => null );
                 }
@@ -142,7 +142,7 @@ class ggeZWebservicesClient
 
         default:
             // unsupported protocol
-            ggeZWebservicesClient::appendLogEntry( 'Error in user request: unsupported protocol ' . $providerType, 'error' );
+            self::appendLogEntry( 'Error in user request: unsupported protocol ' . $providerType, 'error' );
             return array( 'error' => 'Error in user request: unsupported protocol ' . $providerType, 'error' );
         }
     }
@@ -172,7 +172,7 @@ class ggeZWebservicesClient
     */
     static function appendLogEntry( $logString, $debuglevel )
     {
-        if ( !ggeZWebservicesClient::isLoggingEnabled( $debuglevel ) )
+        if ( !self::isLoggingEnabled( $debuglevel ) )
             return false;
 
         $varDir = eZSys::varDirectory();
@@ -202,7 +202,7 @@ class ggeZWebservicesClient
     */
     static function isLoggingEnabled( $debuglevel )
     {
-        $logging =& ggeZWebservicesClient::$debuglevel;
+        $logging =& self::$debuglevel;
         if ( $logging < 0 )
         {
             $logging = 0; // shall we init to 1 or 2 ?
@@ -210,18 +210,18 @@ class ggeZWebservicesClient
             if ( $ini->hasvariable( 'GeneralSettings', 'Logging' ) )
             {
                 $level = $ini->variable( 'GeneralSettings', 'Logging' );
-                if ( array_key_exists( $level, ggeZWebservicesClient::$errorlevels ) )
+                if ( array_key_exists( $level, self::$errorlevels ) )
                 {
-                    $logging = ggeZWebservicesClient::$errorlevels[$level];
+                    $logging = self::$errorlevels[$level];
                 }
             }
             //ggeZWebservicesClient::$debuglevel = $logging;
         }
-        if ( !array_key_exists( $debuglevel, ggeZWebservicesClient::$errorlevels ) )
+        if ( !array_key_exists( $debuglevel, self::$errorlevels ) )
         {
             return false;
         }
-        return ggeZWebservicesClient::$errorlevels[$debuglevel] <= $logging;
+        return self::$errorlevels[$debuglevel] <= $logging;
     }
 
 }
