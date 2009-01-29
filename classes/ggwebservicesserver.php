@@ -15,9 +15,7 @@ abstract class ggWebservicesServer
     {
         if ( $raw_data === null )
         {
-            /// @todo use php://input instead
-            global $HTTP_RAW_POST_DATA;
-            $this->RawPostData = $HTTP_RAW_POST_DATA;
+            $this->RawPostData = file_get_contents('php://input');
         }
         else
         {
