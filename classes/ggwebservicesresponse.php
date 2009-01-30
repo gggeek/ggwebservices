@@ -1,6 +1,6 @@
 <?php
 /**
- * Generic lass used to wrap webservices responses. Modeled after Soap equivalent.
+ * Generic class used to wrap webservices responses. Modeled after Soap equivalent.
  *
  * @author G. Giunta
  * @version $Id$
@@ -16,12 +16,14 @@ abstract class ggWebservicesResponse
     const GENERICRESPONSEERROR = -3;
     const INVALIDMETHODERROR = -4;
     const INVALIDPARAMSERROR = -5;
+    const INVALIDINTROSPECTIONERROR = -6;
     /// @todo use a single array for all error strings
     const INVALIDREQUESTSTRING = 'Request received from client is not valid according to protocol format';
     const INVALIDRESPONSESTRING = 'Response received from server is not valid';
     const GENERICRESPONSESTRING = 'Server error';
     const INVALIDMETHODSTRING = 'Method not found';
     const INVALIDPARAMSSTRING = 'Parameters not matching method';
+    const INVALIDINTROSPECTIONSTRING = 'Can\'t introspect: method unknown';
 
     function __construct( $name='' )
     {

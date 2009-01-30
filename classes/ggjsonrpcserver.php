@@ -42,7 +42,34 @@ class ggJSONRPCServer extends ggWebservicesServer
         }
     }
 
+    function isInternalRequest( $functionName )
+    {
+        return in_array( $functionName, $this->internalMethods );
+    }
+
+    function handleInternalRequest( $functionName, $params )
+    {
+        switch( $functionName )
+        {
+            case 'system.listMethods':
+            case 'system.methodHelp':
+            case 'system.multicall':
+                $server = new ggXMLRPCServer( '' );
+                return $server->handleInternalRequest( $functionName, $params );
+            default:
+                return parent::handleInternalMethod( $functionName, $params );
+        }
+    }
+
     var $Id;
+
+    /// Courtesy: internal methods list includes those of xmlrpc standard
+    var $internalMethods = array(
+        //'system.getCapabilities',
+        'system.listMethods',
+        //'system.methodSignature',
+        'system.methodHelp',
+        'system.multicall' );
 }
 
 ?>

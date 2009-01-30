@@ -2,6 +2,19 @@
 /**
  * Base class for handling all incoming webservice calls.
  * API based on the eZSOAPServer class from eZP lib dir. See docs in there.
+ *
+ * Process of handling incoming requests:
+ *
+ * processRequest
+ *   |
+ *   -- parseRequest (builds request obj out of received data)
+ *   |
+ *   -- handleRequest or handleInternalRequest (builds response as plain php objects)
+ *   |
+ *   -- showResponse (echoes response in correct format, usually via building of response obj)
+ *
+ * @todo add a better way to register methods, supporting definition of type of return value and per-param help text
+ * @todo add support for compressed requests
  */
 
 abstract class ggWebservicesServer
@@ -47,7 +60,7 @@ abstract class ggWebservicesServer
         }
         */
 
-        $namespaceURI = 'nknown_namespace_uri';
+        $namespaceURI = 'unknown_namespace_uri';
 
         /// @todo reinflate, dechunk, correct encoding, check for supported
         /// http features of the client, etc...
@@ -66,48 +79,80 @@ abstract class ggWebservicesServer
         {
             $functionName = $request->name();
             $params = $request->parameters();
-
-            /// @todo add support for system.multiCall, system.methodList and system.methodHelp
-
-            if ( array_key_exists( $functionName, $this->FunctionList ) )
+            if ( $this->isInternalRequest( $functionName ) )
             {
-                $paramsOk = false;
-                foreach( $this->FunctionList[$functionName] as $paramDesc )
-                {
-                    $paramsOk = ( ( $paramDesc === null ) || $this->validateParams( $params, $paramDesc ) );
-                    if ( $paramsOk )
-                    {
-                        break;
-                    }
-                }
+                $response = $this->handleInternalRequest( $functionName, $params );
+            }
+            else
+            {
+                $response = $this->handleRequest( $functionName, $params );
+            }
+            $this->showResponse( $functionName, $namespaceURI, $response );
+        }
+    }
+
+    /**
+    * Verifies if the given request has been registered as an exposed webservice
+    * and executes it. Called by processRequest.
+    */
+    function handleRequest( $functionName, $params )
+    {
+        if ( array_key_exists( $functionName, $this->FunctionList ) )
+        {
+            $paramsOk = false;
+            foreach( $this->FunctionList[$functionName] as $paramDesc )
+            {
+                $paramsOk = ( ( $paramDesc === null ) || $this->validateParams( $params, $paramDesc ) );
                 if ( $paramsOk )
                 {
-                    if ( strpos($functionName, '::') )
-                    {
-                       $resp = call_user_func_array( explode( '::', $functionName ), $params );
-                    }
-                    else
-                    {
-                        $resp = call_user_func_array( $functionName, $params );
-                    }
-                    $this->showResponse( $functionName, $namespaceURI, $resp );
+                    break;
+                }
+            }
+            if ( $paramsOk )
+            {
+                if ( strpos($functionName, '::') )
+                {
+                   return call_user_func_array( explode( '::', $functionName ), $params );
                 }
                 else
                 {
-                    $this->showResponse(
-                        $functionName,
-                        $namespaceURI,
-                        new ggWebservicesFault( ggWebservicesResponse::INVALIDPARAMSERROR, ggWebservicesResponse::INVALIDPARAMSSTRING ) );
+                    return call_user_func_array( $functionName, $params );
                 }
             }
             else
             {
-                $this->showResponse(
-                    $functionName,
-                    $namespaceURI,
-                    new ggWebservicesFault( ggWebservicesResponse::INVALIDMETHODERROR, ggWebservicesResponse::INVALIDMETHODSTRING ) );
+                return new ggWebservicesFault( ggWebservicesResponse::INVALIDPARAMSERROR, ggWebservicesResponse::INVALIDPARAMSSTRING );
             }
         }
+        else
+        {
+            return new ggWebservicesFault( ggWebservicesResponse::INVALIDMETHODERROR, ggWebservicesResponse::INVALIDMETHODSTRING );
+        }
+    }
+
+    /**
+    * Return true if the webservice method encapsulated by $request is to be handled
+    * internally by the server instead of a registered function.
+    * Used to handle eg system.* stuff in xmlrpc or json.
+    * To be overridden by descendent classes.
+    */
+    function isInternalRequest( $functionName )
+    {
+        return false;
+    }
+
+    /**
+    * Handle execution of server-reserved webservice methods.
+    * Returns a php value ( or fault object ).
+    * Used to handle eg system.* stuff in xmlrpc or json.
+    * Called by processRequest.
+    * To be overridden by descendent classes.
+    */
+    function handleInternalRequest( $functionName, $params )
+    {
+        // This method should never be called on the base class server, as it has no internal methods.
+        // Hence we return an error upon invocation
+            return new ggWebservicesFault( ggWebservicesResponse::GENERICRESPONSEERROR, ggWebservicesResponse::GENERICRESPONSESTRING );
     }
 
     /**
@@ -115,6 +160,7 @@ abstract class ggWebservicesServer
       Returns false if the object could not be registered.
       @todo add optional introspection-based param registering
       @todo add single method registration
+      @todo add registration of per-method descriptions
     */
     function registerObject( $objectName, $includeFile = null )
     {
@@ -143,14 +189,19 @@ abstract class ggWebservicesServer
       Registers a new function on the server.
       Returns false if the function could not be registered.
       If params is an array of name => type strings, params will be checked for consistency.
-      Multiple signatures can be registered for a given php function
+      Multiple signatures can be registered for a given php function (but only one help text)
       @todo add optional introspection-based param registering
+      @todo could add a check if method to be registered is internal (if changing api of isInternal...)
     */
-    function registerFunction( $name, $params=null )
+    function registerFunction( $name, $params=null, $description='' )
     {
         if ( function_exists( $name ) )
         {
             $this->FunctionList[$name][] = $params;
+            if ( $description !== '' || !array_key_exists( $name, $this->FunctionDescription ))
+            {
+                $this->FunctionDescription[$name] = $description;
+            }
             return true;
         }
         else
@@ -165,8 +216,9 @@ abstract class ggWebservicesServer
         return true;
     }
 
-    /// Contains a list over registered functions
+    /// Contains a list over registered functions, and their dscriptions
     protected $FunctionList = array();
+    protected $FunctionDescription = array();
     /// Contains the RAW HTTP post data information
     public $RawPostData;
 }
