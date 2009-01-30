@@ -102,7 +102,7 @@ abstract class ggWebservicesServer
             $paramsOk = false;
             foreach( $this->FunctionList[$functionName] as $paramDesc )
             {
-                $paramsOk = ( ( $paramDesc === null ) || $this->validateParams( $params, $paramDesc ) );
+                $paramsOk = ( ( $paramDesc === null ) || $this->validateParams( $params, $paramDesc['in'] ) );
                 if ( $paramsOk )
                 {
                     break;
@@ -175,7 +175,7 @@ abstract class ggWebservicesServer
             {
                 /// @todo check also for magic methods not to be registered!
                 if ( strcasecmp ( $objectName, $method ) )
-                    $this->FunctionList[$objectName."::".$method] = array( null );
+                    $this->FunctionList[$objectName."::".$method] = array( 'in' => null, 'out' => 'mixed' );
             }
             return true;
         }
@@ -191,13 +191,17 @@ abstract class ggWebservicesServer
       If params is an array of name => type strings, params will be checked for consistency.
       Multiple signatures can be registered for a given php function (but only one help text)
       @todo add optional introspection-based param registering
-      @todo could add a check if method to be registered is internal (if changing api of isInternal...)
     */
-    function registerFunction( $name, $params=null, $description='' )
+    function registerFunction( $name, $params=null, $result='mixed', $description='' )
     {
+        if ( $this->isInternalRequest( $name ) )
+        {
+            return false;
+        }
         if ( function_exists( $name ) )
         {
-            $this->FunctionList[$name][] = $params;
+            $this->FunctionList[$name][] = array( 'in' => $params, 'out' => $result );
+
             if ( $description !== '' || !array_key_exists( $name, $this->FunctionDescription ))
             {
                 $this->FunctionDescription[$name] = $description;

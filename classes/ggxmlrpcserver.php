@@ -94,7 +94,12 @@ class ggXMLRPCServer extends ggWebservicesServer
                 $results = array();
                 foreach( $server->FunctionList[$params[0]] as $syntax )
                 {
-                    $results[] = array_unshift( $syntax, 'mixed' );
+                    if ( $syntax['in'] !== null )
+                    {
+                        $syntax['in'] = array_values( $syntax['in'] );
+                        array_unshift( $syntax['in'], $syntax['out'] );
+                        $results[] = $syntax['in'];
+                    }
                 }
                 return $results;
 
