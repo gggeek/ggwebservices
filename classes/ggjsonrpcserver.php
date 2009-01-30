@@ -52,6 +52,7 @@ class ggJSONRPCServer extends ggWebservicesServer
         switch( $functionName )
         {
             case 'system.listMethods':
+            case 'system.methodSignature':
             case 'system.methodHelp':
             case 'system.multicall':
                 $server = new ggXMLRPCServer( '' );
@@ -67,7 +68,7 @@ class ggJSONRPCServer extends ggWebservicesServer
     var $internalMethods = array(
         //'system.getCapabilities',
         'system.listMethods',
-        //'system.methodSignature',
+        'system.methodSignature',
         'system.methodHelp',
         'system.multicall' );
 }
