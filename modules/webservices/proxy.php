@@ -5,51 +5,60 @@
  * @author G. Giunta
  * @version $Id$
  * @copyright 2009
+ *
+ * @bug for xmlrpc, datetime and base64 parameters will be sent to remote server as strings...
  */
 
 // decode input params
-$server = '';
-$method = '';
-$parameters = array();
-$protocol = '';
-$serverClass = 'gg' . $protocol . 'Server';
-$responseClass = 'gg' . $protocol . 'Response';
 
+$protocol = $Params['protocol'];
+$remoteserver = $Params['remoteServerName'];
+
+switch( $protocol )
+{
+    //case 'REST':
+    case 'JSONRPC':
+    //case 'SOAP':
+    case 'XMLRPC' :
+    default:
+        /// @todo return an http error 500 or something like that ?
+        echo 'Unsupported protocol : ' . $protocol;
+        eZExecution::cleanExit();
+        die();
+}
+
+// analyze request body
+
+$namespaceURI = '';
+$serverClass = 'gg' . $protocol . 'Server';
+$server = new $serverClass();
+$request = $this->parseRequest( $data );
+if ( !is_object( $request ) ) /// @todo use is_a instead
+{
+    $server->showResponse(
+        'unknown_function_name',
+        $namespaceURI,
+        new ggWebservicesFault( ggWebservicesResponse::INVALIDREQUESTERROR, ggWebservicesResponse::INVALIDREQUESTSTRING ) );
+    eZExecution::cleanExit();
+    die();
+}
 
 // execute method, return response as object
-// this also does validation of protocol name and server name
-$response = ggeZWebservicesClient::send( $server, $method, $parameters, true );
+// this also does validation of server name
+$response = ggeZWebservicesClient::send( $remoteserver, $request->name(), $request->parameters(), true );
 
 if ( !is_object( $response ) )
 {
-    // invalid protocol name or server name
-    switch( $protocol )
-    {
-        case 'REST':
-        case 'JSONRPC':
-        case 'SOAP':
-        case 'XMLRPC' :
-            $response = new $responseClass( $method );
-            $response->setValue( new ggWebservicesFault( ggeZWebservicesClient::INVALIDSENDERROR, ggeZWebservicesClient::INVALIDSENDSTRING ) );
-            break;
-      default:
-          /// @todo return an http error 500 or something like that ?
-          echo 'Unsupported protocol : ' . $protocol;
-          eZExecution::cleanExit();
-          die();
-    }
+    $server->showResponse(
+        $request->name(),
+        $namespaceURI,
+        new ggWebservicesFault( ggeZWebservicesClient::INVALIDSENDERROR, ggeZWebservicesClient::INVALIDSENDSTRING ) );
 }
 else
 {
-    if ( $response->faultCode() == ggeZWebservicesClient::INVALIDSENDERROR )
-    {
-        // protocol-level error
-        // ...
-    }
+    $server->showResponse( $request->name(), $namespaceURI, $response );
 }
 
-$server = new $serverClass( '' ); // avoid parsing raw_post_data
-$server->showResponse( $method, ) // ...
 eZExecution::cleanExit();
 
 ?>
