@@ -50,9 +50,15 @@ class ggXMLRPCServer extends ggWebservicesServer
         return in_array( $functionName, $this->internalMethods );
     }
 
-    function handleInternalRequest( $functionName, $params )
+    /**
+    * 3rd param is a hack used to allow a jsonrpc server to take advantage of this method
+    */
+    function handleInternalRequest( $functionName, $params, $server=null )
     {
-
+        if ( $server === null )
+        {
+            $server = $this;
+        }
         switch( $functionName )
         {
             case 'system.listMethods':
@@ -60,18 +66,14 @@ class ggXMLRPCServer extends ggWebservicesServer
                 {
                     return new ggWebservicesFault( ggWebservicesResponse::INVALIDPARAMSERROR, ggWebservicesResponse::INVALIDPARAMSSTRING );
                 }
-                return array_merge( array_keys( $this->FunctionList ), $this->internalMethods );
+                return array_merge( array_keys( $server->FunctionList ), $server->internalMethods );
 
             case 'system.methodSignature':
                 if ( count( $params ) != 1 || !is_string( $params[0] ) )
                 {
                     return new ggWebservicesFault( ggWebservicesResponse::INVALIDPARAMSERROR, ggWebservicesResponse::INVALIDPARAMSSTRING );
                 }
-                if ( !array_key_exists( $params[0], $this->FunctionDescription ) )
-                {
-                    return new ggWebservicesFault( ggWebservicesResponse::INVALIDINTROSPECTIONERROR, ggWebservicesResponse::INVALIDINTROSPECTIONSTRING );
-                }
-                if ( in_array( $params[0], $this->internalMethods ) )
+                if ( in_array( $params[0], $server->internalMethods ) )
                 {
                     switch( $params[0] )
                     {
@@ -85,12 +87,12 @@ class ggXMLRPCServer extends ggWebservicesServer
                             return array( array( 'array', 'array' ) );
                     }
                 }
-                if ( !array_key_exists( $params[0], $this->FunctionList ) )
+                if ( !array_key_exists( $params[0], $server->FunctionList ) )
                 {
                     return new ggWebservicesFault( ggWebservicesResponse::INVALIDINTROSPECTIONERROR, ggWebservicesResponse::INVALIDINTROSPECTIONSTRING );
                 }
                 $results = array();
-                foreach( $this->FunctionList[$params[0]] as $syntax )
+                foreach( $server->FunctionList[$params[0]] as $syntax )
                 {
                     $results[] = array_unshift( $syntax, 'mixed' );
                 }
@@ -101,7 +103,7 @@ class ggXMLRPCServer extends ggWebservicesServer
                 {
                     return new ggWebservicesFault( ggWebservicesResponse::INVALIDPARAMSERROR, ggWebservicesResponse::INVALIDPARAMSSTRING );
                 }
-                if ( in_array( $params[0], $this->internalMethods ) )
+                if ( in_array( $params[0], $server->internalMethods ) )
                 {
                     switch( $params[0] )
                     {
@@ -115,11 +117,11 @@ class ggXMLRPCServer extends ggWebservicesServer
                             return 'd';
                     }
                 }
-                if ( !array_key_exists( $params[0], $this->FunctionDescription ) )
+                if ( !array_key_exists( $params[0], $server->FunctionDescription ) )
                 {
                     return new ggWebservicesFault( ggWebservicesResponse::INVALIDINTROSPECTIONERROR, ggWebservicesResponse::INVALIDINTROSPECTIONSTRING );
                 }
-                return $this->FunctionDescription[$params[0]];
+                return $server->FunctionDescription[$params[0]];
 
             case 'system.multicall':
                 // validate first the multicall syntax
@@ -140,7 +142,7 @@ class ggXMLRPCServer extends ggWebservicesServer
                 $results = array();
                 foreach( $params[0] as $request)
                 {
-                    $resp = $this->handleRequest( $request['methodName'], $request['params'] );
+                    $resp = $server->handleRequest( $request['methodName'], $request['params'] );
                     if ( is_a( $resp, 'ggWebservicesFault' ) )
                     {
                         $results[] = array( 'faultCode' => $resp->faultCode(), 'faultString' => $resp->faultString() );

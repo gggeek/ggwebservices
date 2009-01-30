@@ -56,9 +56,9 @@ class ggJSONRPCServer extends ggWebservicesServer
             case 'system.methodHelp':
             case 'system.multicall':
                 $server = new ggXMLRPCServer( '' );
-                return $server->handleInternalRequest( $functionName, $params );
+                return $server->handleInternalRequest( $functionName, $params, $this );
             default:
-                return parent::handleInternalMethod( $functionName, $params );
+                return parent::handleInternalRequest( $functionName, $params );
         }
     }
 
