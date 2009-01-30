@@ -7,7 +7,7 @@
  * @copyright (C) G. Giunta 2009
  */
 
-class  ggWebServicesFault
+class  ggWebservicesFault
 {
     /**
      Constructs a new Fault object, settiung code and string

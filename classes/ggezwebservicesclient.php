@@ -116,7 +116,7 @@ class ggeZWebservicesClient
                 if ( $return_reponse_obj )
                 {
                     $response = new $responseClass( $method );
-                    $response->setValue( new ggWebServicesFault( self::INVALIDSENDERROR, self::INVALIDSENDSTRING ) );
+                    $response->setValue( new ggWebservicesFault( self::INVALIDSENDERROR, self::INVALIDSENDSTRING ) );
                 }
                 return array( 'result' => $response );
             }

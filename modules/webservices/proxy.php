@@ -30,7 +30,7 @@ if ( !is_object( $response ) )
         case 'SOAP':
         case 'XMLRPC' :
             $response = new $responseClass( $method );
-            $response->setValue( new ggWebServicesFault( ggeZWebservicesClient::INVALIDSENDERROR, ggeZWebservicesClient::INVALIDSENDSTRING ) );
+            $response->setValue( new ggWebservicesFault( ggeZWebservicesClient::INVALIDSENDERROR, ggeZWebservicesClient::INVALIDSENDSTRING ) );
             break;
       default:
           /// @todo return an http error 500 or something like that ?
