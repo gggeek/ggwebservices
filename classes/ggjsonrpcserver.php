@@ -1,6 +1,10 @@
 <?php
 
-class ggJSONRPCServer extends ggWebservicesServer
+/**
+* Extends ggXMLRPCServer instead of ggWebservicesServer to profit of handling
+* of system.xx methods
+*/
+class ggJSONRPCServer extends ggXMLRPCServer
 {
 
     /**
@@ -42,35 +46,8 @@ class ggJSONRPCServer extends ggWebservicesServer
         }
     }
 
-    function isInternalRequest( $functionName )
-    {
-        return in_array( $functionName, $this->internalMethods );
-    }
-
-    function handleInternalRequest( $functionName, $params )
-    {
-        switch( $functionName )
-        {
-            case 'system.listMethods':
-            case 'system.methodSignature':
-            case 'system.methodHelp':
-            case 'system.multicall':
-                $server = new ggXMLRPCServer( '' );
-                return $server->handleInternalRequest( $functionName, $params, $this );
-            default:
-                return parent::handleInternalRequest( $functionName, $params );
-        }
-    }
-
     var $Id;
 
-    /// Courtesy: internal methods list includes those of xmlrpc standard
-    var $internalMethods = array(
-        //'system.getCapabilities',
-        'system.listMethods',
-        'system.methodSignature',
-        'system.methodHelp',
-        'system.multicall' );
 }
 
 ?>
