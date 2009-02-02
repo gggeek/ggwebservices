@@ -1,11 +1,11 @@
 - finish proxy module
   => add soap support. Need to create a new soap server class, too?
-  => add POST/GET (rest) support
+  => add POST/GET (rest) support. Need to create a new server class, too?
 
 - add a module view that does ws execution; time it (memory, time) vs. using jsonrpc.php
 
-- add input parameter type validation
-
 - add support for compressed requests
 
-- add phpdoc-generated api docs
+- add phpdoc-generated api docs to the distribution
+
+- improve input parameter type validation

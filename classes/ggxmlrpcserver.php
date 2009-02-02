@@ -4,6 +4,8 @@
  * @author G. Giunta
  * @version $Id$
  * @copyright (C) G. Giunta 2009
+ *
+ * @see http://www.xmlrpc.com/spec
  */
 
 class ggXMLRPCServer extends ggWebservicesServer
@@ -113,13 +115,13 @@ class ggXMLRPCServer extends ggWebservicesServer
                     switch( $params[0] )
                     {
                         case 'system.listMethods':
-                            return 'a';
+                            return 'This method lists all the methods that the server knows how to dispatch';
                         case 'system.methodSignature':
-                            return 'b';
+                            return 'Returns an array of known signatures (an array of arrays) for the method name passed. First member of each array is the return type';
                         case 'system.methodHelp':
-                            return 'c';
+                            return 'Returns help text if defined for the method passed, otherwise returns an empty string';
                         case 'system.multicall':
-                            return 'd';
+                            return 'Boxcar multiple RPC calls in one request. See http://www.xmlrpc.com/discuss/msgReader$1208 for details';
                     }
                 }
                 if ( !array_key_exists( $params[0], $server->FunctionDescription ) )
@@ -163,12 +165,61 @@ class ggXMLRPCServer extends ggWebservicesServer
         }
     }
 
+    /**
+    * @todo do more validation on base64/datetime values (right now they could be switched and still validated)
+    * @todo do more validation of array vs. struct values
+    */
+    function validateParams( $params, $paramDesc )
+    {
+        // methods registered without a sig are always accepted
+        if ( $paramDesc === null )
+        {
+            return true;
+        }
+        if ( count( $params ) != count( $paramDesc ) )
+        {
+            return false;
+        }
+        foreach( array_values( $params ) as $key => $param )
+        {
+            if ( !array_key_exists( $paramtype, $this->$typeMap ) )
+            {
+                // catches 'NULL', 'resource' php types, which are never returned
+                // by php_xmlrpc_decode anyway... add an assert here ???
+                return false;
+            }
+            if ( $paramDesc[$key] == 'mixed' )
+            {
+                continue;
+            }
+            $paramtype = gettype( $param );
+            if ( !in_array( $paramDesc[$key], $this->$typeMap[$paramtype] ) )
+            {
+    				return false;
+            }
+        }
+		return true;
+
+    }
+
+    /// would be nice to have declared as static; this way a server obj (or subclass) is allowed to manipulate it
     var $internalMethods = array(
         //'system.getCapabilities',
         'system.listMethods',
         'system.methodSignature',
         'system.methodHelp',
         'system.multicall' );
+
+    /// map of valid types for param validation (php type to string used in registration)
+    /// would be nice to have declared as static, but we need late static binding to allow jsonrpc subclass to change it
+    var $typeMap = array(
+        'string'  => array( 'string' ),
+        'integer' => array( 'i4', 'int', 'integer', 'number' ),
+        'double'  => array( 'double', 'float', 'number' ),
+        'boolean' => array( 'bool', 'boolean' ),
+        'array'   => array( 'array', 'struct' ),
+        'object'  => array( 'base64', 'dateTime.iso8601' ),
+    );
 }
 
 ?>

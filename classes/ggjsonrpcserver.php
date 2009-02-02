@@ -3,6 +3,8 @@
 /**
 * Extends ggXMLRPCServer instead of ggWebservicesServer to profit of handling
 * of system.xx methods
+*
+* @see http://json-rpc.org/wiki/specification
 */
 class ggJSONRPCServer extends ggXMLRPCServer
 {
@@ -45,6 +47,19 @@ class ggJSONRPCServer extends ggXMLRPCServer
             return false;
         }
     }
+
+    /**
+    * allow some type definitions that are more typical of xmlrpc than json, for interop
+    * @todo improve validation of object vs. array params
+    */
+    var $typeMap = array(
+        'string'  => array( 'string' ),
+        'integer' => array( 'i4', 'int', 'integer', 'number' ),
+        'double'  => array( 'double', 'float', 'number' ),
+        'boolean' => array( 'bool', 'boolean' ),
+        'array'   => array( 'array', 'struct', 'object' ),
+        'NULL'    => array( 'null' )
+    );
 
     var $Id;
 
