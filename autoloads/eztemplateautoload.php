@@ -8,7 +8,7 @@ $eZTemplateOperatorArray[] =
     array
     (
         'script' => 'extension/ggwebservices/autoloads/ggwebservicesoperators.php',
-        'class' => 'ggWebServicesOperators',
+        'class' => 'ggWebservicesOperators',
         'operator_names' => array( 'washxml', 'washxmlcomment', 'washxmlcdata' )
     );
 

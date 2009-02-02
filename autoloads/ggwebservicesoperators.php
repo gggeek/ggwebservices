@@ -5,12 +5,12 @@
  * @copyright (C) G. Giunta 2009
  **/
 
-class ggWebServicesOperators {
+class ggWebservicesOperators {
 
     /**
      Constructor
     */
-    function ggWebServicesOperators() {
+    function ggWebservicesOperators() {
         $this->Operators = array ( 'washxml', 'washxmlcomment', 'washxmlcdata' );
     }
 
