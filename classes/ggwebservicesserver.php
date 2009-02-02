@@ -214,7 +214,12 @@ abstract class ggWebservicesServer
         }
     }
 
-    /// @todo check type and names of params
+    /**
+    * Check type (and possibly names) of incoming params against the registered method signature
+    * (called once per existing sig if method registerd multiple times with different sigs)
+    * To be overridden by descendent classes.
+    * @return bool
+    */
     function validateParams( $params, $paramDesc )
     {
         return true;
