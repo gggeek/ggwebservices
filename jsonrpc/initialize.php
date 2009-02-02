@@ -4,8 +4,8 @@
  */
 
 /*
-$server->registerFunction( 'fetchSyndicationFeedObjectList',
-                           array( 'feedID' => 'integer' ), // input params array. Keys are not really used, as param validation is positional
+$server->registerFunction( 'fetchSyndicationFeedObjectList', // name of exposed webservice
+                           array( 'feedID' => 'integer' ), // input params array. Keys are not really used, as param validation is positional. Use null instead of an array to avoid type validation
                            'array', // type of return value
                            'Returns a list of...' );
 
