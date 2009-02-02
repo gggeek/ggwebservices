@@ -5,15 +5,16 @@
 
 /*
 $server->registerFunction( 'fetchSyndicationFeedObjectList',
-                           array( 'feedID' => 'integer' ) );
+                           array( 'feedID' => 'integer' ), // input params array. Keys are not really used, as param validation is positional
+                           'array', // type of return value
+                           'Returns a list of...' );
 
 function fetchSyndicationFeedObjectList( $feedID )
 {
     if ( $feedID <= 0 )
     {
          // return a protocol-level error
-          $resp = new ggJSONRPCResponse();
-         return new 
+         return ggWebservicesFault( -1, 'Invalid feed ID: negative value' );
      }
      else
          return array ( 'a', 'b', 'c' );
