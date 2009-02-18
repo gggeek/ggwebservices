@@ -180,9 +180,12 @@ class ggXMLRPCServer extends ggWebservicesServer
         {
             return false;
         }
+        // in xmlrpc, params are positional, so discard param name if given in its syopsis
+        $paramDesc = array_values( $paramDesc );
         foreach( array_values( $params ) as $key => $param )
         {
-            if ( !array_key_exists( $paramtype, $this->$typeMap ) )
+            $paramtype = gettype( $param );
+            if ( !array_key_exists( $paramtype, $this->typeMap ) )
             {
                 // catches 'NULL', 'resource' php types, which are never returned
                 // by php_xmlrpc_decode anyway... add an assert here ???
@@ -192,8 +195,7 @@ class ggXMLRPCServer extends ggWebservicesServer
             {
                 continue;
             }
-            $paramtype = gettype( $param );
-            if ( !in_array( $paramDesc[$key], $this->$typeMap[$paramtype] ) )
+            if ( !in_array( $paramDesc[$key], $this->typeMap[$paramtype] ) )
             {
     				return false;
             }
