@@ -36,6 +36,9 @@
 
 abstract class ggWebservicesClient
 {
+    const ERROR_URLE_FAILED_INIT = -1;
+    const ERROR_CANNOT_WRITE = 2;
+
     /**
       Creates a new client.
       @todo add a simplfied syntax for constructor, using parse_url and a single string
@@ -95,6 +98,8 @@ abstract class ggWebservicesClient
             $connectport = $this->Port;
         }
 
+        $this->errorString = '';
+        $this->errorNumber = 0;
         if ( !$this->ForceCURL || !in_array( "curl", get_loaded_extensions() ) )
         {
             /// @todo add ssl support with raw sockets
@@ -116,7 +121,9 @@ abstract class ggWebservicesClient
 
             if ( $fp == 0 )
             {
-                $this->ErrorString = '<b>Error:</b> ggWebservicesClient::send() : Unable to open connection to ' . $this->Server . '.';
+                // use error codes from fsockopen
+                //$this->errorNumber =  self::ERROR_CANNOT_CONNECT;
+                //$this->errorString = '<b>Error:</b> ggWebservicesClient::send() : Unable to open connection to ' . $this->Server . '.';
                 return 0;
             }
             if ( $this->Timeout != 0 )
@@ -129,16 +136,17 @@ abstract class ggWebservicesClient
             if ( !fputs( $fp, $HTTPRequest, strlen( $HTTPRequest ) ) )
             {
                 fclose( $fp );
-                $this->ErrorString = "<b>Error:</b> could not send the request. Could not write to the socket.";
+                $this->errorNumber = self::ERROR_CANNOT_WRITE;
+                $this->errorString = "<b>Error:</b> could not send the request. Could not write to the socket.";
                 return 0;
             }
 
             $rawResponse = "";
             // fetch the response
-            while ( $data = fread( $fp, 32768 ) )
-            {
-                $rawResponse .= $data;
-            }
+            do
+			{
+                $rawResponse .= fread( $fp, 32768 );
+            } while( !feof( $fp ) );
             // close the socket
             fclose( $fp );
         }
@@ -173,17 +181,24 @@ abstract class ggWebservicesClient
                 //unset( $rawResponse );
 
                 $rawResponse = curl_exec( $ch );
-                curl_close( $ch );
 
-                if ( !$rawResponse )
+                if ( $rawResponse === false )
                 {
-                    $this->ErrorString = "<b>Error:</b> could not send the request. Could not write to the socket.";
+                    $this->errorNumber = curl_errno( $ch );
+                    $this->errorString = curl_error( $ch )
+                    curl_close( $ch );
                     return 0;
                 }
+                else
+                {
+                    curl_close( $ch );
+                }
+
             }
             else
             {
-                    $this->ErrorString = "<b>Error:</b> could not send the request. Could not initialize CURL.";
+                    $this->errorNumber =  self::ERROR_CURLE_FAILED_INIT;
+                    $this->errorString = "<b>Error:</b> could not send the request. Could not initialize CURL.";
                     return 0;
             }
         }
@@ -346,6 +361,16 @@ abstract class ggWebservicesClient
         $this->Verb = strtoupper( $verb );
     }
 
+    function errorString()
+    {
+        return $this->errorString;
+    }
+
+    function errorNumber()
+    {
+        return $this->errorNumber;
+    }
+
     /// The name or IP of the server to communicate with
     protected $Server;
     /// The path to the server
@@ -382,6 +407,9 @@ abstract class ggWebservicesClient
     protected $KeyPass = '';
     protected $VerifyPeer = true;
     protected $VerifyHost = 1;
+
+    protected $errorString = '';
+    protected $errorNumber = 0;
 }
 
 ?>

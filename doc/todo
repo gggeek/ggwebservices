@@ -4,8 +4,13 @@
 
 - add a module view that does ws execution; time it (memory, time) vs. using jsonrpc.php
 
+- add a new controller file capable to do multi-protocol requests
+  + male it compatible with ezcore
+
 - add support for compressed requests
 
 - add phpdoc-generated api docs to the distribution
 
 - improve input parameter type validation
+
+- add a compatibility layer to import webservices designed for ezrest
