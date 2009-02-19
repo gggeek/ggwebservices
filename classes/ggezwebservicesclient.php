@@ -110,7 +110,7 @@ class ggeZWebservicesClient
                 $tab = array ('error' => $err, 'CodeError' => $code, 'parametres' => $parameters);
                 if($DEBUG){print_r($tab);}*/
 
-                self::appendLogEntry( 'Error in http communication with server: ' . $client->ErrorString, 'error' );
+                self::appendLogEntry( 'Error in http communication with server: ' . $client->errorString(), 'error' );
 
                 unset( $client );
                 if ( $return_reponse_obj )
