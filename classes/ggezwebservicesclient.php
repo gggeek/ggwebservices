@@ -13,8 +13,6 @@
 
 class ggeZWebservicesClient
 {
-    const INVALIDSENDERROR = -1;
-    const INVALIDSENDSTRING = 'Http communication with server failed';
 
     static $errorlevels = array(
         'info' => 6,
@@ -116,8 +114,9 @@ class ggeZWebservicesClient
                 if ( $return_reponse_obj )
                 {
                     $response = new $responseClass( $method );
-                    $response->setValue( new ggWebservicesFault( self::INVALIDSENDERROR, self::INVALIDSENDSTRING ) );
+                    $response->setValue( new ggWebservicesFault( $client->errorNumber(), $client->errorString() ) );
                 }
+                // nb: the only non-object value for $response is currently 0
                 return array( 'result' => $response );
             }
             else
