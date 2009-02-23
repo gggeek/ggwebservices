@@ -108,7 +108,7 @@ class ggeZWebservicesClient
                 $tab = array ('error' => $err, 'CodeError' => $code, 'parametres' => $parameters);
                 if($DEBUG){print_r($tab);}*/
 
-                self::appendLogEntry( 'Error in http communication with server: ' . $client->errorString(), 'error' );
+                self::appendLogEntry( 'HTTP-level error ' . $client->errorNumber() . ': '. $client->errorString(), 'error' );
 
                 unset( $client );
                 if ( $return_reponse_obj )
@@ -126,7 +126,7 @@ class ggeZWebservicesClient
 
                 if ( $response->isFault() )
                 {
-                    self::appendLogEntry( "$providerType protocol-level error " . $response->faultCode(), 'error' );
+                    self::appendLogEntry( "$providerType protocol-level error " . $response->faultCode() . ':' . $response->faultString() , 'error' );
                     if ( !$return_reponse_obj )
                         return array( 'result' => null );
                 }
