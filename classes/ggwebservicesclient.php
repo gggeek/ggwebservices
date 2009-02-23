@@ -185,7 +185,7 @@ abstract class ggWebservicesClient
                 if ( $rawResponse === false )
                 {
                     $this->errorNumber = curl_errno( $ch );
-                    $this->errorString = curl_error( $ch )
+                    $this->errorString = curl_error( $ch );
                     curl_close( $ch );
                     return 0;
                 }
