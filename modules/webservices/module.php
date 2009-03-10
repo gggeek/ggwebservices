@@ -28,11 +28,18 @@ $ViewList = array(
         'params' => array( 'protocol' ),
         'functions' => array( 'proxy' ),
     ),
+
+    'debugger' => array(
+        'script' => 'debugger.php',
+        //'params' => array( 'protocol' ),
+        'functions' => array( 'proxy' ),
+    ),
 );
 
 $FunctionList = array(
     'execute' = array(),
     'proxy' = array(),
+	'debugger' = array()
 );
 
 ?>

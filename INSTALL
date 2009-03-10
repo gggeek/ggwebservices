@@ -5,9 +5,15 @@
 3 - to receive jsonrpc or xmlrpc webservice calls:
   + copy the files jsonrpc.php/xmlrpc.php in the eZ Publish installation root folder
   + modify the Apache rewrite rules / the .htaccess file so that they are accessible from the web
-  + define the php functions you want to expose as webservices in the file "initialize.php" in either the phpxmlrpc or jsonrpc folder
+  + define the php functions you want to expose as webservices in the file "initialize.php" in either a "phpxmlrpc" or "jsonrpc" folder in the eZ Publish installation root folder
 
-4 - to enable js code to call webservices on remote servers (cross domain requests):
-  + give access permissions to the wsproxy/execute function to the desired user
+4 - to make webservice calls to external server via templates
   + define the remote servers that will be made accessible in the wsproviders.ini.append.php file
-  + the url to be called is: http://my.ez.server/index.php/siteaccess/wsproxy/...
+  + use the fetch( 'webservices', 'call' ) template fetch function. It takes 3 parameters: name of the remote server, name of the ws method to execute and array of ws method parameters
+
+5 - to enable js code to call webservices on remote servers (cross domain requests):
+  + give access permissions to the webservices/proxy function to the desired eZ Publish user
+  + define the remote servers that will be made accessible in the wsproviders.ini.append.php file
+  + the url to be called is: http://my.ez.server/index.php/siteaccess/webservices/proxy/protocol/remoteservername where protocol is either "phpxmlrpc" or "jsonrpc", and remoteservername is the name of a server defined in wsproviders.ini.append.php file
+
+6 - more detailed info in the README file

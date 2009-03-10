@@ -4,10 +4,12 @@ GG Webservices for eZ publish
 Goals:
 
 Allow to easily execute calls to remote servers using the REST, JSONRPC, XMLRPC and SOAP protocols (both from within php code and templates)
-Allow to expose existing functionality as JSONRPC or XMLRPC webservices, much as it can already be done with SOAP in any eZ Publish installation
-Provide a proxy module allowing javascript code served by an eZ Publish server to execute cross-domain webservice calls (without resorting to tricks)
+Allow to expose existing functionality as JSONRPC or XMLRPC (and eventually REST) webservices, much as it can already be done with SOAP in any eZ Publish installation
+Provide a proxy module allowing javascript code served by an eZ Publish server to execute cross-domain webservice calls (without resorting to html tricks)
 Keep the same API as the existing eZ SOAP classes for maximum interoperability
+Improve the existing http client adding features such as support for more authentication schemes, compressed requests etc...
 Long term, the existing SOAP client could be replaced with a new one, based either on NuSOAP, eZSOAP, or PHP::SOAP
+Allow easy debugging of webservice calls via inclusion of a complete debugging interface
 
 
 Prerequisites:
@@ -24,26 +26,33 @@ Basics:
 - to receive xmlrpc or jsonrpc calls, you need to:
   1 - modify the configuration in wsproviders.ini and
   2 - create a file extension/xxx/jsonrpc/initialize.php with the php code to be exposed as webservice
-- to call remote webservices from within templates use ...
+- to call remote webservices from within templates use the fetch( 'webservices', 'call' ) template fetch function
   please remember to desactivate the view cache where needed for templates that execute webservice calls
 - to call remote webservices from php code use ggeZWebServicesClient::send( $server, $metod, $params=array() );
 
 
-Modules:
+Modules and Views:
 
-- wsproxy: module used to allow javascript code in eZ Publish pages to execute cross-domain webservice calls (ie. execute calls to other servers)
-- webservices: module used as a mere container for fetch functions
+- webservices/proxy: view used to allow javascript code in eZ Publish pages to execute cross-domain webservice calls (ie. execute calls to other servers)
+- webservices/execute: reserved
+- webservices/debugger: reserved
 
 
 Template fetch functions:
 
-- ...
+- webservices/call: used to execute a webservice call to an external server in templates
+
 
 Template operators:
 
 - 'washxml', 'washxmlcomment', 'washxmlcdata': operators to be used to properly escape data in different xml contexts
-- 'wsSend': operator used to execute a webservice call to an external server in templates
+
 
 Php classes:
 
-- ...
+- to be documented...
+
+FAQ:
+
+  Q: how do I debug webservices without going insane?
+  A: grab the debugger from the phpxmlrpc lib on sf.net and install it on a webserver you have access to. Or go to http://gggeek.raprap.it/debugger if your ws server is accessible from the net

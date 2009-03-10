@@ -4,8 +4,10 @@
 
 - add a module view that does ws execution; time it (memory, time) vs. using jsonrpc.php
 
+- add an (admin) module view that includes the xmlrpc/jsonrpc debugger from phpxmlrpc.sf.net
+
 - add a new controller file capable to do multi-protocol requests
-  + male it compatible with ezcore
+  + make it compatible with ezcore
 
 - add support for compressed requests
 
