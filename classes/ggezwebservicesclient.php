@@ -73,11 +73,27 @@ class ggeZWebservicesClient
         case 'XMLRPC' :
             self::appendLogEntry( "Connecting to: $providerURI via $providerType", 'debug' );
             $url = parse_url( $providerURI );
+            if ( !isset( $url['scheme'] ) || !isset( $url['host'] ) )
+            {
+                self::appendLogEntry( "Error in user request: bad server url $providerURI for server $server", 'error' );
+                return array( 'error' => 'Error in user request: bad server url for server ' . $server, 'error' );
+            }
+            if ( !isset( $url['path'] ) )
+            {
+                $url['path'] = '/';
+            }
             if ( !isset( $url['port'] ) )
             {
-                $url['port'] = 80;
+                if ( $url['scheme'] == 'https' )
+                {
+                    $url['port'] = 443;
+                }
+                else
+                {
+                    $url['port'] = 80;
+                }
             }
-            $client = new $clientClass( $url['host'], $url['path'], $url['port'] );
+            $client = new $clientClass( $url['host'], $url['path'], $url['port'], $url['scheme'] );
             if ( $providerUsername != '' ) {
                 $client->setCredentials( $providerUsername, $providerPassword );
             }
