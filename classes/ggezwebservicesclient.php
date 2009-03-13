@@ -126,12 +126,12 @@ class ggeZWebservicesClient
 
                 self::appendLogEntry( 'HTTP-level error ' . $client->errorNumber() . ': '. $client->errorString(), 'error' );
 
-                unset( $client );
                 if ( $return_reponse_obj )
                 {
                     $response = new $responseClass( $method );
                     $response->setValue( new ggWebservicesFault( $client->errorNumber(), $client->errorString() ) );
                 }
+                unset( $client );
                 // nb: the only non-object value for $response is currently 0
                 return array( 'result' => $response );
             }
