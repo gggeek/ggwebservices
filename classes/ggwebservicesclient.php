@@ -54,7 +54,7 @@ abstract class ggWebservicesClient
         }
         $this->Path = $path;
         $this->Port = $port;
-        /// @todo this assumes 0 is a valid port...
+        /// @todo this assumes 0 is a valid port. Weird, but useful for unix domain sockets..
         if ( is_numeric( $port ) )
             $this->Port = $port;
         elseif( strtolower( $port ) == 'ssl' || $protocol == 'https' )
@@ -105,7 +105,7 @@ abstract class ggWebservicesClient
             /// @todo add ssl support with raw sockets
             if ( $this->Timeout != 0 )
             {
-                $fp = fsockopen( $connectserver,
+                $fp = @fsockopen( $connectserver,
                                  $connectport,
                                  $this->errorNumber,
                                  $this->errorString,
@@ -113,7 +113,7 @@ abstract class ggWebservicesClient
             }
             else
             {
-                $fp = fsockopen( $connectserver,
+                $fp = @fsockopen( $connectserver,
                                  $connectport,
                                  $this->errorNumber,
                                  $this->errorString );
