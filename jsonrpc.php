@@ -41,7 +41,8 @@ $ini = eZINI::instance();
 
 // Initialize/set the index file.
 eZSys::init( 'jsonrpc.php', $ini->variable( 'SiteAccessSettings', 'ForceVirtualHost' ) == 'true' );
-
+$uri = eZURI::instance( eZSys::requestURI() );
+$GLOBALS['eZRequestedURI'] = $uri;
 
 // include ezsession override implementation
 require_once( "lib/ezutils/classes/ezsession.php" );
@@ -54,14 +55,32 @@ eZExtension::activateExtensions( 'default' );
 
 
 // Activate correct siteaccess
-require_once( "access.php" );
-$access = array( 'name' => $ini->variable( 'SiteSettings', 'DefaultAccess' ),
-                 'type' => EZ_ACCESS_TYPE_DEFAULT );
+$wsINI = eZINI::instance( 'wsproviders.ini' );
+
+require_once( 'access.php' );
+
+$wsINI = eZINI::instance( 'wsproviders.ini' );
+if ( $wsINI->variable( 'GeneralSettings', 'UseDefaultAccess' ) === 'enabled' )
+{
+    $access = array( 'name' => $ini->variable( 'SiteSettings', 'DefaultAccess' ),
+                     'type' => EZ_ACCESS_TYPE_DEFAULT );
+}
+else
+{
+    $access = accessType( $uri,
+                          eZSys::hostname(),
+                          eZSys::serverPort(),
+                          eZSys::indexFile() );
+}
 $access = changeAccess( $access );
 // Siteaccess activation end
 
 // Check for activating Debug by user ID (Final checking. The first was in eZDebug::updateSettings())
 eZDebug::checkDebugByUser();
+
+// Check for siteaccess extension
+eZExtension::activateExtensions( 'access' );
+// Siteaccess extension check end
 
 /**
  Reads settings from i18n.ini and passes them to eZTextCodec.
@@ -89,7 +108,6 @@ $moduleRepositories = eZModule::activeModuleRepositories();
 eZModule::setGlobalPathList( $moduleRepositories );
 
 // Load jsonrpc extensions
-$wsINI = eZINI::instance( 'wsproviders.ini' );
 $enable = $wsINI->variable( 'GeneralSettings', 'EnableJSONRPC' );
 
 if ( $enable == 'true' )

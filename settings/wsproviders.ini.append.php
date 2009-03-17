@@ -3,6 +3,11 @@
 [GeneralSettings]
 # Logging of outgoing webservice calls
 Logging=warning
+# Incoming webservice calls
+# If enabled, the instance's default siteaccess will always be used.
+# If disabled, the matched siteaccess (host, port, etc) will be used, allowing
+# the usage of webservices when multiple ezpublish websites are hosted on one instance
+UseDefaultAccess=enabled
 
 # enable reception of incoming webservice calls
 EnableJSONRPC=false

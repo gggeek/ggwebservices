@@ -39,7 +39,8 @@ $ini = eZINI::instance();
 
 // Initialize/set the index file.
 eZSys::init( 'xmlrpc.php', $ini->variable( 'SiteAccessSettings', 'ForceVirtualHost' ) == 'true' );
-
+$uri = eZURI::instance( eZSys::requestURI() );
+$GLOBALS['eZRequestedURI'] = $uri;
 
 // include ezsession override implementation
 require_once( "lib/ezutils/classes/ezsession.php" );
@@ -52,11 +53,27 @@ eZExtension::activateExtensions( 'default' );
 
 
 // Activate correct siteaccess
-require_once( "access.php" );
-$access = array( 'name' => $ini->variable( 'SiteSettings', 'DefaultAccess' ),
-                 'type' => EZ_ACCESS_TYPE_DEFAULT );
+require_once( 'access.php' );
+
+$wsINI = eZINI::instance( 'wsproviders.ini' );
+if ( $wsINI->variable( 'GeneralSettings', 'UseDefaultAccess' ) === 'enabled' )
+{
+    $access = array( 'name' => $ini->variable( 'SiteSettings', 'DefaultAccess' ),
+                     'type' => EZ_ACCESS_TYPE_DEFAULT );
+}
+else
+{
+    $access = accessType( $uri,
+                          eZSys::hostname(),
+                          eZSys::serverPort(),
+                          eZSys::indexFile() );
+}
 $access = changeAccess( $access );
 // Siteaccess activation end
+
+// Check for siteaccess extension
+eZExtension::activateExtensions( 'access' );
+// Siteaccess extension check end
 
 // Check for activating Debug by user ID (Final checking. The first was in eZDebug::updateSettings())
 eZDebug::checkDebugByUser();
@@ -87,7 +104,6 @@ $moduleRepositories = eZModule::activeModuleRepositories();
 eZModule::setGlobalPathList( $moduleRepositories );
 
 // Load xmlrpc extensions
-$wsINI = eZINI::instance( 'wsproviders.ini' );
 $enable = $wsINI->variable( 'GeneralSettings', 'EnableXMLRPC' );
 
 if ( $enable == 'true' )
