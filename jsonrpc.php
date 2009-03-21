@@ -53,12 +53,9 @@ require_once( 'kernel/common/ezincludefunctions.php' );
 eZExtension::activateExtensions( 'default' );
 // Extension check end
 
-
 // Activate correct siteaccess
-$wsINI = eZINI::instance( 'wsproviders.ini' );
 
 require_once( 'access.php' );
-
 $wsINI = eZINI::instance( 'wsproviders.ini' );
 if ( $wsINI->variable( 'GeneralSettings', 'UseDefaultAccess' ) === 'enabled' )
 {
@@ -74,6 +71,9 @@ else
 }
 $access = changeAccess( $access );
 // Siteaccess activation end
+
+// reload wsproviders ini file, as there might be per-siteaccess settings
+$wsINI->loadCache();
 
 // Check for activating Debug by user ID (Final checking. The first was in eZDebug::updateSettings())
 eZDebug::checkDebugByUser();

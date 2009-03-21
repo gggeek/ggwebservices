@@ -15,12 +15,14 @@ ini_set( "display_errors" , "0" );
 //include_once( "lib/ezutils/classes/ezini.php" );
 //include_once( 'lib/ezutils/classes/ezsys.php' );
 //require_once( 'lib/ezutils/classes/ezexecution.php' );
+
 // Set a default time zone if none is given. The time zone can be overriden
 // in config.php or php.ini.
 if ( !ini_get( "date.timezone" ) )
 {
     date_default_timezone_set( "UTC" );
 }
+
 require 'autoload.php';
 
 /**
@@ -51,10 +53,8 @@ require_once( 'kernel/common/ezincludefunctions.php' );
 eZExtension::activateExtensions( 'default' );
 // Extension check end
 
-
 // Activate correct siteaccess
 require_once( 'access.php' );
-
 $wsINI = eZINI::instance( 'wsproviders.ini' );
 if ( $wsINI->variable( 'GeneralSettings', 'UseDefaultAccess' ) === 'enabled' )
 {
@@ -71,12 +71,15 @@ else
 $access = changeAccess( $access );
 // Siteaccess activation end
 
-// Check for siteaccess extension
-eZExtension::activateExtensions( 'access' );
-// Siteaccess extension check end
+// reload wsproviders ini file, as there might be per-siteaccess settings
+$wsINI->loadCache();
 
 // Check for activating Debug by user ID (Final checking. The first was in eZDebug::updateSettings())
 eZDebug::checkDebugByUser();
+
+// Check for siteaccess extension
+eZExtension::activateExtensions( 'access' );
+// Siteaccess extension check end
 
 /**
  Reads settings from i18n.ini and passes them to eZTextCodec.
