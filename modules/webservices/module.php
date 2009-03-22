@@ -32,7 +32,7 @@ $ViewList = array(
     'debugger' => array(
         'script' => 'debugger.php',
         'params' => array( 'target', 'patchtarget' ),
-        'functions' => array( 'proxy' ),
+        'functions' => array( 'debugger' ),
         'default_navigation_part' => 'wsdebuggernavigationpart',
     ),
 );
