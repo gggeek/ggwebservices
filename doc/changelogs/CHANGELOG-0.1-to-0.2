@@ -3,6 +3,8 @@ Changes from 0.1 to 0.2
 *General:
 - sync jsonrpc.php and xmlrpc.php with soap.php from eZP 4.0.3: set timezone by default if it is not set in php.ini
 - sync jsonrpc.php and xmlrpc.php with soap.php from eZP 4.1: allow to use different siteaccesses when calling webservices
+- added a complete debugger solution. Available by default in the admin interface. Access to it is regulated by the webservices/debugger policy.
 
 *Bugfixes:
 - more robust parsing of remote ws servers in ws_providers.ini in ggeZWebservicesClient::send
+- one php crash fix when receiving an error from a remote server

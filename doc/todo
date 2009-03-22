@@ -1,15 +1,25 @@
+- test https support with and without curl
+
+- add support for proxies to ggeZwsclient, either from site.ini/ProxySettings or via per-server configuration (or both)
+
+- document better all the possible error codes, in curl and no curl mode.
+  Possibly encapsulate all http-level errors in one code (putting the details in the error msg) and separate better client-generated errors from server-generated ones
+
+- decide what to show on left col of the debugger
+
+- release 0.2
+
+
 - finish proxy module
   => add soap support. Need to create a new soap server class, too?
   => add POST/GET (rest) support. Need to create a new server class, too?
 
 - add a module view that does ws execution; time it (memory, time) vs. using jsonrpc.php
 
-- add an (admin) module view that includes the xmlrpc/jsonrpc debugger from phpxmlrpc.sf.net
-
 - add a new controller file capable to do multi-protocol requests
   + make it compatible with ezcore
 
-- add support for compressed requests
+- add optional extended logging of received ws calls and outgoing responses (use ezdebugsettings or a custom log file?)
 
 - add phpdoc-generated api docs to the distribution
 
