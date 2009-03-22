@@ -31,15 +31,16 @@ $ViewList = array(
 
     'debugger' => array(
         'script' => 'debugger.php',
-        //'params' => array( 'protocol' ),
+        'params' => array( 'target', 'patchtarget' ),
         'functions' => array( 'proxy' ),
+        'default_navigation_part' => 'wsdebuggernavigationpart',
     ),
 );
 
 $FunctionList = array(
-    'execute' = array(),
-    'proxy' = array(),
-	'debugger' = array()
+    'execute' => array(),
+    'proxy' => array(),
+	'debugger' => array()
 );
 
 ?>
