@@ -84,7 +84,7 @@ abstract class ggWebservicesClient
             $this->Protocol = $protocol;
         }
 
-        // to be removed when we will adpot ssl stream wrappers
+        // to be removed when we will adopt ssl stream wrappers
         if ( $this->Protocol == 'https' )
         {
             $this->ForceCURL = true;
@@ -112,8 +112,8 @@ abstract class ggWebservicesClient
 
         $this->errorString = '';
         $this->errorNumber = 0;
-        // we default to using cURL if it is there
-        if ( !in_array( "curl", get_loaded_extensions() ) )
+        // we default to NOT using cURL if not asked to (or if it is not there)
+        if ( !$this->ForceCURL || !in_array( "curl", get_loaded_extensions() ) )
         {
             if ( $this->ForceCURL )
             {
@@ -157,7 +157,7 @@ abstract class ggWebservicesClient
             {
                 fclose( $fp );
                 $this->errorNumber = self::ERROR_CANNOT_WRITE;
-                $this->errorString = "<b>Error:</b> could not send the request. Could not write to the socket.";
+                $this->errorString = "Error: could not send the request. Could not write to the socket.";
                 return 0;
             }
 
@@ -218,7 +218,7 @@ abstract class ggWebservicesClient
             else
             {
                     $this->errorNumber = self::ERROR_CURLE_FAILED_INIT;
-                    $this->errorString = "<b>Error:</b> could not send the request. Could not initialize CURL.";
+                    $this->errorString = "Error: could not send the request. Could not initialize CURL.";
                     return 0;
             }
         }
@@ -374,6 +374,14 @@ abstract class ggWebservicesClient
         $this->ProxyUser = $proxyusername;
         $this->ProxyPassword = $proxypassword;
         $this->ProxyAuthType = $proxyauthtype;
+        if ( $ProxyAuthType != 1 )
+        {
+            $this->ForceCURL = true;
+        }
+        elseif ( $this->Protocol != 'https' && $this->ProxyAuthType == 1 )
+        {
+            $this->ForceCURL = false;
+        }
     }
 
     function setMethod( $verb )
