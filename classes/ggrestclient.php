@@ -2,6 +2,7 @@
 /**
  * Class used to communicate with jsonrpc servers
  *
+ * @author G. Giunta
  * @version $Id$
  * @copyright (C) G. Giunta 2009
  */

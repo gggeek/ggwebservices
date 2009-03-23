@@ -2,6 +2,7 @@
 /**
  * Class used to wrap rest requests.
  *
+ * @author G. Giunta
  * @version $Id$
  * @copyright (C) G. Giunta 2009
  */

@@ -7,6 +7,7 @@
  *
  * @author G. Giunta
  * @version $Id$
+ * @copyright (C) G. Giunta 2009
  */
 
 if ( !defined( 'WS_PROTOCOL' ) )

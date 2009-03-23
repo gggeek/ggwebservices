@@ -2,6 +2,7 @@
 /**
  * Class used to wrap soap requests. Code copy'n'pasted from eZ SOAP class
  *
+ * @author G. Giunta
  * @version $Id$
  * @copyright (C) G. Giunta 2009
  *

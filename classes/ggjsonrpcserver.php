@@ -1,11 +1,14 @@
 <?php
-
 /**
-* Extends ggXMLRPCServer instead of ggWebservicesServer to profit of handling
-* of system.xx methods
-*
-* @see http://json-rpc.org/wiki/specification
-*/
+ * Extends ggXMLRPCServer instead of ggWebservicesServer to profit of handling
+ * of system.xx methods
+ *
+ * @author G. Giunta
+ * @version $Id$
+ * @copyright (C) G. Giunta 2009
+ *
+ * @see http://json-rpc.org/wiki/specification
+ */
 class ggJSONRPCServer extends ggXMLRPCServer
 {
 
