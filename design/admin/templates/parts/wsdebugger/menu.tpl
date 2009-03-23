@@ -33,7 +33,11 @@
     {if or( eq( $targetspec.providerType, 'JSONRPC' ), eq( $targetspec.providerType, 'XMLRPC' ) )}
         <li><div><a href={concat( 'webservices/debugger/controller/', $targetspec.urlparams )|ezurl} target="frmcontroller">{$targetname|wash}</a></div></li>
     {else}
+        {if  eq( $targetspec.providerType, 'FAULT' )}
+        <li><div><span class="disabled" style="color: red;">{$targetname|wash}</span>
+        {else}
         <li><div><span class="disabled">{$targetname|wash}</span>
+        {/if}
     {/if}
 {/foreach}
 </ul>

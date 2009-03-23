@@ -56,29 +56,36 @@ if ( $target != 'action' && $target != 'controller' && $target != 'visualeditor'
             {
                 $target_list[$groupname] = $groupdef;
                 $url = parse_url( $groupdef['providerUri'] );
-                $params = '?action=';
-                $params .= '&host=' . $url['host'];
-                $params .= '&port=' . ( isset( $url['port'] ) ? $url['port'] : '' );
-                $params .= '&path=' . ( isset( $url['path'] ) ? $url['path'] : '/' );
-                if ( $url['scheme'] == 'htps' )
+                if ( !isset( $url['scheme'] ) || !isset( $url['host'] ) )
                 {
-                     $params .= '&protocol=2';
+                    $target_list[$groupname]['providerType'] = 'FAULT';
                 }
-                if ( isset( $target_list[$groupname]['providerUsername'] ) && $target_list[$groupname]['providerUsername'] != '' )
+                else
                 {
-                    $params .= '&username=' . $target_list[$groupname]['providerUsername'] . '&amp;password=' . $target_list[$groupname]['providerPassword'];
+                    $params = '?action=';
+                    $params .= '&host=' . $url['host'];
+                    $params .= '&port=' . ( isset( $url['port'] ) ? $url['port'] : '' );
+                    $params .= '&path=' . ( isset( $url['path'] ) ? $url['path'] : '/' );
+                    if ( $url['scheme'] == 'htps' )
+                    {
+                        $params .= '&protocol=2';
+                    }
+                    if ( isset( $target_list[$groupname]['providerUsername'] ) && $target_list[$groupname]['providerUsername'] != '' )
+                    {
+                        $params .= '&username=' . $target_list[$groupname]['providerUsername'] . '&amp;password=' . $target_list[$groupname]['providerPassword'];
+                    }
+                    if ( isset( $target_list[$groupname]['timeout'] ) )
+                    {
+                        $params .= '&timeout=' . $target_list[$groupname]['timeout'];
+                    }
+                    if ( $target_list[$groupname]['providerType'] == 'JSONRPC' )
+                    {
+                        // nb: we leave REST, SOAP as wstype 1, which is wrong
+                        // currently the left menu tpl does not show a link for other types than jsronrpc and xmlrcp anyway
+                        $params .= '&wstype=1';
+                    }
+                    $target_list[$groupname]['urlparams'] = $params;
                 }
-                if ( isset( $target_list[$groupname]['timeout'] ) )
-                {
-                    $params .= '&timeout=' . $target_list[$groupname]['timeout'];
-                }
-                if ( $target_list[$groupname]['providerType'] == 'JSONRPC' )
-                {
-                    // nb: we leave REST, SOAP as wstype 1, which is wrong
-                    // currently the left menu tpl does not show a link for other types than jsronrpc and xmlrcp anyway
-                    $params .= '&wstype=1';
-                }
-                $target_list[$groupname]['urlparams'] = $params;
             }
         }
     }
