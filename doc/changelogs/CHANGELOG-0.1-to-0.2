@@ -1,9 +1,10 @@
 Changes from 0.1 to 0.2
 
 *General:
+- added a complete debugger solution. Available by default in the admin interface. Access to it is regulated by the webservices/debugger policy.
+- added support for proxies to calls to remote servers (ggeZWebservicesClient::send method). Proxies can be specified per-target or globally in site.ini
 - sync jsonrpc.php and xmlrpc.php with soap.php from eZP 4.0.3: set timezone by default if it is not set in php.ini
 - sync jsonrpc.php and xmlrpc.php with soap.php from eZP 4.1: allow to use different siteaccesses when calling webservices
-- added a complete debugger solution. Available by default in the admin interface. Access to it is regulated by the webservices/debugger policy.
 - rewritten the jsonrpc.php and wmlrpc.php controllers to maximize code sharing
 
 *Bugfixes:

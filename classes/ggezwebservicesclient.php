@@ -36,7 +36,7 @@ class ggeZWebservicesClient
      *
      * @bug returning 0 for non-error responses is fine as long as the protocol
      *      does not permit empty responses. This is not the case with json-rpc!
-    */
+     */
     static function send( $server, $method, $parameters, $return_reponse_obj = false )
     {
 
@@ -61,6 +61,43 @@ class ggeZWebservicesClient
             $timeout = (int)$ini->variable( $server, 'timeout' );
         else
             $timeout = false;
+        // Proxy: if not specified per-target server, use global one
+        $providerProxy = '';
+        if ( !$ini->hasVariable( $server, 'ProxyServer' ) )
+        {
+            $ini = eZINI::instance( 'site.ini' );
+            $group = 'ProxySettings';
+            $proxyPrefix = '';
+        }
+        else
+        {
+            $group = $server;
+            $proxyPrefix = 'Proxy';
+        }
+        if ( $ini->hasVariable( $group, 'ProxyServer' ) && $ini->variable( $group, 'ProxyServer' ) != '' )
+        {
+            $providerProxy = $ini->variable( $group, 'ProxyServer' );
+            $providerProxyPort = explode( ':', $providerProxy );
+            if ( count( $providerProxyPort ) > 1 )
+            {
+                $providerProxy = $providerProxyPort[0];
+                $providerProxyPort = $providerProxyPort[1];
+            }
+            else
+            {
+                $providerProxyPort = 0;
+            }
+            $providerProxyUser = '';
+            $providerProxyPassword = '';
+            if ( $ini->hasVariable( $group, $proxyPrefix . 'User' ) )
+            {
+                $providerProxyUser = $ini->variable( $group, $proxyPrefix . 'User' );
+                if ( $ini->hasVariable( $group, $proxyPrefix . 'Password' ) )
+                {
+                    $providerProxyPassword = $ini->variable( $group, $proxyPrefix . 'Password' );
+                }
+            }
+        }
 
         $clientClass = 'gg' . $providerType . 'Client';
         $requestClass = 'gg' . $providerType . 'Request';
@@ -71,7 +108,12 @@ class ggeZWebservicesClient
         case 'JSONRPC':
         case 'SOAP':
         case 'XMLRPC' :
-            self::appendLogEntry( "Connecting to: $providerURI via $providerType", 'debug' );
+            $proxylog = '';
+            if ( $providerProxy != '' )
+            {
+                $proxylog = "using proxy $providerProxy:$providerProxyPort";
+            }
+            self::appendLogEntry( "Connecting to: $providerURI via $providerType $proxylog", 'debug' );
             $url = parse_url( $providerURI );
             if ( !isset( $url['scheme'] ) || !isset( $url['host'] ) )
             {
@@ -101,7 +143,10 @@ class ggeZWebservicesClient
             {
                 $client->setTimeout( $timeout );
             }
-
+            if ( $providerProxy != '' )
+            {
+                $client->setProxy( $providerProxy, $providerProxyPort, $providerProxyUser, $providerProxyPassword );
+            }
             if ( $providerType == 'SOAP' )
             {
                 if ( is_array( $method ) )
@@ -181,10 +226,10 @@ class ggeZWebservicesClient
     }*/
 
     /**
-      Logs the string $logString to the logfile webdav.log
-      in the current log directory (usually var/log).
-      If logging is disabled, nothing is done.
-    */
+     * Logs the string $logString to the logfile webdav.log
+     * in the current log directory (usually var/log).
+     * If logging is disabled, nothing is done.
+     */
     static function appendLogEntry( $logString, $debuglevel )
     {
         if ( !self::isLoggingEnabled( $debuglevel ) )
@@ -213,8 +258,8 @@ class ggeZWebservicesClient
     }
 
     /**
-      return true if logging is enabled.
-    */
+     * return true if logging is enabled.
+     */
     static function isLoggingEnabled( $debuglevel )
     {
         $logging =& self::$debuglevel;

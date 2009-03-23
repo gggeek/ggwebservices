@@ -26,15 +26,11 @@ XMLRPCExtensions[]
 #providerUsername=
 #providerPassword=
 #timeout=60
+# If these variables are not set here, the Proxy defined globally in site.ini ProxySerrings block will be used
+# (nb: a variable with an empty value is still considered to be set. To unset it, remove or comment the line)
+#ProxyServer=myproxy:8080
+#ProxyUser=
+#ProxyPassword=
 
-### definition of webservice servers that can be called by js code using the wsproxy module
-
-#[proxy_myserver]
-#providerUri=http://my.test.server/wsendpoint.php
-#providerType=JSONRPC, SOAP, REST or XMLRPC
-#providerUsername=
-#providerPassword=
-#timeout=60
-#providerMethods= a csv list of remote methods that can be called. use 'any' to specify an open proy, ie. all methods will accepted
 
 */ ?>

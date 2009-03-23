@@ -15,7 +15,6 @@
  * @todo let user decide ssl options, set server and client certs too
  * @todo let client use keepalives for multiple subsequent calls (in curl mode)
  * @todo let client accept compressed responses (declare it in request headers)
- * @todo hide fsockopen errors using @ ?
  * @todo allow ssl connections without curl (via stream properties)
  * @todo cookie support, so that client can be uses for multiple calls with sessions
  * @todo implement following redirects (with a max predefined)
@@ -40,13 +39,20 @@ abstract class ggWebservicesClient
     const ERROR_CANNOT_WRITE = 2;
 
     /**
-      Creates a new client.
-      @todo add a simplfied syntax for constructor, using parse_url and a single string
-    */
+     * Creates a new client.
+     * @param int|string $port 'ssl' can be used for https connections, or port number
+     * @param string $protocol use 'https' (or bool true, for backward compatibility) to specify https connections
+     * @todo add a simplfied syntax for constructor, using parse_url and a single string
+     */
     function __construct( $server, $path = '/', $port = 80, $protocol=null )
     {
-        $this->Login = "";
-        $this->Password = "";
+        // backward compat with ezsoap client
+        if ( $protocol === true )
+        {
+            $protocol = 'https';
+        }
+        $this->Login = '';
+        $this->Password = '';
         $this->Server = $server;
         if ( $path == '' || $path[0] != '/' )
         {
@@ -54,9 +60,9 @@ abstract class ggWebservicesClient
         }
         $this->Path = $path;
         $this->Port = $port;
-        /// @todo this assumes 0 is a valid port. Weird, but useful for unix domain sockets..
+        // this assumes 0 is a valid port. Weird, but useful for unix domain sockets..
         if ( is_numeric( $port ) )
-            $this->Port = $port;
+            $this->Port = (int)$port;
         elseif( strtolower( $port ) == 'ssl' || $protocol == 'https' )
             $this->Port = 443;
         else
@@ -77,13 +83,19 @@ abstract class ggWebservicesClient
         {
             $this->Protocol = $protocol;
         }
+
+        // to be removed when we will adpot ssl stream wrappers
+        if ( $this->Protocol == 'https' )
+        {
+            $this->ForceCURL = true;
+        }
     }
 
     /**
-      Sends a request and returns the response object. 0 on error
-
-      @todo let curl not specify http 1.0 all the time, since he knows better!
-    */
+     * Sends a request and returns the response object. 0 on error
+     *
+     * @todo let curl not specify http 1.0 all the time, since he knows better!
+     */
     function send( $request )
     {
 
@@ -100,29 +112,37 @@ abstract class ggWebservicesClient
 
         $this->errorString = '';
         $this->errorNumber = 0;
-        if ( !$this->ForceCURL || !in_array( "curl", get_loaded_extensions() ) )
+        // we default to using cURL if it is there
+        if ( !in_array( "curl", get_loaded_extensions() ) )
         {
+            if ( $this->ForceCURL )
+            {
+                $this->errorNumber = self::ERROR_CURLE_FAILED_INIT;
+                $this->errorString = "Error: could not send the request. CURL not installed.";
+                return 0;
+            }
+
             /// @todo add ssl support with raw sockets
             if ( $this->Timeout != 0 )
             {
                 $fp = @fsockopen( $connectserver,
-                                 $connectport,
-                                 $this->errorNumber,
-                                 $this->errorString,
-                                 $this->Timeout );
+                                  $connectport,
+                                  $this->errorNumber,
+                                  $this->errorString,
+                                  $this->Timeout );
             }
             else
             {
                 $fp = @fsockopen( $connectserver,
-                                 $connectport,
-                                 $this->errorNumber,
-                                 $this->errorString );
+                                  $connectport,
+                                  $this->errorNumber,
+                                  $this->errorString );
             }
 
             if ( $fp == 0 )
             {
                 // use error codes from fsockopen
-                //$this->errorNumber =  self::ERROR_CANNOT_CONNECT;
+                //$this->errorNumber = self::ERROR_CANNOT_CONNECT;
                 //$this->errorString = '<b>Error:</b> ggWebservicesClient::send() : Unable to open connection to ' . $this->Server . '.';
                 return 0;
             }
@@ -197,7 +217,7 @@ abstract class ggWebservicesClient
             }
             else
             {
-                    $this->errorNumber =  self::ERROR_CURLE_FAILED_INIT;
+                    $this->errorNumber = self::ERROR_CURLE_FAILED_INIT;
                     $this->errorString = "<b>Error:</b> could not send the request. Could not initialize CURL.";
                     return 0;
             }
@@ -209,8 +229,8 @@ abstract class ggWebservicesClient
     }
 
     /**
-    * Build and return full HTTP payload out of a request payload (and other server status vars)
-    */
+     * Build and return full HTTP payload out of a request payload (and other server status vars)
+     */
     protected function payload( $payload )
     {
         $authentification = "";
@@ -330,23 +350,23 @@ abstract class ggWebservicesClient
     }
 
     /**
-    * Enable sending compressed requests (needs zlib extension installed)
-    * Valid values: 'deflate, 'gzip', null
-    */
+     * Enable sending compressed requests (needs zlib extension installed)
+     * Valid values: 'deflate, 'gzip', null
+     */
     function setRequestCompression( $compmethod )
     {
         $this->RequestCompression = $compmethod;
     }
 
     /**
-    * Set proxy info
-    * @param string $proxyhost
-    * @param string $proxyport Defaults to 8080 for HTTP and 443 for HTTPS
-    * @param string $proxyusername Leave blank if proxy has public access
-    * @param string $proxypassword Leave blank if proxy has public access
-    * @param int $proxyauthtype set to constant CURLAUTH_NTLM to use NTLM auth with proxy
-    * @access public
-    */
+     * Set proxy info
+     * @param string $proxyhost
+     * @param string $proxyport Defaults to 8080 for HTTP and 443 for HTTPS
+     * @param string $proxyusername Leave blank if proxy has public access
+     * @param string $proxypassword Leave blank if proxy has public access
+     * @param int $proxyauthtype set to constant CURLAUTH_NTLM to use NTLM auth with proxy
+     * @access public
+     */
     function setProxy( $proxyhost, $proxyport, $proxyusername = '', $proxypassword = '', $proxyauthtype = 1 )
     {
         $this->Proxy = $proxyhost;
@@ -385,7 +405,7 @@ abstract class ggWebservicesClient
     protected $Password;
 
     protected $ContentType = 'text/xml'; // set up a default that is most likely
-    protected $UserAgent =  'gg eZ webservices client';
+    protected $UserAgent = 'gg eZ webservices client';
     protected $Protocol = 'http';
     protected $ResponseClass = 'ggWebservicesResponse';
     protected $RequestHeaders = array();
@@ -396,8 +416,8 @@ abstract class ggWebservicesClient
     protected $ProxyPort = 0;
     protected $ProxyLogin = '';
     protected $ProxyPassword = '';
-    protected $ProxyAuthType = 1;
     // below here: yet to be used...
+    protected $ProxyAuthType = 1;
     protected $AuthType = 1;
     protected $Cert = '';
     protected $CertPass = '';
