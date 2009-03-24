@@ -35,8 +35,9 @@
 
 abstract class ggWebservicesClient
 {
-    const ERROR_URLE_FAILED_INIT = -1;
-    const ERROR_CANNOT_WRITE = 2;
+    const ERROR_MISSING_CURL = -101;
+    const ERROR_CANNOT_CONNECT = -102;
+    const ERROR_CANNOT_WRITE = -103;
 
     /**
      * Creates a new client.
@@ -83,12 +84,6 @@ abstract class ggWebservicesClient
         {
             $this->Protocol = $protocol;
         }
-
-        // to be removed when we will adopt ssl stream wrappers
-        if ( $this->Protocol == 'https' )
-        {
-            $this->ForceCURL = true;
-        }
     }
 
     /**
@@ -108,6 +103,10 @@ abstract class ggWebservicesClient
         {
             $connectserver = $this->Server;
             $connectport = $this->Port;
+            if ( $this->Protocol == 'https' )
+            {
+                $connectserver = 'ssl://' . $connectserver;
+            }
         }
 
         $this->errorString = '';
@@ -117,7 +116,7 @@ abstract class ggWebservicesClient
         {
             if ( $this->ForceCURL )
             {
-                $this->errorNumber = self::ERROR_CURLE_FAILED_INIT;
+                $this->errorNumber = self::ERROR_MISSING_CURL;
                 $this->errorString = "Error: could not send the request. CURL not installed.";
                 return 0;
             }
@@ -141,9 +140,14 @@ abstract class ggWebservicesClient
 
             if ( $fp == 0 )
             {
-                // use error codes from fsockopen
-                //$this->errorNumber = self::ERROR_CANNOT_CONNECT;
-                //$this->errorString = '<b>Error:</b> ggWebservicesClient::send() : Unable to open connection to ' . $this->Server . '.';
+                // nb: can we feed back to end user the error codes from fsockopen?
+                // They come basically from errno.h on unix - http://www.finalcog.com/c-error-codes-include-errno
+                // OR WSAGetLastError() on windows - http://msdn.microsoft.com/en-us/library/ms740668(VS.85).aspx
+                // this makes them very unreliable to test using either numeric values or constants
+                // so we just dump them into the error string, and use a small list
+                // of error codes defined locally in the client class
+                $this->errorString = $this->errorNumber . ' - ' . $this->errorString;
+                $this->errorNumber = self::ERROR_CANNOT_CONNECT;
                 return 0;
             }
             if ( $this->Timeout != 0 )
@@ -153,7 +157,7 @@ abstract class ggWebservicesClient
 
             $HTTPRequest = $this->payload( $request->payload() );
 
-            if ( !fputs( $fp, $HTTPRequest, strlen( $HTTPRequest ) ) )
+            if ( !fwrite( $fp, $HTTPRequest, strlen( $HTTPRequest ) ) )
             {
                 fclose( $fp );
                 $this->errorNumber = self::ERROR_CANNOT_WRITE;
@@ -165,6 +169,7 @@ abstract class ggWebservicesClient
             // fetch the response
             do
 			{
+                /// could we rely on getting false as a sure sign of error and return an ERROR_CABBOT_READ here ?
                 $rawResponse .= fread( $fp, 32768 );
             } while( !feof( $fp ) );
             // close the socket
@@ -172,7 +177,7 @@ abstract class ggWebservicesClient
         }
         else
         {
-            $URL = $this->Protocol . "://" . $connecterver . ":" . $this->Port . $this->Path;
+            $URL = $this->Protocol . "://" . $this->Server . ":" . $this->Port . $this->Path;
             $ch = curl_init ( $URL );
 
             if ( $ch != 0 )
@@ -204,7 +209,9 @@ abstract class ggWebservicesClient
 
                 if ( $rawResponse === false )
                 {
-                    $this->errorNumber = curl_errno( $ch );
+                    // grepping through curl sources, we find out the curl error range
+                    // to be 1 to 82 (as of curl 7.19.4)
+                    $this->errorNumber = curl_errno( $ch ) * -1;
                     $this->errorString = curl_error( $ch );
                     curl_close( $ch );
                     return 0;
@@ -217,7 +224,7 @@ abstract class ggWebservicesClient
             }
             else
             {
-                    $this->errorNumber = self::ERROR_CURLE_FAILED_INIT;
+                    $this->errorNumber = CURLE_FAILED_INIT * -1;
                     $this->errorString = "Error: could not send the request. Could not initialize CURL.";
                     return 0;
             }
@@ -374,13 +381,9 @@ abstract class ggWebservicesClient
         $this->ProxyUser = $proxyusername;
         $this->ProxyPassword = $proxypassword;
         $this->ProxyAuthType = $proxyauthtype;
-        if ( $ProxyAuthType != 1 )
+        if ( $proxyauthtype != 1 )
         {
             $this->ForceCURL = true;
-        }
-        elseif ( $this->Protocol != 'https' && $this->ProxyAuthType == 1 )
-        {
-            $this->ForceCURL = false;
         }
     }
 
