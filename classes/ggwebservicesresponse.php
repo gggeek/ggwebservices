@@ -10,20 +10,13 @@
 
 abstract class ggWebservicesResponse
 {
+    const INVALIDRESPONSEERROR = -301;
+    const GENERICRESPONSEERROR = -302;
 
-    const INVALIDREQUESTERROR = -1;
-    const INVALIDRESPONSEERROR = -2;
-    const GENERICRESPONSEERROR = -3;
-    const INVALIDMETHODERROR = -4;
-    const INVALIDPARAMSERROR = -5;
-    const INVALIDINTROSPECTIONERROR = -6;
     /// @todo use a single array for all error strings
-    const INVALIDREQUESTSTRING = 'Request received from client is not valid according to protocol format';
     const INVALIDRESPONSESTRING = 'Response received from server is not valid';
     const GENERICRESPONSESTRING = 'Server error';
-    const INVALIDMETHODSTRING = 'Method not found';
-    const INVALIDPARAMSSTRING = 'Parameters not matching method';
-    const INVALIDINTROSPECTIONSTRING = 'Can\'t introspect: method unknown';
+
 
     function __construct( $name='' )
     {

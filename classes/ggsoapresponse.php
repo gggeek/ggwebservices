@@ -149,7 +149,7 @@ TODO: add encoding checks with schema validation.
                 {
                     if ( $child instanceof DOMElement )
                     {
-                        $returnValue[] = ggSOAPResponse::decodeDataTypes( $child, $type );
+                        $returnValue[] = self::decodeDataTypes( $child, $type );
                     }
                 }
             }break;
@@ -162,7 +162,7 @@ TODO: add encoding checks with schema validation.
                 {
                     if ( $child instanceof DOMElement )
                     {
-                        $returnValue[$child->tagName] = ggSOAPResponse::decodeDataTypes( $child );
+                        $returnValue[$child->tagName] = self::decodeDataTypes( $child );
                     }
                 }
             }break;
@@ -180,7 +180,7 @@ TODO: add encoding checks with schema validation.
                         $attrParts = explode( ":", $attr );
                         $dataType = $attrParts[1];
 
-                        $returnValue[$childNode->name()] = ggSOAPResponse::decodeDataTypes( $childNode );
+                        $returnValue[$childNode->name()] = self::decodeDataTypes( $childNode );
                     }
                 }
 
@@ -267,7 +267,7 @@ TODO: add encoding checks with schema validation.
                     {
                         if ( $child instanceof DOMElement )
                         {
-                            $results[$child->tagName] = ggSOAPResponse::decodeDataTypes( $child );
+                            $results[$child->tagName] = self::decodeDataTypes( $child );
                         }
 
                     }

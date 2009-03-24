@@ -44,14 +44,14 @@ class ggXMLRPCResponse extends ggWebservicesResponse
         $this->rawResponse = $stream;
 
         /// @todo test if this automatically groks encoding from xml or not...
-        $results = xmlrpc_decode( ggWebservicesResponse::stripHTTPHeader( $stream ) );
+        $results = xmlrpc_decode( self::stripHTTPHeader( $stream ) );
 
         if ( $results === null )
         {
             // invalid XMLRPC response
             $this->IsFault = true;
-            $this->FaultCode = ggXMLRPCResponse::INVALIDRESPONSEERROR;
-            $this->Faulstring = ggXMLRPCResponse::INVALIDRESPONSESTRING;
+            $this->FaultCode = self::INVALIDRESPONSEERROR;
+            $this->Faulstring = self::INVALIDRESPONSESTRING;
         }
         else
         {

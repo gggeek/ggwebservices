@@ -11,7 +11,7 @@
 class ggJSONRPCResponse extends ggWebservicesResponse
 {
 
-    const INVALIDIDERROR = -50;
+    const INVALIDIDERROR = -350;
     const INVALIDRESPONSESTRING = 'Response received from server is not valid jsonrpc';
     const INVALIDIDSTRING = 'Response received from server does not match request id';
 
@@ -47,7 +47,7 @@ class ggJSONRPCResponse extends ggWebservicesResponse
         // save raw data for debugging purposes
         $this->rawResponse = $stream;
 
-        $results = json_decode( ggWebservicesResponse::stripHTTPHeader( $stream ), true );
+        $results = json_decode( self::stripHTTPHeader( $stream ), true );
         if ( !is_array($results) ||
             !array_key_exists( 'result', $results ) ||
             !array_key_exists( 'error', $results ) ||
@@ -56,8 +56,8 @@ class ggJSONRPCResponse extends ggWebservicesResponse
         {
             // invalid jsonrpc response
             $this->IsFault = true;
-            $this->FaultCode = ggJSONRPCResponse::INVALIDRESPONSEERROR;
-            $this->Faulstring = ggJSONRPCResponse::INVALIDRESPONSESTRING;
+            $this->FaultCode = self::INVALIDRESPONSEERROR;
+            $this->Faulstring = self::INVALIDRESPONSESTRING;
         }
         else
         {
@@ -67,8 +67,8 @@ class ggJSONRPCResponse extends ggWebservicesResponse
             if ( $results['id'] != $request->id() )
             {
                 $this->IsFault = true;
-                $this->FaultCode = ggJSONRPCResponse::INVALIDIDERROR;
-                $this->Faulstring = ggJSONRPCResponse::INVALIDIDSTRING;
+                $this->FaultCode = self::INVALIDIDERROR;
+                $this->Faulstring = self::INVALIDIDSTRING;
             }
             else if ( $results['error'] === null )
             {
@@ -91,7 +91,7 @@ class ggJSONRPCResponse extends ggWebservicesResponse
                 }
                 else
                 {
-                    $this->FaultCode = ggJSONRPCResponse::GENERICRESPONSEERROR;
+                    $this->FaultCode = self::GENERICRESPONSEERROR;
                     /// @todo we should somehow typecast to string here??? maybe reencode as json?
                     $this->FaultString = $results['error'];
                 }
