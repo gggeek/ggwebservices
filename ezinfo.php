@@ -12,7 +12,7 @@ class ggwebservicesInfo
             'Includes the following third-party software' => array(
                 'phpxmlrpc' => array(
                     'Version' => '1.173 2009/02/05',
-                    'License' => 'Copyright (c) 1999,2000,2002 Edd Dumbill',
+                    'License' => 'code licensed under the BSD License: http://phpxmlrpc.sourceforge.net/license.txt',
                     'For more information' => 'http://phpxmlrpc.sourceforge.net/' ),
                 /*'nuSOAP' => array(
                     'Version' => '2008-04-06',
