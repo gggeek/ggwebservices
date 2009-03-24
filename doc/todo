@@ -1,14 +1,8 @@
-- test https support with and without curl
-
-- add support for proxies to ggeZwsclient, either from site.ini/ProxySettings or via per-server configuration (or both)
-
-- document better all the possible error codes, in curl and no curl mode.
-  Possibly encapsulate all http-level errors in one code (putting the details in the error msg) and separate better client-generated errors from server-generated ones
-
-- decide what to show on left col of the debugger
+- test https support with and without curl, with and without proxy too
 
 - release 0.2
 
+- add a soap controller based on ggsoap instead of ezsoap (needs a server class first)
 
 - finish proxy module
   => add soap support. Need to create a new soap server class, too?
@@ -26,3 +20,9 @@
 - improve input parameter type validation
 
 - add a compatibility layer to import webservices designed for ezrest
+
+- improve list of local servers in left menu of debugger: if per-sa servers are enabled, show one link per sa?
+
+- add a testsuite (eg. to test all the error codes after shuffling them around)
+
+- allow extension ro run on phpxmlrpc/phpjsonrpc/nusoap if php extensions are missing
