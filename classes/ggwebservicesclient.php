@@ -193,7 +193,7 @@ abstract class ggWebservicesClient
 
                 if( $this->Proxy != '' )
                 {
-                    curl_setopt($curl, CURLOPT_PROXY, $this->Proxy . ':' . $this->ProxyPort );
+                    curl_setopt($ch, CURLOPT_PROXY, $this->Proxy . ':' . $this->ProxyPort );
                 }
 
                 /// @todo only set this in ssl mode, plus set user decide
