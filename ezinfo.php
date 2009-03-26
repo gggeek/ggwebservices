@@ -10,10 +10,7 @@ class ggwebservicesInfo
             'Copyright' => "Copyright (C) 2009 Gaetano Giunta",
             'License' => "GNU General Public License v2.0",
             'Includes the following third-party software' => array(
-                'phpxmlrpc' => array(
-                    'Version' => '1.173 2009/02/05',
-                    'License' => 'code licensed under the BSD License: http://phpxmlrpc.sourceforge.net/license.txt',
-                    'For more information' => 'http://phpxmlrpc.sourceforge.net/' ),
+                'phpxmlrpc' => 'http://phpxmlrpc.sourceforge.net/',
                 /*'nuSOAP' => array(
                     'Version' => '2008-04-06',
                     'License' => 'GNU/LGPL  v2.1 - Copyright (c) 2002 NuSphere Corporation',
