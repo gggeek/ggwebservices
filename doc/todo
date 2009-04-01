@@ -1,6 +1,6 @@
 - test https support with and without curl, with and without proxy too
 
-- release 0.2
+- automatic rotation of log files
 
 - add a soap controller based on ggsoap instead of ezsoap (needs a server class first)
 
