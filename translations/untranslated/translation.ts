@@ -2,8 +2,8 @@
 <context>
     <name>kernel/navigationpart</name>
     <message>
-        <comment>Navigation part</comment>
         <source>Webservices Debugger</source>
+        <comment>Navigation part</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
