@@ -82,6 +82,6 @@ class ggWebservicesOperators {
         }
     }
 
-    private var $Operators;
+    private $Operators;
 }
 ?>
