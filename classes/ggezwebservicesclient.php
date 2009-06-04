@@ -53,6 +53,7 @@ class ggeZWebservicesClient
         }
         $providerURI = $ini->variable( $server, 'providerUri' );
         $providerType = $ini->variable( $server, 'providerType' );
+        $wsdl = $ini->hasVariable( $server, 'WSDL' ) ? $ini->variable( $server, 'WSDL' ) : '';
         $providerAuthtype = $ini->hasVariable( $server, 'providerAuthtype' ) ? $ini->variable( $server, 'providerAuthtype' ) : false; /// @TODO: to be implemented
         $providerSSLRequired = $ini->hasVariable( $server, 'providerSSLRequired' ) ? $ini->variable( $server, 'providerSSLRequired' ) : false; /// @TODO: to be implemented
         $providerUsername = $ini->hasVariable( $server, 'providerUsername' ) ? $ini->variable( $server, 'providerUsername' ) : false;
@@ -103,10 +104,12 @@ class ggeZWebservicesClient
         $requestClass = 'gg' . $providerType . 'Request';
         $responseClass = 'gg' . $providerType . 'Response';
 
-        switch($providerType){
+        switch( $providerType )
+        {
         case 'REST':
         case 'JSONRPC':
         case 'SOAP':
+        case 'PhpSOAP':
         case 'XMLRPC' :
             $proxylog = '';
             if ( $providerProxy != '' )
@@ -114,28 +117,44 @@ class ggeZWebservicesClient
                 $proxylog = "using proxy $providerProxy:$providerProxyPort";
             }
             self::appendLogEntry( "Connecting to: $providerURI via $providerType $proxylog", 'debug' );
-            $url = parse_url( $providerURI );
-            if ( !isset( $url['scheme'] ) || !isset( $url['host'] ) )
+            if ( $providerURI != '' )
             {
-                self::appendLogEntry( "Error in user request: bad server url $providerURI for server $server", 'error' );
-                return array( 'error' => 'Error in user request: bad server url for server ' . $server, 'error' );
-            }
-            if ( !isset( $url['path'] ) )
-            {
-                $url['path'] = '/';
-            }
-            if ( !isset( $url['port'] ) )
-            {
-                if ( $url['scheme'] == 'https' )
+                $url = parse_url( $providerURI );
+                if ( !isset( $url['scheme'] ) || !isset( $url['host'] ) )
                 {
-                    $url['port'] = 443;
+                    self::appendLogEntry( "Error in user request: bad server url $providerURI for server $server", 'error' );
+                    return array( 'error' => 'Error in user request: bad server url for server ' . $server, 'error' );
+                }
+                if ( !isset( $url['path'] ) )
+                {
+                    $url['path'] = '/';
+                }
+                if ( !isset( $url['port'] ) )
+                {
+                    if ( $url['scheme'] == 'https' )
+                    {
+                        $url['port'] = 443;
+                    }
+                    else
+                    {
+                        $url['port'] = 80;
+                    }
+                }
+            }
+            else
+            {
+                if ( $wsdl != '' )
+                {
+                    $url = array( 'host' => '', 'path' => '', 'port' => 0, 'scheme' => null );
                 }
                 else
                 {
-                    $url['port'] = 80;
+                    self::appendLogEntry( "Error in user request: no server url for server $server", 'error' );
+                    return array( 'error' => 'Error in user request: no server url for server ' . $server, 'error' );
                 }
             }
-            $client = new $clientClass( $url['host'], $url['path'], $url['port'], $url['scheme'] );
+
+            $client = new $clientClass( $url['host'], $url['path'], $url['port'], $url['scheme'], $wsdl );
             if ( $providerUsername != '' ) {
                 $client->setCredentials( $providerUsername, $providerPassword );
             }
@@ -147,8 +166,9 @@ class ggeZWebservicesClient
             {
                 $client->setProxy( $providerProxy, $providerProxyPort, $providerProxyUser, $providerProxyPassword );
             }
-            if ( $providerType == 'SOAP' )
+            if ( $providerType == 'SOAP' || $providerType == 'PhpSOAP' )
             {
+                $namespace = null;
                 if ( is_array( $method ) )
                 {
                     $namespace = $method[1];
@@ -160,9 +180,15 @@ class ggeZWebservicesClient
             {
                 $request = new $requestClass( $method, $parameters );
             }
-            self::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
+            if ( $providerType != 'PhpSOAP' )
+            {
+                self::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
+            }
             $response = $client->send( $request );
-
+            if ( $providerType == 'PhpSOAP' )
+            {
+                self::appendLogEntry( 'Sent: ' . $client->requestPayload(), 'info' );
+            }
             if ( !is_object( $response ) )
             {
                 /*$code = WebServicesOperator :: getCodeError($err);

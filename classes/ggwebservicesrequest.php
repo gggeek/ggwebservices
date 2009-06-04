@@ -15,12 +15,21 @@ abstract class ggWebservicesRequest
     {
         $this->Name = (string)$name;
         $this->Parameters = $parameters;
+        /// @todo check: is this used anywhere? if not, remove it!
         $this->ContentType = 'application/x-www-form-urlencoded';
     }
 
+    /**
+    * Returns the request payload ancoded according to its specific protocol
+    * @return string
+    */
     abstract function payload();
 
-    /// Used by servers when decoding incpming requests
+    /**
+    * Used by servers when decoding incoming requests
+    * @param string $rawRequest
+    * @return bool false if received data cannot be parsed back into a valide request
+    */
     abstract function decodeStream( $rawRequest );
 
     /**

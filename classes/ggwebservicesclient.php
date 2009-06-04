@@ -16,7 +16,7 @@
  * @todo let client use keepalives for multiple subsequent calls (in curl mode)
  * @todo let client accept compressed responses (declare it in request headers)
  * @todo allow ssl connections without curl (via stream properties)
- * @todo cookie support, so that client can be uses for multiple calls with sessions
+ * @todo cookie support, so that client can be used for multiple calls with sessions
  * @todo implement following redirects (with a max predefined)
  * @todo move determination of request content type into request itself
  *
@@ -94,7 +94,7 @@ abstract class ggWebservicesClient
     function send( $request )
     {
 
-        if( $this->Proxy != '' )
+        if ( $this->Proxy != '' )
         {
             $connectserver = $this->Proxy;
             $connectport = $this->ProxyPort;
@@ -230,7 +230,7 @@ abstract class ggWebservicesClient
             }
         }
 
-        $response = new $this->ResponseClass ();
+        $response = new $this->ResponseClass();
         $response->decodeStream( $request, $rawResponse );
         return $response;
     }
@@ -284,7 +284,7 @@ abstract class ggWebservicesClient
             {
                 if( $this->request_compression == 'gzip' )
                 {
-                    $a = @gzencode($payload);
+                    $a = @gzencode( $payload );
                     if( $a )
                     {
                         $payload = $a;
@@ -387,6 +387,10 @@ abstract class ggWebservicesClient
         }
     }
 
+    /**
+    * Used to switch http method used to either POST (default) or GET when using
+    * webservice protocols that allow both (eg. REST?)
+    */
     function setMethod( $verb )
     {
         $this->Verb = strtoupper( $verb );

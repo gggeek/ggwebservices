@@ -6,7 +6,7 @@
  * @version $Id$
  * @copyright (C) G. Giunta 2009
  *
- * @todo add a nusoap and a native soap versions
+ * @todo add a nusoap version
  */
 
 class ggSOAPRequest extends ggWebservicesRequest

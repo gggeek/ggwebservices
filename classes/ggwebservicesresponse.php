@@ -26,6 +26,7 @@ abstract class ggWebservicesResponse
     /**
       Returns the payload for the response.
       Uses internal members name, value, isFault, faultString and faultCode
+      @return string
     */
     abstract function payload();
 
@@ -33,6 +34,9 @@ abstract class ggWebservicesResponse
     * Decodes the response to a text stream.
     * Sets internal members value, isFault, faultString and faultCode
     * Name is not set to response from request - a bit weird...
+    * @param ggWebservicesRequest $request
+    * @param string $stream
+    * @return void
     */
     abstract function decodeStream( $request, $stream );
 
