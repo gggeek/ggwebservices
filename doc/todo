@@ -2,13 +2,13 @@
 
 - automatic rotation of log files
 
-- add a soap controller based on ggsoap instead of ezsoap (needs a server class first)
+- add a soap controller based on ggphpsoap instead of ezsoap (needs a server class first)
 
 - finish proxy module
   => add soap support. Need to create a new soap server class, too?
   => add POST/GET (rest) support. Need to create a new server class, too?
 
-- allow ws controllers to operate in so-session mode
+- allow ws controllers to operate in no-session mode
 
 - add a module view that does ws execution; time it (memory, time) vs. using jsonrpc.php
 
