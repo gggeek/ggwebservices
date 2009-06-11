@@ -38,7 +38,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
         /// @todo add a check that request is a soap / phpsoap one, or it will have no namespace method...
 
         // @todo verify that timeout = 0 works, and timeout != 0 works too...
-        $options = array( 'trace' => true, 'user_agent' => $this->UserAgent, 'timeout' => $this->Timeout, 'exceptions' => 0 );
+        $options = array( 'trace' => true, 'user_agent' => $this->UserAgent, 'timeout' => $this->Timeout, 'exceptions' => true );
         if ( $this->RequestCompression == 'deflate' )
         {
             $options['compression'] = SOAP_COMPRESSION_DEFLATE | 9;
@@ -69,20 +69,35 @@ class ggPhpSOAPClient extends ggWebservicesClient
             $options['uri'] = $request->namespace();
         }
         $client = new SoapClient( $this->Wsdl, $options );
-        $results = $client->__soapCall( $request->name(), $request->parameters(), array(), array(), $output_headers );
-        //eZDebug::writeDebug( $client->__getLastRequest(), __METHOD__ );
-        $this->requestPayload = $client->__getLastRequest();
-        $response = new $this->ResponseClass();
-        $response->decodeStream( null, $client->__getLastResponse() );
-        if ( is_soap_fault( $results ) )
-        {
-            $response->setValue( new ggWebservicesFault( $result->faultcode, $result->faultstring ) );
+        try{
+            $response = new $this->ResponseClass();
+            $results = $client->__soapCall( $request->name(), $request->parameters(), array(), array(), $output_headers );
+            //eZDebug::writeDebug( $client->__getLastRequest(), __METHOD__ );
+            $this->requestPayload = $client->__getLastRequest();
+            $response->decodeStream( null, $client->__getLastResponse() );
+            if ( is_soap_fault( $results ) )
+            {
+                $response->setValue( new ggWebservicesFault( $result->faultcode, $result->faultstring ) );
+            }
+            else
+            {
+                $response->setValue( $results );
+            }
+            return $response;
         }
-        else
+        catch( exception $e )
         {
-            $response->setValue( $results );
+            if ( $e instanceof SoapFault )
+            {
+                $response->setValue( new ggWebservicesFault( $e->faultcode, $e->faultstring ) );
+            }
+            else
+            {
+                $response->setValue( new ggWebservicesFault( $e->code, $e->message ) );
+            }
+            return $response;
         }
-        return $response;
+
     }
 
     /**
