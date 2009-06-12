@@ -116,7 +116,12 @@ class ggeZWebservicesClient
             {
                 $proxylog = "using proxy $providerProxy:$providerProxyPort";
             }
-            self::appendLogEntry( "Connecting to: $providerURI via $providerType $proxylog", 'debug' );
+            $wsdllog = '';
+            if ( $wsdl != '' )
+            {
+                $wsdllog = "(wsdl: $wsdl)";
+            }
+            self::appendLogEntry( "Connecting to: $providerURI $wsdllog via $providerType $proxylog", 'debug' );
             if ( $providerURI != '' )
             {
                 $url = parse_url( $providerURI );
