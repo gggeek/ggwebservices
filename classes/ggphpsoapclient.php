@@ -68,9 +68,10 @@ class ggPhpSOAPClient extends ggWebservicesClient
             $options['location'] = $this->Protocol . "://" . $this->Server . ":" . $this->Port . $this->Path;
             $options['uri'] = $request->namespace();
         }
-        $client = new SoapClient( $this->Wsdl, $options );
-        try{
+        try
+        {
             $response = new $this->ResponseClass();
+            $client = new SoapClient( $this->Wsdl, $options );
             $results = $client->__soapCall( $request->name(), $request->parameters(), array(), array(), $output_headers );
             //eZDebug::writeDebug( $client->__getLastRequest(), __METHOD__ );
             $this->requestPayload = $client->__getLastRequest();
