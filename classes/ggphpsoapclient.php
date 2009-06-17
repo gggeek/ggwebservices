@@ -37,8 +37,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
     {
         /// @todo add a check that request is a soap / phpsoap one, or it will have no namespace method...
 
-        // @todo verify that timeout = 0 works, and timeout != 0 works too...
-        $options = array( 'trace' => true, 'user_agent' => $this->UserAgent, 'timeout' => $this->Timeout, 'exceptions' => true );
+        $options = array( 'trace' => true, 'user_agent' => $this->UserAgent, 'connection_timeout' => $this->Timeout, 'exceptions' => true );
         if ( $this->RequestCompression == 'deflate' )
         {
             $options['compression'] = SOAP_COMPRESSION_DEFLATE | 9;
@@ -68,10 +67,31 @@ class ggPhpSOAPClient extends ggWebservicesClient
             $options['location'] = $this->Protocol . "://" . $this->Server . ":" . $this->Port . $this->Path;
             $options['uri'] = $request->namespace();
         }
+        else
+        {
+            if ( preg_match( '#^https?://#', $this->Wsdl ) && $this->Timeout != 0 )
+            {
+                // patch around buggy soapclient behaviour: force socket timeout on getting wsdl call
+                $deftimeout = ini_get( 'default_socket_timeout' );
+                if ( $deftimeout !=  $this->Timeout )
+                {
+                    ini_set( 'default_socket_timeout', $this->Timeout );
+                }
+                else
+                {
+                    unset( $deftimeout );
+                }
+            }
+
+        }
         try
         {
             $response = new $this->ResponseClass();
             $client = new SoapClient( $this->Wsdl, $options );
+            if ( isset( $deftimeout ) )
+            {
+                ini_set( 'default_socket_timeout', $deftimeout );
+            }
             $results = $client->__soapCall( $request->name(), $request->parameters(), array(), array(), $output_headers );
             //eZDebug::writeDebug( $client->__getLastRequest(), __METHOD__ );
             $this->requestPayload = $client->__getLastRequest();
