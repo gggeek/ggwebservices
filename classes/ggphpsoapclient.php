@@ -108,6 +108,10 @@ class ggPhpSOAPClient extends ggWebservicesClient
         }
         catch( exception $e )
         {
+            if ( isset( $deftimeout ) )
+            {
+                ini_set( 'default_socket_timeout', $deftimeout );
+            }
             if ( $e instanceof SoapFault )
             {
                 $response->setValue( new ggWebservicesFault( $e->faultcode, $e->faultstring ) );
