@@ -87,7 +87,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
         try
         {
             $response = new $this->ResponseClass();
-            $client = new SoapClient( $this->Wsdl, $options );
+            $client = @new SoapClient( $this->Wsdl, $options );
             if ( isset( $deftimeout ) )
             {
                 ini_set( 'default_socket_timeout', $deftimeout );
