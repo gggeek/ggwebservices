@@ -21,8 +21,8 @@ XMLRPCExtensions[]
 ### definition of webservice servers that can be called by template or php code
 
 #[myserver]
+#providerType=JSONRPC, SOAP PhpSOAP, REST or XMLRPC
 #providerUri=http://my.test.server/wsendpoint.php
-#providerType=JSONRPC, SOAP, REST or XMLRPC
 #providerUsername=
 #providerPassword=
 #timeout=60
@@ -32,5 +32,11 @@ XMLRPCExtensions[]
 #ProxyUser=
 #ProxyPassword=
 
+# SOAP server using wsdl: only PhpSOAP is supported
+# providerUri empty means use the uri specified in the wsdl, otherwise it will be used instead of it
+#[mySOAPserver]
+#providerType=PhpSOAP
+#providerUri=
+#WSDL=http://mydomain.com/NUSOAP/Hellowsdl.php?wsdl
 
 */ ?>
