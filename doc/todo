@@ -7,7 +7,7 @@
 - finish proxy module
   => add soap support. Need to create a new soap server class, too?
   => add POST/GET (rest) support. Need to create a new server class, too?
-  => add fine-grained policy control with per_server/per_method limitations (this one needs server to support listMethods() call)
+  => add fine-grained policy control with per_server_per_method limitations (this one needs server to support listMethods() call), possibly per_siteaccess?
 
 - allow ws controllers to operate in no-session mode
 

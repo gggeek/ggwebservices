@@ -318,6 +318,32 @@ class ggeZWebservicesClient
         return self::$errorlevels[$debuglevel] <= $logging;
     }
 
+    /**
+     * Function used for perms checking: list of defined ws servers
+     */
+    static function getServersList()
+    {
+        $target_list = array();
+        $i = 0;
+        $wsINI = eZINI::instance( 'wsproviders.ini' );
+        // calculate list of target ws servers as it is hard to do that in tpl code
+        foreach ( $wsINI->groups() as $groupname => $groupdef )
+        {
+            if ( $groupname != 'GeneralSettings' && $groupname != 'ExtensionSettings' )
+            {
+                if ( $wsINI->hasVariable( $groupname, 'providerType' ) )
+                {
+                    $target_list[] = array( 'name' => $groupname, 'id' => $groupname );
+                }
+                else
+                {
+                    /// @todo log warning ???
+                }
+            }
+        }
+        return $target_list;
+    }
+
 }
 
 ?>

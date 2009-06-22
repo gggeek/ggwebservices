@@ -39,7 +39,16 @@ $ViewList = array(
 
 $FunctionList = array(
     'execute' => array(),
-    'proxy' => array(),
+    'proxy' => array(
+        'RemoteServers' => array(
+            'name'=> 'RemoteServers',
+            'values'=> array(),
+            'path' => '../extension/ggwebservices/classes/',
+            'file' => 'ggezwebservicesclient.php',
+            'class' => 'ggeZWebservicesClient',
+            'function' => 'getServersList',
+            'parameter' => array() )
+    ),
 	'debugger' => array()
 );
 
