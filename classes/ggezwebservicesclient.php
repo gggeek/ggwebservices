@@ -25,6 +25,9 @@ class ggeZWebservicesClient
 
     static $debuglevel = -1;
 
+    /// Error to be used when calls are made that do not match current ini config
+    const ERROR_INVALID_CONFIGURATION = -104;
+
     /**
      * This method sends a XML-RPC/JSON-RPC/SOAP Request to the provider,
      * returning results in a correct format to be used in tpl fetch functions
