@@ -11,7 +11,7 @@
 
 // decode input params
 
-$protocol = $Params['protocol'];
+$protocol = strtoupper( $Params['protocol'] );
 $remoteserver = $Params['remoteServerName'];
 
 switch( $protocol )
@@ -20,6 +20,8 @@ switch( $protocol )
     case 'JSONRPC':
     //case 'SOAP':
     case 'XMLRPC' :
+        $data = file_get_contents( 'php://input' );
+        break;
     default:
         /// @todo return an http error 500 or something like that ?
         echo 'Unsupported protocol : ' . $protocol;
@@ -32,13 +34,13 @@ switch( $protocol )
 $namespaceURI = '';
 $serverClass = 'gg' . $protocol . 'Server';
 $server = new $serverClass();
-$request = $this->parseRequest( $data );
+$request = $server->parseRequest( $data );
 if ( !is_object( $request ) ) /// @todo use is_a instead
 {
     $server->showResponse(
         'unknown_function_name',
         $namespaceURI,
-        new ggWebservicesFault( ggWebservicesResponse::INVALIDREQUESTERROR, ggWebservicesResponse::INVALIDREQUESTSTRING ) );
+        new ggWebservicesFault( ggWebservicesServer::INVALIDREQUESTERROR, ggWebservicesServer::INVALIDREQUESTSTRING ) );
     eZExecution::cleanExit();
     die();
 }
@@ -46,17 +48,17 @@ if ( !is_object( $request ) ) /// @todo use is_a instead
 // execute method, return response as object
 // this also does validation of server name
 $response = ggeZWebservicesClient::send( $remoteserver, $request->name(), $request->parameters(), true );
-
+$response = reset( $response );
 if ( !is_object( $response ) )
 {
     $server->showResponse(
         $request->name(),
         $namespaceURI,
-        new ggWebservicesFault( ggeZWebservicesClient::INVALIDSENDERROR, ggeZWebservicesClient::INVALIDSENDSTRING ) );
+        new ggWebservicesFault( ggWebservicesServer::GENERICRESPONSEERROR, ggWebservicesServer::GENERICRESPONSESTRING ) );
 }
 else
 {
-    $server->showResponse( $request->name(), $namespaceURI, $response );
+    $server->showResponse( $request->name(), $namespaceURI, $response->value() );
 }
 
 eZExecution::cleanExit();
