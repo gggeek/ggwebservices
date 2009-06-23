@@ -9,8 +9,9 @@
 * providing the building blocks for all of this
 *
 * @author G. Giunta
-* @version $Id: jsonrpc_lib.js,v 1.5 2007/02/15 21:43:26 ggiunta Exp $
-* @copyright (c) 2006 G. Giunta
+* @version $Id: jsonrpc_lib.js,v 1.11 2008/07/23 19:28:36 ggiunta Exp $
+* @copyright (c) 2006-2009 G. Giunta
+* @license code licensed under the BSD License: http://phpxmlrpc.sourceforge.net/jsxmlrpc/license.txt
 *
 * KNOWN DIFFERENCES FROM PHP-XMLRPC:
 * + jsonrpc_parse_resp() defaults to native parsing
@@ -21,6 +22,7 @@
 // Requires: xmlrpc_lib.js
 
 /**
+* @private
 * @todo add support for charset transcoding
 */
 function json_encode_entities(data, src_encoding, dest_encoding)
@@ -29,10 +31,13 @@ function json_encode_entities(data, src_encoding, dest_encoding)
 	{
     	return '';
     }
-	return data.replace('\\', '\\\\').replace('"', '\\"').replace('/', '\\/').replace('\t', '\\t').replace('\n', '\\n').replace('\r', '\\r').replace('\b', '\\b').replace('\v', '\\v').replace('\f', '\\f');
+	return data.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\u002F/g, '\\/').replace(/\t/g, '\\t').replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\u0008/g, '\\b').replace(/\v/g, '\\v').replace(/\f/g, '\\f');
 }
 
-function json_parse(data, return_phpvals, src_encoding, dest_encoding)
+/**
+* @private
+*/
+function json_parse(data, return_jsvals, src_encoding, dest_encoding)
 {
 	if (return_jsvals == undefined)
 	{
@@ -51,6 +56,9 @@ function json_parse(data, return_phpvals, src_encoding, dest_encoding)
 	return false;
 }
 
+/**
+* @private
+*/
 function json_parse_native(data)
 {
 	/// @todo !!!VERY IMPORTANT!!! regexp to find out if it is valid json...
@@ -67,6 +75,9 @@ function json_parse_native(data)
 	}
 }
 
+/**
+* @private
+*/
 function jsonrpc_parse_resp(data, return_jsvals, use_native_parsing)
 {
 	if (return_jsvals == undefined)
@@ -162,7 +173,7 @@ function jsonrpc_parse_resp(data, return_jsvals, use_native_parsing)
 
 /******************************************************************************/
 /**
-*
+* @constructor
 **/
 function jsonrpc_client(path, server, port, method)
 {
@@ -176,12 +187,17 @@ jsonrpc_client.prototype = new xmlrpc_client();
 
 /******************************************************************************/
 /**
-*
+* @param {string} meth Name of the method to be invoked
+* @param {array} pars list of parameters for method call (jsonrpcval objects)
+* @param {mixed} id of method call. Either a string, number or boolean or null. NULL has a special meaning for json-rpc
+* @constructor
 */
 function jsonrpcmsg(meth, pars, id)
 {
 	this.id = null;
+	/** @private **/
 	this.params = []; // somehow needed for making this weird subclassing work
+	/** @private **/
 	this.content_type = 'application/json';
 
 	if(id !== undefined)
@@ -195,6 +211,9 @@ function jsonrpcmsg(meth, pars, id)
 // let jsonrpcresp inherit methods from xmlrpcresp
 jsonrpcmsg.prototype = new xmlrpcmsg();
 
+/**
+* @private
+*/
 jsonrpcmsg.prototype.parseResponse = function (data, headers_processed, return_type)
 {
 	var headers = '';
@@ -327,6 +346,9 @@ jsonrpcmsg.prototype.parseResponse = function (data, headers_processed, return_t
 	return r;
 }
 
+/**
+* @private
+*/
 jsonrpcmsg.prototype.createPayload = function (charset_encoding)
 {
 	/// @ todo: verify if all chars are allowed for method names or can
@@ -344,7 +366,7 @@ jsonrpcmsg.prototype.createPayload = function (charset_encoding)
 
 /******************************************************************************/
 /**
-*
+* @constructor
 */
 function jsonrpcresp(val, fcode, fstr, valtyp)
 {
@@ -356,6 +378,9 @@ function jsonrpcresp(val, fcode, fstr, valtyp)
 // let jsonrpcresp inherit methods, default values, from xmlrpcresp
 jsonrpcresp.prototype = new xmlrpcresp();
 
+/**
+* @private
+*/
 jsonrpcresp.prototype.serialize = function (charset_encoding)
 {
 	this.payload = serialize_jsonrpcresp(this, this.id, charset_encoding);
@@ -364,7 +389,10 @@ jsonrpcresp.prototype.serialize = function (charset_encoding)
 
 /******************************************************************************/
 /**
-*
+* Create a jsonrpcval object out of a plain javascript value
+* @param {mixed} val
+* @param {string} type Any valid json type name (lowercase). If null, 'string' is assumed
+* @constructor
 */
 function jsonrpcval(val, type)
 {
@@ -374,6 +402,9 @@ function jsonrpcval(val, type)
 // let jsonrpcval inherit from xmlrpcval
 jsonrpcval.prototype = new xmlrpcval();
 
+/**
+* @private
+*/
 jsonrpcval.prototype.serialize = function (charset_encoding)
 {
 	return serialize_jsonrpcval(this, charset_encoding);
@@ -384,7 +415,7 @@ jsonrpcval.prototype.serialize = function (charset_encoding)
 /**
 * Takes a json value in jsonrpcval object format
 * and translates it into native javascript types.
-* @access public
+* @public
 **/
 function jsonrpc_decode(jsonrpc_val, options)
 {
@@ -414,7 +445,7 @@ function jsonrpc_decode(jsonrpc_val, options)
 			{
 				var obj = {};
 			}
-			for(var key in jsonrpcval.me)
+			for(var key in jsonrpc_val.me)
 			{
 				obj[key] = jsonrpc_decode(jsonrpc_val.me[key], options);
 			}
@@ -424,7 +455,7 @@ function jsonrpc_decode(jsonrpc_val, options)
 			var arr = [];
 			for(var i = 0; i < paramcount; ++i)
 			{
-				arr[arr.lenght] = jsonrpc_val(jsonrpc_val.getParam(i));
+				arr[arr.length] = jsonrpc_val(jsonrpc_val.getParam(i));
 			}
 			return arr;
 		}
@@ -433,7 +464,7 @@ function jsonrpc_decode(jsonrpc_val, options)
 /**
 * Takes native javascript types and encodes them into jsonrpc object format.
 * It will not re-encode jsonrpcval objects.
-* @access public
+* @public
 **/
 function jsonrpc_encode(js_val, options)
 {
@@ -532,11 +563,11 @@ function jsonrpc_encode(js_val, options)
 
 /**
 * Convert the json representation of a jsonrpc method call, jsonrpc method response
-* or single json value into the appropriate object (a.k.a. deserialize)
-* @param string json_val
-* @param object options not used (yet)
-* @return false | jsonrpcresp | jsonrpcmsg | jsonrpcval
-* @access public
+* or single json value into the appropriate object (deserialize)
+* @param {string} json_val
+* @param {object} options not used (yet)
+* @type false | jsonrpcresp | jsonrpcmsg | jsonrpcval
+* @public
 *
 * @bug cannot tell a jsonrpc object from a reponse/request, if the object contains
 *      the same members
@@ -612,6 +643,7 @@ function jsonrpc_decode_json(json_val, options)
 
 /**
 * Serialize a jsonrpcresp (or xmlrpcresp) as json.
+* @private
 */
 function serialize_jsonrpcresp (resp, id, charset_encoding)
 {
@@ -646,6 +678,10 @@ function serialize_jsonrpcresp (resp, id, charset_encoding)
 		return result;
 }
 
+/**
+* Serialize a jsonrpcval (or xmlrpcval) as json.
+* @private
+*/
 function serialize_jsonrpcval (value, charset_encoding)
 {
 	var rs = '';
