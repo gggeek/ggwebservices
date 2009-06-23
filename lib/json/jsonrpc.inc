@@ -8,7 +8,7 @@
  *
  * @version $Id: jsonrpc.inc,v 1.36 2009/02/05 09:50:59 ggiunta Exp $
  * @author Gaetano Giunta
- * @copyright (c) 2005-2008 G. Giunta
+ * @copyright (c) 2005-2009 G. Giunta
  * @license code licensed under the BSD License: http://phpxmlrpc.sourceforge.net/license.txt
  *
  * @todo the JSON proposed RFC states that when making json calls, we should
@@ -971,7 +971,7 @@
 			if($data == '')
 			{
 				error_log('XML-RPC: jsonrpcmsg::parseResponse: no response received from server.');
-				$r =& new jsonrpcresp(0, $GLOBALS['xmlrpcerr']['no_data'], $GLOBALS['xmlrpcstr']['no_data']);
+				$r = new jsonrpcresp(0, $GLOBALS['xmlrpcerr']['no_data'], $GLOBALS['xmlrpcstr']['no_data']);
 				return $r;
 			}
 
@@ -986,7 +986,7 @@
 				{
 					// parent class implementation of parseResponseHeaders returns in case
 					// of error an object of the wrong type: recode it into correct object
-					$rj =& new jsonrpcresp(0, $r->faultCode(), $r->faultString());
+					$rj = new jsonrpcresp(0, $r->faultCode(), $r->faultString());
 					$rj->raw_data = $data;
 					return $rj;
 				}
@@ -1021,7 +1021,7 @@
 			// if user wants back raw json, give it to him
 			if ($return_type == 'json')
 			{
-				$r =& new jsonrpcresp($data, 0, '', 'json');
+				$r = new jsonrpcresp($data, 0, '', 'json');
 				$r->hdrs = $GLOBALS['_xh']['headers'];
 				$r->_cookies = $GLOBALS['_xh']['cookies'];
 				$r->raw_data = $raw_data;
@@ -1037,7 +1037,7 @@
 					/// @todo echo something for user?
 				}
 
-				$r =& new jsonrpcresp(0, $GLOBALS['xmlrpcerr']['invalid_return'],
+				$r = new jsonrpcresp(0, $GLOBALS['xmlrpcerr']['invalid_return'],
 					$GLOBALS['xmlrpcstr']['invalid_return'] . ' ' . $GLOBALS['_xh']['isf_reason']);
 			}
 			//elseif ($return_type == 'jsonrpcvals' && !is_object($GLOBALS['_xh']['value']))
@@ -1045,7 +1045,7 @@
 				// then something odd has happened
 				// and it's time to generate a client side error
 				// indicating something odd went on
-			//	$r = & new jsonrpcresp(0, $GLOBALS['xmlrpcerr']['invalid_return'],
+			//	$r =  new jsonrpcresp(0, $GLOBALS['xmlrpcerr']['invalid_return'],
 			//		$GLOBALS['xmlrpcstr']['invalid_return']);
 			//}
 			else
@@ -1061,11 +1061,11 @@
 
 				if($GLOBALS['_xh']['isf'])
 				{
-					$r =& new jsonrpcresp(0, $v['faultCode'], $v['faultString']);
+					$r = new jsonrpcresp(0, $v['faultCode'], $v['faultString']);
 				}
 				else
 				{
-					$r =& new jsonrpcresp($v, 0, '', $return_type);
+					$r = new jsonrpcresp($v, 0, '', $return_type);
 				}
 				$r->id = $GLOBALS['_xh']['id'];
 			}
@@ -1196,20 +1196,20 @@
 		switch($type)
 		{
 			case 'string':
-				$jsonrpc_val =& new jsonrpcval($php_val, $GLOBALS['xmlrpcString']);
+				$jsonrpc_val = jsonrpcval($php_val, $GLOBALS['xmlrpcString']);
 				break;
 			case 'integer':
-				$jsonrpc_val =& new jsonrpcval($php_val, $GLOBALS['xmlrpcInt']);
+				$jsonrpc_val = new jsonrpcval($php_val, $GLOBALS['xmlrpcInt']);
 				break;
 			case 'double':
-				$jsonrpc_val =& new jsonrpcval($php_val, $GLOBALS['xmlrpcDouble']);
+				$jsonrpc_val = new jsonrpcval($php_val, $GLOBALS['xmlrpcDouble']);
 				break;
 			case 'boolean':
-				$jsonrpc_val =& new jsonrpcval($php_val, $GLOBALS['xmlrpcBoolean']);
+				$jsonrpc_val = new jsonrpcval($php_val, $GLOBALS['xmlrpcBoolean']);
 				break;
 			case 'resource': // for compat with php json extension...
 			case 'NULL':
-				$jsonrpc_val =& new jsonrpcval($php_val, $GLOBALS['xmlrpcNull']);
+				$jsonrpc_val = new jsonrpcval($php_val, $GLOBALS['xmlrpcNull']);
 				break;
 			case 'array':
 				// PHP arrays can be encoded to either objects or arrays,
@@ -1231,11 +1231,11 @@
 				}
 				if($ko)
 				{
-					$jsonrpc_val =& new jsonrpcval($arr, $GLOBALS['xmlrpcStruct']);
+					$jsonrpc_val = new jsonrpcval($arr, $GLOBALS['xmlrpcStruct']);
 				}
 				else
 				{
-					$jsonrpc_val =& new jsonrpcval($arr, $GLOBALS['xmlrpcArray']);
+					$jsonrpc_val = new jsonrpcval($arr, $GLOBALS['xmlrpcArray']);
 				}
 				break;
 			case 'object':
@@ -1250,7 +1250,7 @@
 					{
 						$arr[$k] = php_jsonrpc_encode($v, $options);
 					}
-					$jsonrpc_val =& new jsonrpcval($arr, $GLOBALS['xmlrpcStruct']);
+					$jsonrpc_val = new jsonrpcval($arr, $GLOBALS['xmlrpcStruct']);
 					if (in_array('encode_php_objs', $options))
 					{
 						// let's save original class name into xmlrpcval:
@@ -1261,7 +1261,7 @@
 				break;
 			// catch "user function", "unknown type"
 			default:
-				$jsonrpc_val =& new jsonrpcval();
+				$jsonrpc_val = new jsonrpcval();
 				break;
 			}
 			return $jsonrpc_val;
@@ -1305,7 +1305,7 @@
 					{
 						/// @todo we do not check for correct type of 'method', 'params' struct members...
 						$method = $GLOBALS['_xh']['value']->structMem('method');
-						$msg =& new jsonrpcmsg($method->scalarval(), null, php_jsonrpc_decode($GLOBALS['_xh']['value']->structMem('id')));
+						$msg = new jsonrpcmsg($method->scalarval(), null, php_jsonrpc_decode($GLOBALS['_xh']['value']->structMem('id')));
 						$params = $GLOBALS['_xh']['value']->structMem('params');
 						for($i = 0; $i < $params->arraySize(); ++$i)
 						{
@@ -1342,7 +1342,7 @@
 							{
 								$err = array('faultCode' => -1, 'faultString' => serialize_jsonrpcval($GLOBALS['_xh']['value']->structMem('error')));
 							}
-							$resp =& new jsonrpcresp(0, $err['faultCode'], $err['faultString']);
+							$resp = new jsonrpcresp(0, $err['faultCode'], $err['faultString']);
 						}
 						$resp->id = $id;
 						return $resp;
