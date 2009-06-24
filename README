@@ -5,7 +5,8 @@ Goals:
 
 Allow to easily execute calls to remote servers using the REST, JSONRPC, XMLRPC and SOAP protocols (both from within php code and templates)
 Allow to expose existing functionality as JSONRPC or XMLRPC (and eventually REST) webservices, much as it can already be done with SOAP in any eZ Publish installation
-Provide a proxy module allowing javascript code served by an eZ Publish server to execute cross-domain webservice calls (without resorting to html tricks)
+Allow to expose functionality as webservice regardless of the protocol used by the client
+Provide a proxy module allowing javascript code served by an eZ Publish server to execute cross-domain webservice calls (without resorting to html tricks) and even cross-protocol calls
 Keep the same API as the existing eZ SOAP classes for maximum interoperability
 Improve the existing http client adding features such as support for more authentication schemes, compressed requests etc...
 Long term, the existing SOAP client could be replaced with a new one, based either on NuSOAP, eZSOAP, or PHP::SOAP
@@ -18,6 +19,7 @@ PHP 5 / eZP 4.0+
 to execute/receive jsonrpc calls, the php JSON extension is needed
 to execute/receive rest calls, the php SIMPLEXML extension is needed
 to execute/receive xmlrpc calls, the php XMLRPC extension is needed
+to call remote services using wsdl descriptions the php SOAP extension is needed
 
 
 Basics:
@@ -33,9 +35,9 @@ Basics:
 
 Modules and Views:
 
+- webservices/debugger: view used to display a WS debugger in the admin interface. Currently limited to jsonrpc/xmlrpc calls
 - webservices/proxy: view used to allow javascript code in eZ Publish pages to execute cross-domain webservice calls (ie. execute calls to other servers)
 - webservices/execute: reserved
-- webservices/debugger: reserved
 
 
 Template fetch functions:
@@ -55,4 +57,5 @@ Php classes:
 FAQ:
 
   Q: how do I debug webservices without going insane?
-  A: grab the debugger from the phpxmlrpc lib on sf.net and install it on a webserver you have access to. Or go to http://gggeek.raprap.it/debugger if your ws server is accessible from the net
+  A1: you're a lucky guy, since this extension provides a nice grapgical debugger within the standard admin interface
+  A2: by enabling logging, you n00b!

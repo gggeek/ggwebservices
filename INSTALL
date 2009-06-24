@@ -23,9 +23,11 @@
   + define the remote servers that will be made accessible in the wsproviders.ini.append.php file
   + use the fetch( 'webservices', 'call' ) template fetch function. It takes 3 parameters: name of the remote server, name of the ws method to execute and array of ws method parameters
 
-5 - (NB: NOT YET WORKING) to enable js code to call webservices on remote servers (cross domain requests):
-  + give access permissions to the webservices/proxy function to the desired eZ Publish user
+5 - To enable js code to call webservices on remote servers (cross domain requests):
   + define the remote servers that will be made accessible in the wsproviders.ini.append.php file
-  + the url to be called is: http://my.ez.server/index.php/siteaccess/webservices/proxy/protocol/remoteservername where protocol is either "phpxmlrpc" or "jsonrpc", and remoteservername is the name of a server defined in wsproviders.ini.append.php file
+  + give access permissions to the webservices/proxy function to the desired eZ Publish user, possibly with a limitation on remote server
+  + the url to be called is: http://my.ez.server/index.php/siteaccess/webservices/proxy/protocol/remoteservername where protocol is either "phpxmlrpc" or "jsonrpc",
+    and remoteservername is the name of a server defined in wsproviders.ini.append.php file
+	(the remote server can use a different protocol, such as soap, from the one used by the browser)
 
 6 - more detailed info in the README file
