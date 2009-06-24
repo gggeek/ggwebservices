@@ -65,7 +65,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
         {
             // non-wsdl mode
             $options['location'] = $this->Protocol . "://" . $this->Server . ":" . $this->Port . $this->Path;
-            $options['uri'] = $request->namespace();
+            $options['uri'] = $request->ns();
         }
         else
         {

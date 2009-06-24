@@ -14,7 +14,7 @@ class ggSOAPRequest extends ggWebservicesRequest
     function __construct( $name='', $parameters=array(), $namespace=null )
     {
         parent::__construct( $name, $parameters );
-        $this->Namespace = $namespace;
+        $this->ns = $namespace;
     }
 
     /// @todo implement decodeStream !!!
@@ -41,7 +41,7 @@ class ggSOAPRequest extends ggWebservicesRequest
         // add the body
         $body = $doc->createElement( ggSOAPRequest::ENV_PREFIX . ':Body' );
 
-        $body->setAttribute( 'xmlns:' . ggSOAPRequest::REQ_PREFIX, $this->Namespace );
+        $body->setAttribute( 'xmlns:' . ggSOAPRequest::REQ_PREFIX, $this->ns );
 
         /*foreach( $this->BodyAttributes as $name => $value )
         {
@@ -164,12 +164,12 @@ class ggSOAPRequest extends ggWebservicesRequest
     /**
       Returns the request target namespace.
     */
-    function namespace()
+    function ns()
     {
-        return $this->Namespace;
+        return $this->ns;
     }
 
-    protected $Namespace;
+    protected $ns;
 
     const ENV = "http://schemas.xmlsoap.org/soap/envelope/";
     const ENC = "http://schemas.xmlsoap.org/soap/encoding/";

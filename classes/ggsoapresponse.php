@@ -20,7 +20,7 @@ class ggSOAPResponse extends ggWebservicesResponse
     function __construct( $name='', $namespace=null )
     {
         parent::__construct( $name );
-        $this->Namespace = $namespace;
+        $this->ns = $namespace;
     }
 
     /**
@@ -60,7 +60,7 @@ class ggSOAPResponse extends ggWebservicesResponse
             $responseName = $this->Name . "Response";
             $response = $doc->createElement( $responseName );
             $response->prefix = "resp";
-            $response->setAttribute( 'xmlns:' . "resp", $this->Namespace );
+            $response->setAttribute( 'xmlns:' . "resp", $this->ns );
 
             $return = $doc->createElement( "return" );
             $return->prefix = "resp";
@@ -254,7 +254,7 @@ TODO: add encoding checks with schema validation.
             with the string "Response" appended.
             */
 
-            $response = $dom->getElementsByTagNameNS( $request->namespace(), $request->name() . "Response" );
+            $response = $dom->getElementsByTagNameNS( $request->ns(), $request->name() . "Response" );
 
             if ( $response->length == 1 )
             {

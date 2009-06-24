@@ -15,7 +15,7 @@ class ggPhpSOAPRequest extends ggWebservicesRequest
     function __construct( $name='', $parameters=array(), $namespace=null )
     {
         parent::__construct( $name, $parameters );
-        $this->Namespace = $namespace;
+        $this->ns = $namespace;
     }
 
     function payload()
@@ -30,12 +30,12 @@ class ggPhpSOAPRequest extends ggWebservicesRequest
         return false;
     }
 
-    function namespace()
+    function ns()
     {
-        return $this->Namespace;
+        return $this->ns;
     }
 
-    protected $Namespace;
+    protected $ns;
 
 }
 
