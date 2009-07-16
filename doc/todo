@@ -1,7 +1,5 @@
 - test https support with and without curl, with and without proxy too
 
-- automatic rotation of log files
-
 - add a soap controller based on ggphpsoap instead of ezsoap (needs a server class first)
 
 - finish proxy module
