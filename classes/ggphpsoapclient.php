@@ -27,6 +27,12 @@ class ggPhpSOAPClient extends ggWebservicesClient
         $this->UserAgent = 'gg eZ PHPSOAP client';
         $this->Wsdl = $wsdl;
 
+        // test it here, since we later use an @ operator to catch soap warnings
+        // related to wsdl
+        if ( !class_exists( 'SoapClient' ) )
+        {
+            throw new Exception("Class 'SoapClient' not found. Cannot instantiate ggPhpSOAPClient object");
+        }
         parent::__construct( $server, $path, $port, $protocol );
 
     }
