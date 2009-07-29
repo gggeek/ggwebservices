@@ -3,6 +3,10 @@
 [GeneralSettings]
 # Logging of outgoing webservice calls
 Logging=warning
+# maximum size of logfiles before they are rotated: 2MB ( 2 * 1024 * 1024)
+MaxLogSize=2097152
+# maximum number of rotated log files to be kept
+MaxLogrotateFiles=3
 # Incoming webservice calls
 # If enabled, the instance's default siteaccess will always be used.
 # If disabled, the matched siteaccess (host, port, etc) will be used, allowing
