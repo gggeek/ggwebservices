@@ -24,6 +24,10 @@
 
 - improve list of local servers in left menu of debugger: if per-sa servers are enabled, show one link per sa?
 
+- move debugger to ez classes and remove the phpxmlrpc lib
+
+- add soap support to the debugger
+
 - add a testsuite (eg. to test all the error codes after shuffling them around)
 
 - allow extension ro run on phpxmlrpc/phpjsonrpc/nusoap if php extensions are missing
