@@ -31,3 +31,5 @@
 - add a testsuite (eg. to test all the error codes after shuffling them around)
 
 - allow extension ro run on phpxmlrpc/phpjsonrpc/nusoap if php extensions are missing
+
+- add support for curl multi calls to execute multiple calls in parallel
