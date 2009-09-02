@@ -26,7 +26,7 @@
 
 - move debugger to ez classes and remove the phpxmlrpc lib
 
-- add soap support to the debugger
+- add soap and rest support to the debugger
 
 - add a testsuite (eg. to test all the error codes after shuffling them around)
 

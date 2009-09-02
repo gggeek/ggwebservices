@@ -114,6 +114,7 @@ class ggeZWebservicesClient
         case 'SOAP':
         case 'PhpSOAP':
         case 'XMLRPC' :
+        case 'HTTP' :
             $proxylog = '';
             if ( $providerProxy != '' )
             {
