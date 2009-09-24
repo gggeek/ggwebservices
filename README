@@ -11,7 +11,7 @@ Keep the same API as the existing eZ SOAP classes for maximum interoperability
 Improve the existing http client adding features such as support for more authentication schemes, compressed requests etc...
 Long term, the existing SOAP client could be replaced with a new one, based either on NuSOAP, eZSOAP, or PHP::SOAP
 Allow easy debugging of webservice calls via inclusion of a complete debugging interface
-
+Allow usage of JSONRPC or XMLRPC (and eventually SOAP) to calls functions exposed via the ezjscore extension API
 
 Prerequisites:
 
@@ -20,16 +20,16 @@ to execute/receive jsonrpc calls, the php JSON extension is needed
 to execute/receive rest calls, the php SIMPLEXML extension is needed
 to execute/receive xmlrpc calls, the php XMLRPC extension is needed
 to call remote services using wsdl descriptions the php SOAP extension is needed
-
+to integrate with the ezjscore extension, eZP 4.2 is needed (and the ezjscore extension too, of course)
 
 Basics:
 
-- every webservice server that has to be accessed from eZ Publish has to be defined in wsproviders.ini
+- every remote webservice server that has to be accessed from the eZ Publish server itself has to be defined in wsproviders.ini
 - to receive xmlrpc or jsonrpc calls, you need to:
-  1 - modify the configuration in wsproviders.ini and
+  1 - modify the configuration in wsproviders.ini and possibly in site.ini.append.php
   2 - create a file extension/xxx/jsonrpc/initialize.php with the php code to be exposed as webservice
-- to call remote webservices from within templates use the fetch( 'webservices', 'call' ) template fetch function
-  please remember to desactivate the view cache where needed for templates that execute webservice calls
+- to call remote webservices from within templates use the fetch( 'webservices', 'call' ) template fetch function.
+  Please remember to desactivate the view cache where needed for templates that execute webservice calls
 - to call remote webservices from php code use ggeZWebServicesClient::send( $server, $metod, $params=array() );
 
 
@@ -37,7 +37,7 @@ Modules and Views:
 
 - webservices/debugger: view used to display a WS debugger in the admin interface. Currently limited to jsonrpc/xmlrpc calls
 - webservices/proxy: view used to allow javascript code in eZ Publish pages to execute cross-domain webservice calls (ie. execute calls to other servers)
-- webservices/execute: reserved
+- webservices/execute: view used to execute webservice calls when not using a custom controller file
 
 
 Template fetch functions:

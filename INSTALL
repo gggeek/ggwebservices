@@ -31,7 +31,31 @@
     "initialize.php" in either a "phpxmlrpc" or "jsonrpc" folder in the
     eZ Publish installation root folder (or in a "phpxmlrpc" or "jsonrpc"
     folder inside an extension that is listed in the JSONRPCExtensions/
-    XMLRPCExtensions array setting)
+    XMLRPCExtensions array setting of ini file wsproviders.ini)
+  + make sure the EnableJSONRPC or EnableXMLRPC setting (or both) in file
+    wsproviders.ini has a value of "true" (without the quotes)
+  + the url used to access the webservices will depend on your
+    rewrite rules. If no rewrite rules are in use, it will be like this:
+	http://your.server/ezpublish-root/jsonrpc.php
+
+3b - an alternative to receive jsonrpc or xmlrpc webservice calls:
+  + no need to alter apache rewrite rules nor copy files to the eZ Publish installation root
+  + define the php functions you want to expose as webservices in the file
+    "initialize.php" in either a "phpxmlrpc" or "jsonrpc" folder in the
+    eZ Publish installation root folder (or in a "phpxmlrpc" or "jsonrpc"
+    folder inside an extension that is listed in the JSONRPCExtensions/
+    XMLRPCExtensions array setting of ini file wsproviders.ini)
+  + make sure the EnableJSONRPC or EnableXMLRPC setting (or both) in file
+    wsproviders.ini has a value of "truu" (without the quotes)
+  + the url used to access the webservices will be like this:
+	http://your.server/webservices/execute/jsonrpc
+	or
+    http://your.server/ezpublish-root/index.php/siteaccess/webservices/execute/jsonrpc
+    depending on your eZ Publish setup (vhost or not)
+  + for anonymous user to access to webservices, modify the site.ini.append.php
+    file that is provided within the extension
+  + the difference with point 3 above is a simpler install vs. a bigger execution
+    time and memory usage
 
 4 - to make webservice calls to external server via templates
   + define the remote servers that will be made accessible in the
@@ -54,4 +78,7 @@
     server can use a different protocol, such as soap, from the one used by the
     browser)
 
-6 - more detailed info in the README file
+6 - to enable usage of xmlrpc/jsonrpc protocols in calling functions exposed
+    via the jscore extension: ...
+
+7 - more detailed info in the README file
