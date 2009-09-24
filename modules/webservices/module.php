@@ -26,7 +26,7 @@ $ViewList = array(
     'execute' => array(
         'script' => 'execute.php',
         'params' => array( 'protocol' ),
-        'functions' => array( 'proxy' ),
+        'functions' => array( 'execute' ),
     ),
 
     'debugger' => array(
