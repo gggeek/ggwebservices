@@ -19,7 +19,7 @@ switch( $protocol )
     //case 'REST':
     case 'JSONRPC':
     //case 'SOAP':
-    case 'XMLRPC' :
+    case 'XMLRPC':
         $data = file_get_contents( 'php://input' );
         break;
     default:
