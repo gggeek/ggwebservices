@@ -17,7 +17,7 @@ switch( $protocol )
     case 'JSONRPC':
     //case 'SOAP':
     case 'XMLRPC':
-        //$data = file_get_contents( 'php://input' );
+        $data = file_get_contents( 'php://input' );
         break;
     default:
         /// @todo return an http error 500 or something like that ?
@@ -54,16 +54,17 @@ if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
     }
 
     $functionName = $request->name();
+    $params = $request->parameters();
 
     // if integration with jscore is enabled, look up function there
     if ( $wsINI->variable( 'GeneralSettings', 'JscoreIntegration' ) == 'enabled' && class_exists( 'ezjscServerRouter' ) )
     {
         if ( strpos( $functionName, '::' ) !== false)
         {
-            $jscserver = ezjscServerRouter::getInstance( explode( '::', $functionName ) );
+            $jscserver = ezjscServerRouter::getInstance( array_merge( explode( '::', $functionName ), $params ) );
             if ( $jscserver != null )
             {
-                $jscresponse = $jscserver->call();
+                //$jscresponse = $jscserver->call();
                 $server->showResponse( $functionName, $namespaceURI, $jscserver->call() );
                 eZExecution::cleanExit();
                 die();
