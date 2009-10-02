@@ -66,14 +66,14 @@ class ggXMLRPCServer extends ggWebservicesServer
             case 'system.listMethods':
                 if ( count( $params ) != 0 )
                 {
-                    return new ggWebservicesFault( ggWebservicesResponse::INVALIDPARAMSERROR, ggWebservicesResponse::INVALIDPARAMSSTRING );
+                    return new ggWebservicesFault( self::INVALIDPARAMSERROR, self::INVALIDPARAMSSTRING );
                 }
                 return array_merge( array_keys( $server->FunctionList ), $server->internalMethods );
 
             case 'system.methodSignature':
                 if ( count( $params ) != 1 || !is_string( $params[0] ) )
                 {
-                    return new ggWebservicesFault( ggWebservicesResponse::INVALIDPARAMSERROR, ggWebservicesResponse::INVALIDPARAMSSTRING );
+                    return new ggWebservicesFault( self::INVALIDPARAMSERROR, self::INVALIDPARAMSSTRING );
                 }
                 if ( in_array( $params[0], $server->internalMethods ) )
                 {
@@ -108,7 +108,7 @@ class ggXMLRPCServer extends ggWebservicesServer
             case 'system.methodHelp':
                 if ( count( $params ) != 1 || !is_string( $params[0] ) )
                 {
-                    return new ggWebservicesFault( ggWebservicesResponse::INVALIDPARAMSERROR, ggWebservicesResponse::INVALIDPARAMSSTRING );
+                    return new ggWebservicesFault( self::INVALIDPARAMSERROR, self::INVALIDPARAMSSTRING );
                 }
                 if ( in_array( $params[0], $server->internalMethods ) )
                 {
@@ -134,7 +134,7 @@ class ggXMLRPCServer extends ggWebservicesServer
                 // validate first the multicall syntax
                 if ( count( $params ) != 1 || !is_array( $params[0] ) )
                 {
-                    return new ggWebservicesFault( ggWebservicesResponse::INVALIDPARAMSERROR, ggWebservicesResponse::INVALIDPARAMSSTRING );
+                    return new ggWebservicesFault( self::INVALIDPARAMSERROR, self::INVALIDPARAMSSTRING );
                 }
                 foreach( $params[0] as $request )
                 {
@@ -142,7 +142,7 @@ class ggXMLRPCServer extends ggWebservicesServer
                          !array_key_exists( 'methodName', $request) || !is_string( $request['methodName'] )||
                          !array_key_exists( 'params', $request ) || !is_array( $request['params'] ) )
                     {
-                        return new ggWebservicesFault( ggWebservicesResponse::INVALIDPARAMSERROR, ggWebservicesResponse::INVALIDPARAMSSTRING );
+                        return new ggWebservicesFault( self::INVALIDPARAMSERROR, self::INVALIDPARAMSSTRING );
                     }
                 }
                 // then execute all methods
