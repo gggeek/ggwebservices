@@ -48,6 +48,7 @@ if ( $target != 'action' && $target != 'controller' && $target != 'visualeditor'
     }
 
     // calculate list of target ws servers as it is hard to do that in tpl code
+    $target_list = array();
     foreach ( $wsINI->groups() as $groupname => $groupdef )
     {
         if ( $groupname != 'GeneralSettings' && $groupname != 'ExtensionSettings' )
