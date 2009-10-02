@@ -3,6 +3,11 @@ Changes from 0.3 to 0.4 - released xxxx/yy/zz
 *General:
 - added a cronjob to rotate ws logs. By default added to infrequent set
 - added support for calling external services that require simple POST (a.k.a. html forms) to the template fetch function / ggeZWebservicesClient class
+- added a view to invoke webservices without the need of a specific controller file: /webesrvices/execute/$protocol (supported protocls are currently xmlrpc and jsonrpc)
+- add support of exposing ezjscore webservices to xmlrpc/jsonroc calls via that view
+- moved javascript libraries to 'standard' design, so that they can be used for front-end interfaces too
+- upgrade the included phpxmlrpc lib to 3.0.0 beta, fixing all warnings with php 5.3
 
 *Bugfixes:
 - give a debuggable error message if soap extension is not enabled and user tries to create a ggPhpSOAPClient
+- bad php contants where used by ggXMLRPCServer if invalid params where received
