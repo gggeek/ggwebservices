@@ -105,7 +105,7 @@ if ( $target != 'action' && $target != 'controller' && $target != 'visualeditor'
 else
 {
     // pass on control to actual debugger, setting some vars for it
-    $editorpath = '/extension/ggwebservices/design/admin/debugger/';
+    $editorpath = '/extension/ggwebservices/design/';
     eZURI::transformURI( $editorpath, true, 'full' );
     $visualeditorpath = '../visualeditor';
     // fix weird behaviour with iframes, relative urls

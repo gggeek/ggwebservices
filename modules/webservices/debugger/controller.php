@@ -37,8 +37,8 @@
 */
 </script>
 <!-- xmlrpc/jsonrpc base library -->
-<script type="text/javascript" src="<?php echo $editorpath; ?>xmlrpc_lib.js"></script>
-<script type="text/javascript" src="<?php echo $editorpath; ?>jsonrpc_lib.js"></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/xmlrpc_lib.js"></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/jsonrpc_lib.js"></script>
 <style type="text/css">
 <!--
 html {overflow: -moz-scrollbars-vertical;}

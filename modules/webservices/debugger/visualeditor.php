@@ -56,23 +56,23 @@ $noadd = (isset($_GET['noadd'])) ? (bool)$_GET['noadd'] : false;
 <title>XMLRPC Debugger Visual Editor</title>
 
 <!-- YUI Treeview component: base libs -->
-<script type="text/javascript" src="<?php echo $editorpath; ?>yui/yahoo.js" ></script>
-<script type="text/javascript" src="<?php echo $editorpath; ?>yui/event.js" ></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/yui/yahoo.js" ></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/yui/event.js" ></script>
 <!-- YUI Treeview component: treeview -->
-<script type="text/javascript" src="<?php echo $editorpath; ?>yui/treeview.js" ></script>
-<link rel="stylesheet" type="text/css" href="<?php echo $editorpath; ?>tree.css" />
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/yui/treeview.js" ></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $editorpath; ?>admin/debugger/tree.css" />
 <!-- YUI Dialog component -->
-<script type="text/javascript" src="<?php echo $editorpath; ?>yui/dom.js" ></script>
-<script type="text/javascript" src="<?php echo $editorpath; ?>yui/dragdrop.js" ></script>
-<script type="text/javascript" src="<?php echo $editorpath; ?>yui/container.js" ></script>
-<link rel="stylesheet" type="text/css" href="<?php echo $editorpath; ?>container.css" />
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/yui/dom.js" ></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/yui/dragdrop.js" ></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/yui/container.js" ></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $editorpath; ?>admin/debugger/container.css" />
 
 <!-- xmlrpc/jsonrpc base library -->
-<script type="text/javascript" src="<?php echo $editorpath; ?>xmlrpc_lib.js"></script>
-<script type="text/javascript" src="<?php echo $editorpath; ?>jsonrpc_lib.js"></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/xmlrpc_lib.js"></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/jsonrpc_lib.js"></script>
 <!-- display components -->
-<script type="text/javascript" src="<?php echo $editorpath; ?>xmlrpc_display.js"></script>
-<link rel="stylesheet" type="text/css" href="<?php echo $editorpath; ?>xmlrpc_tree.css" />
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/xmlrpc_display.js"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $editorpath; ?>admin/debugger/xmlrpc_tree.css" />
 
 <script type="text/javascript">
 <!--
@@ -222,7 +222,7 @@ function done()
 //-->
 </script>
 
-<link rel="stylesheet" type="text/css" href="<?php echo $editorpath; ?>visualeditor.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo $editorpath; ?>admin/debugger/visualeditor.css" />
 
 </head>
 <body onload="treeInit();">
