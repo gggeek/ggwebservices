@@ -63,7 +63,7 @@
 			{
 				$methName = $m;
 			}
-			$sysCall = $this->allow_system_funcs && ereg("^system\.", $methName);
+			$sysCall = $this->allow_system_funcs && strpos($methName, "system.") === 0;
 			$dmap = $sysCall ? $GLOBALS['_xmlrpcs_dmap'] : $this->dmap;
 
 			if(!isset($dmap[$methName]['function']))
@@ -84,7 +84,7 @@
 				}
 				else
 				{
-				list($ok, $errstr) = $this->verifySignature($paramtypes, $sig);
+					list($ok, $errstr) = $this->verifySignature($paramtypes, $sig);
 				}
 				if(!$ok)
 				{
@@ -106,7 +106,7 @@
 			// verify that function to be invoked is in fact callable
 			if(!is_callable($func))
 			{
-				error_log("XML-RPC: jsonrpc_server::execute: function $func registered as method handler is not callable");
+				error_log("XML-RPC: ".__METHOD__.": function $func registered as method handler is not callable");
 				return new jsonrpcresp(
 					0,
 					$GLOBALS['xmlrpcerr']['server_error'],
@@ -120,90 +120,108 @@
 			{
 				$GLOBALS['_xmlrpcs_prev_ehandler'] = set_error_handler('_xmlrpcs_errorHandler');
 			}
-			if (is_object($m))
+			try
 			{
-				if($sysCall)
+				if (is_object($m))
 				{
-					$r = call_user_func($func, $this, $m);
-				}
-				else
-				{
-					$r = call_user_func($func, $m);
-				}
-				if (!is_a($r, 'xmlrpcresp'))
-				{
-					error_log("XML-RPC: jsonrpc_server::execute: function $func registered as method handler does not return an xmlrpcresp object");
-					if (is_a($r, 'xmlrpcval'))
+					if($sysCall)
 					{
-						$r = new jsonrpcresp($r);
+						$r = call_user_func($func, $this, $m);
 					}
 					else
 					{
-						$r = new jsonrpcresp(
-							0,
-							$GLOBALS['xmlrpcerr']['server_error'],
-							$GLOBALS['xmlrpcstr']['server_error'] . ": function does not return jsonrpcresp or xmlrpcresp object"
-						);
+						$r = call_user_func($func, $m);
 					}
-                }
-			}
-			else
-			{
-				// call a 'plain php' function
-				if($sysCall)
-				{
-					array_unshift($params, $this);
-					$r = call_user_func_array($func,$params);
-				}
-				else
-				{
-					// 3rd API convention for method-handling functions: EPI-style
-					if ($this->functions_parameters_type == 'epivals')
+					if (!is_a($r, 'xmlrpcresp'))
 					{
-						$r = call_user_func_array($func, array($methName, $params, $this->user_data));
-						// mimic EPI behaviour: if we get an array that looks like an error, make it
-						// an eror response
-						if (is_array($r) && array_key_exists('faultCode', $r) && array_key_exists('faultString', $r))
+						error_log("XML-RPC: ".__METHOD__.": function $func registered as method handler does not return an xmlrpcresp object");
+						if (is_a($r, 'xmlrpcval'))
 						{
-							$r = new jsonrpcresp(0, (integer)$r['faultCode'], (string)$r['faultString']);
+							$r = new jsonrpcresp($r);
 						}
 						else
 						{
-							// functions using EPI api should NOT return resp objects,
-							// so make sure we encode the return type correctly
-							$r = new jsonrpcresp(php_xmlrpc_encode($r, array('extension_api')));
+							$r = new jsonrpcresp(
+								0,
+								$GLOBALS['xmlrpcerr']['server_error'],
+								$GLOBALS['xmlrpcstr']['server_error'] . ": function does not return jsonrpcresp or xmlrpcresp object"
+							);
 						}
+					}
+				}
+				else
+				{
+					// call a 'plain php' function
+					if($sysCall)
+					{
+						array_unshift($params, $this);
+						$r = call_user_func_array($func,$params);
 					}
 					else
 					{
-						$r = call_user_func_array($func, $params);
+						// 3rd API convention for method-handling functions: EPI-style
+						if ($this->functions_parameters_type == 'epivals')
+						{
+							$r = call_user_func_array($func, array($methName, $params, $this->user_data));
+							// mimic EPI behaviour: if we get an array that looks like an error, make it
+							// an eror response
+							if (is_array($r) && array_key_exists('faultCode', $r) && array_key_exists('faultString', $r))
+							{
+								$r = new jsonrpcresp(0, (integer)$r['faultCode'], (string)$r['faultString']);
+							}
+							else
+							{
+								// functions using EPI api should NOT return resp objects,
+								// so make sure we encode the return type correctly
+								$r = new jsonrpcresp(php_xmlrpc_encode($r, array('extension_api')));
+							}
+						}
+						else
+						{
+							$r = call_user_func_array($func, $params);
+						}
+					}
+					// the return type can be either an xmlrpcresp object or a plain php value...
+					if (!is_a($r, 'xmlrpcresp'))
+					{
+						// what should we assume here about automatic encoding of datetimes
+						// and php classes instances???
+						$r = new jsonrpcresp(php_jsonrpc_encode($r, $this->phpvals_encoding_options));
 					}
 				}
-				// the return type can be either an xmlrpcresp object or a plain php value...
-				if (!is_a($r, 'xmlrpcresp'))
+				// here $r is either an xmlrpcresp or jsonrpcresp
+				if (!is_a($r, 'jsonrpcresp'))
 				{
-					// what should we assume here about automatic encoding of datetimes
-					// and php classes instances???
-					$r = new jsonrpcresp(php_jsonrpc_encode($r));
+
+					// dirty trick: user has given us back an xmlrpc response,
+					// since he had an existing xmlrpc server with boatloads of code.
+					// Be nice to him, and serialize the xmlrpc stuff into JSON.
+					// We also override the content_type of the xmlrpc response,
+					// but lack knoweledge of intented response charset...
+					$r->content_type = 'application/json';
+					$r->payload = serialize_jsonrpcresp($r, $msgID);
+				}
+				else
+				{
+					$r->id = $msgID;
 				}
 			}
-			// here $r is either an xmlrpcresp or jsonrpcresp
-			if (!is_a($r, 'jsonrpcresp'))
+			catch(Exception $e)
 			{
-
-				// dirty trick: user has given us back an xmlrpc response,
-				// since he had an existing xmlrpc server with boatloads of code.
-				// Be nice to him, and serialize the xmlrpc stuff into JSON.
-				// We also override the content_type of the xmlrpc response,
-				// but lack knoweledge of intented response charset...
-				$r->content_type = 'application/json';
-				$r->payload = serialize_jsonrpcresp($r, $msgID);
+			// (barring errors in the lib) an uncatched exception happened
+				// in the called function, we wrap it in a proper error-response
+				switch($this->exception_handling)
+				{
+					case 2:
+						throw $e;
+						break;
+					case 1:
+						$r = new jsonrpcresp(0, $e->getCode(), $e->getMessage());
+						break;
+					default:
+						$r = new jsonrpcresp(0, $GLOBALS['xmlrpcerr']['server_error'], $GLOBALS['xmlrpcstr']['server_error']);
+				}
 			}
-			else
-			{
-				$r->id = $msgID;
-			}
-
 			if($this->debug > 2)
 			{
 				// note: restore the error handler we found before calling the
@@ -235,7 +253,8 @@
 			}
 			else
 			{
-				if ($this->functions_parameters_type == 'phpvals' || $this->functions_parameters_type == 'epivals')
+				if ($this->functions_parameters_type == 'phpvals' || $this->functions_parameters_type == 'epivals' ||
+                    (isset($this->dmap[$GLOBALS['_xh']['method']]['parameters_type']) && ($this->dmap[$GLOBALS['_xh']['method']]['parameters_type'] == 'phpvals')))
 				{
 					if($this->debug > 1)
 					{

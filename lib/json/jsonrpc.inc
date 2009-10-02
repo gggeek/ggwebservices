@@ -751,6 +751,7 @@
 	{
 		$GLOBALS['_xh']['isf']=0;
 		$GLOBALS['_xh']['isf_reason']='';
+		$GLOBALS['_xh']['pt'] = array();
 		if ($return_phpvals && $use_extension)
 		{
 			$ok = json_parse_native($data);
@@ -781,6 +782,23 @@
 					$GLOBALS['_xh']['method'] = $GLOBALS['_xh']['method']->scalarval();
 					$GLOBALS['_xh']['params'] = $GLOBALS['_xh']['params']->me['array'];
 					$GLOBALS['_xh']['id'] = php_jsonrpc_decode($GLOBALS['_xh']['id']);
+				}
+				else
+				{
+					// to allow 'phpvals' type servers to work, we need to rebuild $GLOBALS['_xh']['pt'] too
+					foreach($GLOBALS['_xh']['params'] as $val)
+					{
+					    // since we rebuild this after converting json values to php,
+					    // we've lost the info about array/struct, and we try to rebuild it
+					    /// @bug empty objects will be recognized as empty arrays
+					    /// @bug an object with keys '0', '1', ... 'n' will be recognized as an array
+					    $typ = gettype($val);
+					    if ($typ == 'array' && count($val) && count(array_diff_key($val, array_fill(0, count($val), null))) !== 0)
+					    {
+    					    $typ = 'object';
+					    }
+						$GLOBALS['_xh']['pt'][] = php_2_jsonrpc_type($typ);
+					}
 				}
 				return true;
 			}
@@ -948,7 +966,7 @@
 			  	$this->payload .= ($this->id ? 'true' : 'false');
 			  	break;
 			  default:
-			    $this->payload .= $this->id;
+				$this->payload .= $this->id;
 			}
 			$this->payload .= "\n}\n";
 		}
@@ -970,7 +988,7 @@
 
 			if($data == '')
 			{
-				error_log('XML-RPC: jsonrpcmsg::parseResponse: no response received from server.');
+				error_log('XML-RPC: '.__METHOD__.': no response received from server.');
 				$r = new jsonrpcresp(0, $GLOBALS['xmlrpcerr']['no_data'], $GLOBALS['xmlrpcstr']['no_data']);
 				return $r;
 			}
@@ -1189,14 +1207,14 @@
 	* @return jsonrpcval
 	* @access public
 	*/
-	function &php_jsonrpc_encode($php_val, $options='')
+	function php_jsonrpc_encode($php_val, $options='')
 	{
 		$type = gettype($php_val);
 
 		switch($type)
 		{
 			case 'string':
-				$jsonrpc_val = jsonrpcval($php_val, $GLOBALS['xmlrpcString']);
+				$jsonrpc_val = new jsonrpcval($php_val, $GLOBALS['xmlrpcString']);
 				break;
 			case 'integer':
 				$jsonrpc_val = new jsonrpcval($php_val, $GLOBALS['xmlrpcInt']);
@@ -1222,7 +1240,7 @@
 				$ko = false;
 				foreach($php_val as $key => $val)
 				{
-					$arr[$key] =& php_jsonrpc_encode($val, $options);
+					$arr[$key] = php_jsonrpc_encode($val, $options);
 					if(!$ko && $key !== $j)
 					{
 						$ko = true;
@@ -1246,6 +1264,7 @@
 				else
 				{
 					$arr = array();
+				    reset($php_val);
 					while(list($k,$v) = each($php_val))
 					{
 						$arr[$k] = php_jsonrpc_encode($v, $options);
@@ -1378,7 +1397,7 @@
 		  	$result .= ($id ? 'true' : 'false');
 		  	break;
 		  default:
-		    $result .= $id;
+			$result .= $id;
 		}
 		$result .= ", ";
 		if($resp->errno)
@@ -1513,4 +1532,48 @@
 		return $rs;
 	}
 
+	/**
+	* Given a string defining a php type or phpxmlrpc type (loosely defined: strings
+	* accepted come from javadoc blocks), return corresponding phpxmlrpc type.
+	* NB: for php 'resource' types returns empty string, since resources cannot be serialized;
+	* for php class names returns 'struct', since php objects can be serialized as json structs;
+	* for php arrays always retutn 'array', even though arrays sometiles serialize as json structs
+	* @param string $phptype
+	* @return string
+	*/
+    function php_2_jsonrpc_type($phptype)
+    {
+        switch(strtolower($phptype))
+        {
+            case 'string':
+                return $GLOBALS['xmlrpcString'];
+            case 'integer':
+            case $GLOBALS['xmlrpcInt']: // 'int'
+            case $GLOBALS['xmlrpcI4']:
+                return $GLOBALS['xmlrpcInt'];
+            case 'double':
+                return $GLOBALS['xmlrpcDouble'];
+            case 'boolean':
+                return $GLOBALS['xmlrpcBoolean'];
+            case 'array':
+                return $GLOBALS['xmlrpcArray'];
+            case 'object':
+                return $GLOBALS['xmlrpcStruct'];
+            //case $GLOBALS['xmlrpcBase64']:
+            case $GLOBALS['xmlrpcStruct']:
+                return strtolower($phptype);
+            case 'resource':
+                return '';
+            default:
+                if(class_exists($phptype))
+                {
+                    return $GLOBALS['xmlrpcStruct'];
+                }
+                else
+                {
+                    // unknown: might be any 'extended' jsonrpc type
+                    return $GLOBALS['xmlrpcValue'];
+                }
+            }
+	}
 ?>
