@@ -22,7 +22,7 @@ if ( $target != 'action' && $target != 'controller' && $target != 'visualeditor'
     // calculate params for local server, for consistency with what we do below
     foreach ( array( 'jsonrpc' , 'xmlrpc' ) as  $protocol )
     {
-        $uri = "/$protocol.php";
+        $uri = "/webservices/execute/$protocol";
         eZURI::transformURI( $uri , true, 'full' );
         if ( $wsINI->variable( 'GeneralSettings', 'Enable' . strtoupper( $protocol ) ) == 'true' )
         {
