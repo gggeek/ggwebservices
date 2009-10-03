@@ -19,6 +19,7 @@
  *
  * @todo add a better way to register methods, supporting definition of type of return value and per-param help text
  * @todo add support for compressed requests
+ * @todo add propert property support, for $exception_handling and future ones
  */
 
 abstract class ggWebservicesServer
@@ -126,13 +127,30 @@ abstract class ggWebservicesServer
             }
             if ( $paramsOk )
             {
-                if ( strpos($functionName, '::') )
+                try
                 {
-                   return call_user_func_array( explode( '::', $functionName ), $params );
+
+                    if ( strpos($functionName, '::') )
+                    {
+                        return call_user_func_array( explode( '::', $functionName ), $params );
+                    }
+                    else
+                    {
+                        return call_user_func_array( $functionName, $params );
+                    }
                 }
-                else
+                catch( Exception $e )
                 {
-                    return call_user_func_array( $functionName, $params );
+                    switch ( $this->exception_handling )
+                    {
+                        case 0:
+                            return new ggWebservicesFault( $e->getCode(), $e->getMessage() );
+                        case 1:
+                            return new ggWebservicesFault( self::GENERICRESPONSEERROR, self::GENERICRESPONSESTRING );
+                        case 2:
+                        default: // coder did something weird if we get someting else...
+                            throw $e;
+                    }
                 }
             }
             else
@@ -173,7 +191,7 @@ abstract class ggWebservicesServer
 
     /**
       Registers all functions of an object on the server.
-      Returns false if the object could not be registered.
+      @return bool Returns false if the object could not be registered.
       @todo add optional introspection-based param registering
       @todo add single method registration
       @todo add registration of per-method descriptions
@@ -203,9 +221,9 @@ abstract class ggWebservicesServer
 
     /**
       Registers a new function on the server.
-      Returns false if the function could not be registered.
       If params is an array of name => type strings, params will be checked for consistency.
       Multiple signatures can be registered for a given php function (but only one help text)
+      @return bool Returns false if the function could not be registered.
       @todo add optional introspection-based param registering
     */
     function registerFunction( $name, $params=null, $result='mixed', $description='' )
@@ -246,6 +264,14 @@ abstract class ggWebservicesServer
     protected $FunctionDescription = array();
     /// Contains the RAW HTTP post data information
     public $RawPostData;
+
+    /**
+     * Controls behaviour of server when invoked user function throws an exception:
+     * 0 = catch it and return an 'internal error' xmlrpc response (default)
+     * 1 = catch it and return an xmlrpc response with the error corresponding to the exception
+     * 2 = allow the exception to float to the upper layers
+     */
+	public $exception_handling = 0;
 }
 
 ?>

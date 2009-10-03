@@ -7,6 +7,8 @@ Changes from 0.3 to 0.4 - released xxxx/yy/zz
 - add support of exposing ezjscore webservices to xmlrpc/jsonroc calls via that view
 - moved javascript libraries to 'standard' design, so that they can be used for front-end interfaces too
 - upgrade the included phpxmlrpc lib to 3.0.0 beta, fixing all warnings with php 5.3
+- webservice server classes now catch exceptions raised by user-provided functions while handling invocation calls;
+  use the server's $exception_handling member to finetune this behaviour
 
 *Bugfixes:
 - give a debuggable error message if soap extension is not enabled and user tries to create a ggPhpSOAPClient
