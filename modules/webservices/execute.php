@@ -26,19 +26,14 @@ switch( $protocol )
         die();
 }
 
-$wsINI = eZINI::instance( 'wsproviders.ini' );
+$wsINI = eZINI::instance( ggeZWebservices::configFileByProtocol( strtolower( $protocol ) ) );
 if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
 {
-    // analyze request body
-
     $namespaceURI = '';
     $serverClass = 'gg' . $protocol . 'Server';
     $server = new $serverClass();
 
-    foreach( $wsINI->variable( 'ExtensionSettings', $protocol . 'Extensions' ) as $extension )
-    {
-        include_once( eZExtension::baseDirectory() . '/' . $extension . '/' . strtolower( $protocol ) . '/initialize.php' );
-    }
+    ggeZWebservices::registerAvailableMethods( $server, strtolower( $protocol ) );
 
     $request = $server->parseRequest( $data );
 
@@ -57,6 +52,9 @@ if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
     $params = $request->parameters();
 
     // if integration with jscore is enabled, look up function there
+    // NB: ezjscServerRouter::getInstance does internally perms checking,  but
+    // it does not return to us different values for method not found / perms not accorded
+    $wsINI = eZINI::instance( 'wsproviders.ini' );
     if ( $wsINI->variable( 'GeneralSettings', 'JscoreIntegration' ) == 'enabled' && class_exists( 'ezjscServerRouter' ) )
     {
         if ( strpos( $functionName, '::' ) !== false)
@@ -64,8 +62,8 @@ if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
             $jscserver = ezjscServerRouter::getInstance( array_merge( explode( '::', $functionName ), $params ) );
             if ( $jscserver != null )
             {
-                //$jscresponse = $jscserver->call();
-                $server->showResponse( $functionName, $namespaceURI, $jscserver->call() );
+                $jscresponse = $jscserver->call();
+                $server->showResponse( $functionName, $namespaceURI, $jscresponse );
                 eZExecution::cleanExit();
                 die();
             }
@@ -73,6 +71,34 @@ if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
     }
 
     // if jscore did not answer yet, process request the standard way
+
+    // check perms
+    $user = eZUser::currentUser();
+    $accessResult = $user->hasAccessTo( 'webservices' , 'execute' );
+    $accessWord = $accessResult['accessWord'];
+    $access = false;
+    if ( $accessWord == 'yes' )
+    {
+        $access = true;
+    }
+    else if ( $accessWord != 'no' ) // with limitation
+    {
+        //$policies = $accessResult['policies'];
+        foreach ( $accessResult['policies'] as $key => $policy )
+        {
+            if ( isset( $policy['Webservices'] ) && in_array( $functionName, $policy['Webservices'] ) )
+            {
+                $access = true;
+                break;
+            }
+        }
+    }
+    if ( !$access )
+    {
+        // Error access denied - shall we show an error response in protocol format instead of html?
+        return $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
+    }
+
     if ( $server->isInternalRequest( $functionName ) )
     {
         $response = $server->handleInternalRequest( $functionName, $params );
@@ -82,6 +108,7 @@ if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
         $response = $server->handleRequest( $functionName, $params );
     }
     $server->showResponse( $functionName, $namespaceURI, $response );
+
 
 }
 eZExecution::cleanExit();
