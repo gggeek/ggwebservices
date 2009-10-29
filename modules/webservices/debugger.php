@@ -31,7 +31,7 @@ if ( $target != 'action' && $target != 'controller' && $target != 'visualeditor'
             $params .= '&host=' . $url['host'];
             $params .= '&port=' . ( isset( $url['port'] ) ? $url['port'] : '' );
             $params .= '&path=' . ( isset( $url['path'] ) ? $url['path'] : '/' );
-            if ( $url['scheme'] == 'htps' )
+            if ( $url['scheme'] == 'https' )
             {
                 $params .= '&protocol=2';
             }
