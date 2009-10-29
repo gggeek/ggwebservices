@@ -53,6 +53,15 @@ class ggXMLRPCServer extends ggWebservicesServer
     }
 
     /**
+     * Returns the list of available webservices. Includes the internal ones
+     * @return array
+     */
+    public function registeredMethods()
+    {
+        return array_merge( array_keys( $this->FunctionList ), $this->internalMethods );
+    }
+
+    /**
     * 3rd param is a hack used to allow a jsonrpc server to take advantage of this method
     */
     function handleInternalRequest( $functionName, $params, $server=null )
@@ -68,7 +77,7 @@ class ggXMLRPCServer extends ggWebservicesServer
                 {
                     return new ggWebservicesFault( self::INVALIDPARAMSERROR, self::INVALIDPARAMSSTRING );
                 }
-                return array_merge( array_keys( $server->FunctionList ), $server->internalMethods );
+                return $server->registeredMethods();
 
             case 'system.methodSignature':
                 if ( count( $params ) != 1 || !is_string( $params[0] ) )

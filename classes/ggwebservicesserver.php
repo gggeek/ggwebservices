@@ -259,6 +259,15 @@ abstract class ggWebservicesServer
         return true;
     }
 
+    /**
+    * Returns the list of available webservices
+    * @return array
+    */
+    public function registeredMethods()
+    {
+        return array_keys( $this->FunctionList );
+    }
+
     /// Contains a list over registered functions, and their dscriptions
     protected $FunctionList = array();
     protected $FunctionDescription = array();
@@ -272,6 +281,7 @@ abstract class ggWebservicesServer
      * 2 = allow the exception to float to the upper layers
      */
 	public $exception_handling = 0;
+
 }
 
 ?>
