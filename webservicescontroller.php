@@ -63,7 +63,7 @@ eZExtension::activateExtensions( 'default' );
 
 // Activate correct siteaccess
 require_once( 'access.php' );
-$wsINI = eZINI::instance( 'wsproviders.ini' );
+$wsINI = eZINI::instance( ggeZWebservices::configFileByProtocol( WS_PROTOCOL ) );
 if ( $wsINI->variable( 'GeneralSettings', 'UseDefaultAccess' ) === 'enabled' )
 {
     $access = array( 'name' => $ini->variable( 'SiteSettings', 'DefaultAccess' ),
@@ -132,10 +132,7 @@ if ( $enable == 'true' )
     $server_class = 'gg' . strtoupper( WS_PROTOCOL ) . 'Server';
     $server = new $server_class();
 
-    foreach( $wsINI->variable( 'ExtensionSettings', strtoupper( WS_PROTOCOL ) . 'Extensions' ) as $extension )
-    {
-        include_once( eZExtension::baseDirectory() . '/' . $extension . '/' . WS_PROTOCOL . '/initialize.php' );
-    }
+    ggeZWebservices::registerAvailableMethods( $server, strtoupper( WS_PROTOCOL ) );
 
     $server->processRequest();
 }
