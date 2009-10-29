@@ -9,13 +9,15 @@
 $Module = array( 'name' => 'Webservices', "variable_params" => true );
 
 $ViewList = array(
+
     /*
     * View used to proxy webservices calls to other wervices, overcoming the same-domain limitation.
-    * General scheme: call a jsonrpc or xmlrpc webservice via a js function in your templates pointing to /wsproxy/jsonrpc or /wsproxy/xmlrpc
+    * General scheme: call a jsonrpc or xmlrpc webservice via a js function in your templates
+    * pointing to /webservices/proxy/jsonrpc/remoteservername or /webservices/proxy/xmlrpc/remoteservername
     */
     'proxy' => array(
         'script' => 'proxy.php',
-        'params' => array( 'protocol', 'remoteServerName' ),
+        'params' => array( 'protocol', 'remoteServerName', 'session' ),
         'functions' => array( 'proxy' ),
     ),
 
@@ -25,7 +27,7 @@ $ViewList = array(
     */
     'execute' => array(
         'script' => 'execute.php',
-        'params' => array( 'protocol' ),
+        'params' => array( 'protocol', 'session' ),
         'functions' => array( 'execute' ),
     ),
 
@@ -38,14 +40,23 @@ $ViewList = array(
 );
 
 $FunctionList = array(
-    'execute' => array(),
+    'execute' => array(
+        'Webservices' => array(
+            'name'=> 'Webservices',
+            'values'=> array(),
+            'path' => '../extension/ggwebservices/classes/',
+            'file' => 'ggezwebservices.php',
+            'class' => 'ggeZWebservices',
+            'function' => 'getMethodsList',
+            'parameter' => array() )
+         ),
     'proxy' => array(
         'RemoteServers' => array(
             'name'=> 'RemoteServers',
             'values'=> array(),
             'path' => '../extension/ggwebservices/classes/',
-            'file' => 'ggezwebservicesclient.php',
-            'class' => 'ggeZWebservicesClient',
+            'file' => 'ggezwebservices.php',
+            'class' => 'ggeZWebservices',
             'function' => 'getServersList',
             'parameter' => array() )
     ),
