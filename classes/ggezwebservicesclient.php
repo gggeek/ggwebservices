@@ -7,26 +7,12 @@
  * @copyright (C) G. Giunta 2009
  *
  * @todo move ini file name to class constant
- * @todo move log file name to ini entry
+ * @todo move log file name to ini entry; parse it for absolute paths
  * @todo modify logging mechanism to use debug level instead of useless labels
  */
 
 class ggeZWebservicesClient
 {
-
-    static $errorlevels = array(
-        'info' => 6,
-        'notice' => 5,
-        'debug' => 4,
-        'warning' => 3,
-        'error' => 2,
-        'critical' => 1,
-        'none' => 0);
-
-    static $debuglevel = -1;
-
-    /// Error to be used when calls are made that do not match current ini config
-    const ERROR_INVALID_CONFIGURATION = -104;
 
     /**
      * This method sends a XML-RPC/JSON-RPC/SOAP Request to the provider,
@@ -51,7 +37,7 @@ class ggeZWebservicesClient
         /// check: if section $server does not exist, error out here
         if ( !$ini->hasGroup( $server ) )
         {
-            self::appendLogEntry( 'Trying to call service on undefined server: ' . $server, 'error' );
+            ggeZWebservices::appendLogEntry( 'Trying to call service on undefined server: ' . $server, 'error' );
             return array( 'error' => 'Trying to call service on undefined server: ' . $server, 'error' );
         }
         $providerURI = $ini->variable( $server, 'providerUri' );
@@ -125,13 +111,13 @@ class ggeZWebservicesClient
             {
                 $wsdllog = "(wsdl: $wsdl)";
             }
-            self::appendLogEntry( "Connecting to: $providerURI $wsdllog via $providerType $proxylog", 'debug' );
+            ggeZWebservices::appendLogEntry( "Connecting to: $providerURI $wsdllog via $providerType $proxylog", 'debug' );
             if ( $providerURI != '' )
             {
                 $url = parse_url( $providerURI );
                 if ( !isset( $url['scheme'] ) || !isset( $url['host'] ) )
                 {
-                    self::appendLogEntry( "Error in user request: bad server url $providerURI for server $server", 'error' );
+                    ggeZWebservices::appendLogEntry( "Error in user request: bad server url $providerURI for server $server", 'error' );
                     return array( 'error' => 'Error in user request: bad server url for server ' . $server, 'error' );
                 }
                 if ( !isset( $url['path'] ) )
@@ -158,7 +144,7 @@ class ggeZWebservicesClient
                 }
                 else
                 {
-                    self::appendLogEntry( "Error in user request: no server url for server $server", 'error' );
+                    ggeZWebservices::appendLogEntry( "Error in user request: no server url for server $server", 'error' );
                     return array( 'error' => 'Error in user request: no server url for server ' . $server, 'error' );
                 }
             }
@@ -191,12 +177,12 @@ class ggeZWebservicesClient
             }
             if ( $providerType != 'PhpSOAP' )
             {
-                self::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
+                ggeZWebservices::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
             }
             $response = $client->send( $request );
             if ( $providerType == 'PhpSOAP' )
             {
-                self::appendLogEntry( 'Sent: ' . $client->requestPayload(), 'info' );
+                ggeZWebservices::appendLogEntry( 'Sent: ' . $client->requestPayload(), 'info' );
             }
             if ( !is_object( $response ) )
             {
@@ -204,7 +190,7 @@ class ggeZWebservicesClient
                 $tab = array ('error' => $err, 'CodeError' => $code, 'parametres' => $parameters);
                 if($DEBUG){print_r($tab);}*/
 
-                self::appendLogEntry( 'HTTP-level error ' . $client->errorNumber() . ': '. $client->errorString(), 'error' );
+                ggeZWebservices::appendLogEntry( 'HTTP-level error ' . $client->errorNumber() . ': '. $client->errorString(), 'error' );
 
                 if ( $return_reponse_obj )
                 {
@@ -218,11 +204,11 @@ class ggeZWebservicesClient
             else
             {
                 unset( $client );
-                self::appendLogEntry( 'Received: ' . $response->rawResponse, 'info' );
+                ggeZWebservices::appendLogEntry( 'Received: ' . $response->rawResponse, 'info' );
 
                 if ( $response->isFault() )
                 {
-                    self::appendLogEntry( "$providerType protocol-level error " . $response->faultCode() . ':' . $response->faultString() , 'error' );
+                    ggeZWebservices::appendLogEntry( "$providerType protocol-level error " . $response->faultCode() . ':' . $response->faultString() , 'error' );
                     if ( !$return_reponse_obj )
                         return array( 'result' => null );
                 }
@@ -237,112 +223,9 @@ class ggeZWebservicesClient
 
         default:
             // unsupported protocol
-            self::appendLogEntry( 'Error in user request: unsupported protocol ' . $providerType, 'error' );
+            ggeZWebservices::appendLogEntry( 'Error in user request: unsupported protocol ' . $providerType, 'error' );
             return array( 'error' => 'Error in user request: unsupported protocol ' . $providerType, 'error' );
         }
-    }
-
-    /*function getCodeError($err)
-    {
-
-        $XMLFormat = 505;
-        $Parametre = 606;
-        $SocketConnection = 707;
-
-        if (stristr($err, 'Erreur de param')) {
-            return $Parametre;
-        }
-        if (stristr($err, 'Response not of type text/xml')) {
-            return $XMLFormat;
-        }
-        if (stristr($err, 'open socket connection to server')) {
-            return $SocketConnection;
-        }
-    }*/
-
-    /**
-     * Logs the string $logString to the logfile webdav.log
-     * in the current log directory (usually var/log).
-     * If logging is disabled, nothing is done.
-     */
-    static function appendLogEntry( $logString, $debuglevel )
-    {
-        if ( !self::isLoggingEnabled( $debuglevel ) )
-            return false;
-
-        $varDir = eZSys::varDirectory();
-
-        $logDir = 'log';
-        $logName = 'webservices.log';
-        $fileName = $varDir . '/' . $logDir . '/' . $logName;
-        if ( !file_exists( $varDir . '/' . $logDir ) )
-        {
-            //include_once( 'lib/ezfile/classes/ezdir.php' );
-            eZDir::mkdir( $varDir . '/' . $logDir, 0775, true );
-        }
-
-        if ( $logFile = fopen( $fileName, 'a' ) )
-        {
-            $nowTime = date( "Y-m-d H:i:s : " );
-            $text = $nowTime . $logString;
-            /*if ( $label )
-                $text .= ' [' . $label . ']';*/
-            fwrite( $logFile, $text . "\n" );
-            fclose( $logFile );
-        }
-    }
-
-    /**
-     * return true if logging is enabled.
-     */
-    static function isLoggingEnabled( $debuglevel )
-    {
-        $logging =& self::$debuglevel;
-        if ( $logging < 0 )
-        {
-            $logging = 0; // shall we init to 1 or 2 ?
-            $ini = eZINI::instance( 'wsproviders.ini' );
-            if ( $ini->hasvariable( 'GeneralSettings', 'Logging' ) )
-            {
-                $level = $ini->variable( 'GeneralSettings', 'Logging' );
-                if ( array_key_exists( $level, self::$errorlevels ) )
-                {
-                    $logging = self::$errorlevels[$level];
-                }
-            }
-            //ggeZWebservicesClient::$debuglevel = $logging;
-        }
-        if ( !array_key_exists( $debuglevel, self::$errorlevels ) )
-        {
-            return false;
-        }
-        return self::$errorlevels[$debuglevel] <= $logging;
-    }
-
-    /**
-     * Function used for perms checking: list of defined ws servers
-     */
-    static function getServersList()
-    {
-        $target_list = array();
-        $i = 0;
-        $wsINI = eZINI::instance( 'wsproviders.ini' );
-        // calculate list of target ws servers as it is hard to do that in tpl code
-        foreach ( $wsINI->groups() as $groupname => $groupdef )
-        {
-            if ( $groupname != 'GeneralSettings' && $groupname != 'ExtensionSettings' )
-            {
-                if ( $wsINI->hasVariable( $groupname, 'providerType' ) )
-                {
-                    $target_list[] = array( 'name' => $groupname, 'id' => $groupname );
-                }
-                else
-                {
-                    /// @todo log warning ???
-                }
-            }
-        }
-        return $target_list;
     }
 
 }
