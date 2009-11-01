@@ -33,6 +33,8 @@ if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
     $serverClass = 'gg' . $protocol . 'Server';
     $server = new $serverClass();
 
+    // nb: this will register methods declared only for $protocol or for all
+    //     protocols, depending on ini settings
     ggeZWebservices::registerAvailableMethods( $server, strtolower( $protocol ) );
 
     $request = $server->parseRequest( $data );

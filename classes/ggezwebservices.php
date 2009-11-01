@@ -58,7 +58,7 @@ class ggeZWebservices
     }
 
     /**
-     * return true if logging is enabled.
+     * Return true if logging is enabled.
      */
     static function isLoggingEnabled( $debuglevel )
     {
@@ -117,6 +117,7 @@ class ggeZWebservices
      * up to the single coder's style...
      * @param string $protocol If null, functions for all supported protocols
      *        will be listed (soap, xmlrpc, jsonrpc)
+     * @return array 2-level array, in the form needed by the permission system
      * @todo find a way to retain name/id association even if list of existing webservices change...
      */
     static function getMethodsList( $protocol=null )
@@ -130,6 +131,12 @@ class ggeZWebservices
                 $server = new $serverclass();
                 self::registerAvailableMethods( $server, $serverprotocol );
                 $function_list = array_merge( $function_list, $server->registeredMethods() );
+                if ( self::isRegisterAllProtocolsFunctionsEnabled() )
+                {
+                    // all methods will have already be registered regardless of protocol,
+                    // so we can skip the rest of the loop
+                    break;
+                }
             }
         }
         $result = array();
@@ -143,9 +150,19 @@ class ggeZWebservices
 
     /**
     * Function used to register php code into a ws server
+    * If isRegisterAllProtocolsFunctionsEnabled() == true, will register functions
+    * declared for all protocols, regardless of tha value of $protocol, unless
+    * $forceSingleProtocol is set to true
+    * @param ggWebservicesServer $server
+    * @param string $protocol if null php functions available for all protocols will be registered
+    * @param bool $forceSingleProtocol overrides the ini parameter RegisterAllProtocolsFunctions
     */
-    static function registerAvailableMethods( $server, $protocol=null )
+    static function registerAvailableMethods( $server, $protocol=null, $forceSingleProtocol=false )
     {
+        if ( self::isRegisterAllProtocolsFunctionsEnabled() && !$forceSingleProtocol )
+        {
+            $protocol = null;
+        }
         foreach( self::$serverprotocols as $serverprotocol )
         {
             $wsINI = eZINI::instance( self::configFileByProtocol( $protocol ) );
@@ -160,6 +177,19 @@ class ggeZWebservices
         }
     }
 
+    /**
+    * @return bool
+    */
+    static function isRegisterAllProtocolsFunctionsEnabled()
+    {
+        $wsINI = eZINI::instance( 'wsproviders.ini' );
+        return $wsINI->variable( 'GeneralSettings', 'RegisterAllProtocolsFunctions' ) == 'enabled';
+    }
+
+    /**
+    * Used by the permission system: check if current user has access to ws method
+    * @param string $methodName
+    */
     static function checkAccess( $methodName )
     {
         $user = eZUser::currentUser();
@@ -213,6 +243,8 @@ class ggeZWebservices
     * This allows to have soap settings in soap.ini and settings for other
     * webservices in wsproviders.ini
     * NB: shall we return wsproviders.ini on not-found rather than null (= site.ini)?
+    * @param string $protocol
+    * @return string
     */
     static function configFileByProtocol( $protocol )
     {
