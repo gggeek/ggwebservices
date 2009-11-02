@@ -1,14 +1,23 @@
 Changes from 0.3 to 0.4 - released xxxx/yy/zz
 
+*Incompatible changes
+- some static functions and variables of class ggeZWebservicesClient have been moved to a new class ggeZWebservices
+- the files xmlrpc(s).inc, jsonrpc(s).inc have been renamed to xmlrpc(s).inc.php, jsonrpc(s).inc.php for ease of autoloading.
+   Please update the autoload configuration to accomodate the changes
+
 *General:
-- added a cronjob to rotate ws logs. By default added to infrequent set
+- added a cronjob to rotate logs of executed ws calls. By default added to infrequent set
 - added support for calling external services that require simple POST (a.k.a. html forms) to the template fetch function / ggeZWebservicesClient class
-- added a view to invoke webservices without the need of a specific controller file: /webesrvices/execute/$protocol (supported protocls are currently xmlrpc and jsonrpc)
-- add support of exposing ezjscore webservices to xmlrpc/jsonroc calls via that view
+- added a view to invoke webservices without the need of a specific controller file: /webesrvices/execute/$protocol (supported protocols are currently xmlrpc and jsonrpc)
+- permissions to execute - with limitation on single webservices - can be granted on that view
+- add support of exposing ezjscore webservices to xmlrpc/jsonrpc calls via that view
 - moved javascript libraries to 'standard' design, so that they can be used for front-end interfaces too
+- added the Y.io.jsonrpc javascript function for Yui 3 (in module 'io-jsonrpc') to ease execution of jsonrpc calls from the browser
 - upgrade the included phpxmlrpc lib to 3.0.0 beta, fixing all warnings with php 5.3
 - webservice server classes now catch exceptions raised by user-provided functions while handling invocation calls;
   use the server's $exception_handling member to finetune this behaviour
+- allow module view (and custom controllers too) to load all functions in soap/jsonrpc/xmlrpc dirs
+  regardless of the incoming call's protocol. Set RegisterAllProtocolsFunctions=enabled to activate
 
 *Bugfixes:
 - give a debuggable error message if soap extension is not enabled and user tries to create a ggPhpSOAPClient
