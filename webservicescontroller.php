@@ -132,7 +132,9 @@ if ( $enable == 'true' )
     $server_class = 'gg' . strtoupper( WS_PROTOCOL ) . 'Server';
     $server = new $server_class();
 
-    ggeZWebservices::registerAvailableMethods( $server, strtoupper( WS_PROTOCOL ) );
+    // nb: this will register methods declared only for $protocol or for all
+    //     protocols, depending on ini settings
+    ggeZWebservices::registerAvailableMethods( $server, WS_PROTOCOL );
 
     $server->processRequest();
 }
