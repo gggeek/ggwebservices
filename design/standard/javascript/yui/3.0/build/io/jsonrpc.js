@@ -11,10 +11,19 @@
 //{literal}
 YUI( YUI3_config ).add('io-jsonrpc', function( Y )
 {
+    // this looks weird but is ok, it is just the result of writing meta-js via tpl
+    // and not passing it through the teemplate system...
     var _serverUrl = '{/literal}{'/'|ezurl('no', 'full')}{literal}', _configBak;
     if ( '{' + "/literal}{'/'|ezurl('no', 'full')}{literal}" == _serverUrl )
     {
-        _serverUrl = '/';
+        if ( typeof Y.ez.url != undefined )
+        {
+            _serverUrl = Y.ez.url.replace( '/ezjscore/', '' );
+        }
+        else
+        {
+            _serverUrl = ''; // @todo find a better default?
+        }
     }
 
     Y.io.jsonrpc = function ( callMethod, callParams, c )

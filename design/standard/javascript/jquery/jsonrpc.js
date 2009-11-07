@@ -13,10 +13,19 @@
 //{literal}
 (function($) {
 
+    // this looks weird but is ok, it is just the result of writing meta-js via tpl
+    // and not passing it through the teemplate system...
     var _serverUrl = '{/literal}{'/'|ezurl('no', 'full')}{literal}', _configBak;
     if ( '{' + "/literal}{'/'|ezurl('no', 'full')}{literal}" == _serverUrl )
     {
-        _serverUrl = '/';
+        if ( typeof $.ez.url != undefined )
+        {
+            _serverUrl = $.ez.url.replace( '/ezjscore/', '' );
+        }
+        else
+        {
+            _serverUrl = ''; // @todo find a better default?
+        }
     }
 
     $.jsonrpc = function _jsonrpc( callMethod, callParams, callBack )
