@@ -9,6 +9,7 @@
 
 // decode input params
 
+$module = $Params['Module'];
 $protocol = strtoupper( $Params['protocol'] );
 
 switch( $protocol )
