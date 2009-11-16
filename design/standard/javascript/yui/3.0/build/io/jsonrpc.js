@@ -1,7 +1,10 @@
+
 /**
 * JSON-RPC client for yui 3
 * API based on Y.io.ez for maximum interoperability (but not identical!)
-* Works both if parsed as javascript-generating template or if included as plain javascript file
+* Works both if parsed as javascript-generating template or if included as plain javascript file.
+* In the latter case, the var Y.ez.url should be set up with the url of the root
+* of the eZ Publish installation
 * @author G. Giunta
 * @copyright (c) 2009 G. Giunta
 * @version $Id$
@@ -11,7 +14,7 @@
 //{literal}
 YUI( YUI3_config ).add('io-jsonrpc', function( Y )
 {
-    // this looks weird but is ok, it is just the result of writing meta-js via tpl
+    // this looks weird but is ok, it is just needed for writing meta-js via tpl
     // and not passing it through the teemplate system...
     var _serverUrl = '{/literal}{'/'|ezurl('no', 'full')}{literal}', _configBak;
     if ( '{' + "/literal}{'/'|ezurl('no', 'full')}{literal}" == _serverUrl )
@@ -32,9 +35,9 @@ YUI( YUI3_config ).add('io-jsonrpc', function( Y )
 
         // force POST method, allow other configs to be passed down
         if ( c === undefined )
-            c = {on:{}, data: '', headers: {}, method: 'POST'};
+            c = {on:{}, data: '', headers: {'Content-Type': 'application/json; charset=UTF-8'}, method: 'POST'};
         else
-            c = Y.merge( {on:{}, data: '', headers: {}}, c, {method: 'POST'} );
+            c = Y.merge( {on:{}, data: ''}, c, {headers: {'Content-Type': 'application/json; charset=UTF-8'}, method: 'POST'} );
 
         // encode function arguments as post params
         c.data = Y.JSON.stringify( {method: callMethod, params: callParams, id: 1} );
@@ -45,8 +48,8 @@ YUI( YUI3_config ).add('io-jsonrpc', function( Y )
         // backup user success call, as we inject our decoding success call
         if ( c.on.success !== undefined )
             c.on.successCallback = c.on.success;
-
         c.on.success = _iojsonrpcSuccess;
+        // and backup the config object too
         _configBak = c;
 
         return Y.io( url, c );
@@ -56,23 +59,37 @@ YUI( YUI3_config ).add('io-jsonrpc', function( Y )
     {
         if ( o.responseJSON === undefined )
         {
-            // the members of responseJSON are the same as those used by Y.io.ez
-            var response = Y.JSON.parse( o.responseText );
-            /// @todo check if decoding of error msg / result from jsonrpc was ok
-            ///       before injecting them into returnObject
-            ///       check also that id is present and == 1 ?
-            response.content = response.result;
-            response.error_text = response.error;
-
             // create new object to avoid error in ie6 (and do not use Y.merge since it fails in ff)
-            var returnObject = {'responseJSON': response,
+            // the members of responseJSON are the same as those used by Y.io.ez
+            var returnObject = {'responseJSON': null,
                                 'readyState':   o.readyState,
                                 'responseText': o.responseText,
                                 'responseXML':  o.responseXML,
                                 'status':       o.status,
                                 'statusText':   o.statusText
             };
-
+            var response;
+            try {
+                response = Y.JSON.parse( o.responseText );
+                /// @todo we should check that either result or error are null...
+                // we return in responseJSON both the jsonrpc-style members and the ezjscore ones
+                response.content = response.result;
+                response.error_text = response.error;
+                returnObject.responseJSON = response;
+            } catch ( error ) {
+                var c = _configBak;
+                if ( c.on.failure !== undefined )
+                {
+                    returnObject.statusText = error.message + ' error in file ' + error.fileName + ' line ' + error.lineNumber;
+                    // shall we also patch status to something else than 200?
+                    c.on.failure( id, returnObject );
+                    return;
+                }
+                else
+                {
+                    throw error;
+                }
+            }
         }
         else
         {
