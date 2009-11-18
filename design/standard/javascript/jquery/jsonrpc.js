@@ -93,10 +93,10 @@
         }
         else if ( window.console !== undefined )
         {
-            if ( returnObject.responseJSON.error_text )
-                window.console.error( 'Y.io.jsonrpc(): ' + returnObject.responseJSON.error_text );
+            if ( returnObject.responseJSON.error_text != null )
+                window.console.error( '$.jsonrpc(): ' + $.toJSON( returnObject.responseJSON.error_text ) );
             else
-                window.console.log( 'Y.io.jsonrpc(): ' + returnObject.responseJSON.content );
+                window.console.log( '$.jsonrpc(): ' + $.toJSON( returnObject.responseJSON.content ) );
         }
     }
 

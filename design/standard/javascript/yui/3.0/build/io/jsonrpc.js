@@ -103,10 +103,10 @@ YUI( YUI3_config ).add('io-jsonrpc', function( Y )
         }
         else if ( window.console !== undefined )
         {
-            if ( returnObject.responseJSON.error_text )
-                window.console.error( 'Y.io.jsonrpc(): ' + returnObject.responseJSON.error_text );
+            if ( returnObject.responseJSON.error_text != null )
+                window.console.error( 'Y.io.jsonrpc(): ' + Y.JSON.stringify(returnObject.responseJSON.error_text) );
             else
-                window.console.log( 'Y.io.jsonrpc(): ' + returnObject.responseJSON.content );
+                window.console.log( 'Y.io.jsonrpc(): ' + Y.JSON.stringify(returnObject.responseJSON.content) );
         }
     }
 
