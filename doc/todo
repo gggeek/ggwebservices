@@ -1,32 +1,63 @@
+- flesh out soap server
+
+- test objects vs. array return by default with ezsoap (in tpl code especially)
+
+- test support for calling jscore and plain-registered methods with index_ajax controller; test again custom controller too
+
+- add cookie support in the http client
+
+- add to debugger a button to add session cookie to requests - or at least a help text
+
+- finish perms checking:
+  + add to docs: how to fix changing perms limitations ids when defined functions change (cache clean?) / test this again
+
+- fix bug: url for local server in debugger is wrong when using forcevhost w.out rewriting rules
+
+- add ezjscore client as subclass of ggpostclient
+
+- add example tpl usage for Y.io.jsonrpc file
+
+- verify js changes in Y.io.ez from 1.0.0 to 1.0.2 and merge in Y.io.jsonrpc
+
+- use ezjscore to load yui 3 in debugger <= upgrade debugger to yui3
+
 - test https support with and without curl, with and without proxy too
+
+- test module view that does ws execution (memory, time) vs. using jsonrpc.php vs. index_ajax.php
 
 - add a soap controller based on ggphpsoap instead of ezsoap (needs a server class first)
 
+- add a ws service to log in, allow later ws services to operate as user passing the session id as parameter (but not be able to try using other user's sessions)
+
+- add a ws service that does fetches (all of them) and returns json/xml encoded results <= create generic-encoder tpl operator
+
 - finish proxy module
   => add soap support. Need to create a new soap server class, too?
-  => add POST/GET (rest) support. Need to create a new server class, too?
+  => add POST/GET (rest) support. Need to create a new server class, too? nb: could do with basically json/php serialized/ encoding of results (see solr-supported formats too)
   => add fine-grained policy control with per_server_per_method limitations (this one needs server to support listMethods() call), possibly per_siteaccess?
 
 - allow ws controllers to operate in no-session mode
 
-- add a module view that does ws execution; time it (memory, time) vs. using jsonrpc.php
-
 - add a new controller file capable to do multi-protocol requests
-  + make it compatible with ezcore
+  + make it also compatible with ezsjcore
 
 - add optional extended logging of received ws calls and outgoing responses (use ezdebugsettings or a custom log file?)
+
+- lobby ezjscore to provide list of exposed methods, api docs
 
 - add phpdoc-generated api docs to the distribution
 
 - improve input parameter type validation
 
-- add a compatibility layer to import webservices designed for ezrest
+- add a compatibility layer to import webservices designed for ezrest too
 
 - improve list of local servers in left menu of debugger: if per-sa servers are enabled, show one link per sa?
 
-- move debugger to ez classes and remove the phpxmlrpc lib
+- move debugger to ez (yui?) classes and remove the phpxmlrpc lib
 
-- add soap and rest support to the debugger
+- add soap, rest, ezjscore support to the debugger
+
+- add js-based debugger for calls to local server
 
 - add a testsuite (eg. to test all the error codes after shuffling them around)
 
