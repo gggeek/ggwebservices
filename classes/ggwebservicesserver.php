@@ -127,10 +127,12 @@ abstract class ggWebservicesServer
             }
             if ( $paramsOk )
             {
+                // allow to use the dot as namespace separator in webservices
+                $functionName = str_replace( array( '.' ), '_', $functionName );
+
                 try
                 {
-
-                    if ( strpos($functionName, '::') )
+                    if ( strpos( $functionName, '::' ) )
                     {
                         return call_user_func_array( explode( '::', $functionName ), $params );
                     }
@@ -232,7 +234,11 @@ abstract class ggWebservicesServer
         {
             return false;
         }
-        if ( function_exists( $name ) )
+
+        // allow to use the dot as namespace separator in webservices
+        $fname = str_replace( array( '.' ), '_', $name );
+
+        if ( function_exists( $fname ) )
         {
             $this->FunctionList[$name][] = array( 'in' => $params, 'out' => $result );
 

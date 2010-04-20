@@ -1,3 +1,5 @@
+- fix bug: url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)
+
 - flesh out soap server
 
 - test objects vs. array return by default with ezsoap (in tpl code especially)
@@ -11,13 +13,11 @@
 - finish perms checking:
   + add to docs: how to fix changing perms limitations ids when defined functions change (cache clean?) / test this again
 
-- fix bug: url for local server in debugger is wrong when using forcevhost w.out rewriting rules
-
 - add ezjscore client as subclass of ggpostclient
 
 - add example tpl usage for Y.io.jsonrpc file
 
-- verify js changes in Y.io.ez from 1.0.0 to 1.0.2 and merge in Y.io.jsonrpc
+- verify js changes in Y.io.ez from 1.0.0 to 1.0.2 and 1.1.0 and merge in Y.io.jsonrpc
 
 - use ezjscore to load yui 3 in debugger <= upgrade debugger to yui3
 
@@ -29,7 +29,9 @@
 
 - add a ws service to log in, allow later ws services to operate as user passing the session id as parameter (but not be able to try using other user's sessions)
 
-- add a ws service that does fetches (all of them) and returns json/xml encoded results <= create generic-encoder tpl operator
+- add a ws service that does fetches (all of them) and returns json/xml encoded results
+  + ok: createad generic-encoder tpl operator, in extension ggxmlview
+  + will do in a specific extension: ezwebservicesapi
 
 - finish proxy module
   => add soap support. Need to create a new soap server class, too?
