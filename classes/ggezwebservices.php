@@ -165,12 +165,11 @@ class ggeZWebservices
         }
         foreach( self::$serverprotocols as $serverprotocol )
         {
-            $wsINI = eZINI::instance( self::configFileByProtocol( $protocol ) );
             if ( $protocol == null || $protocol == $serverprotocol )
             {
+                $wsINI = eZINI::instance( self::configFileByProtocol( $serverprotocol ) );
                 foreach( $wsINI->variable( 'ExtensionSettings', strtoupper( $serverprotocol ) . 'Extensions' ) as $extension )
                 {
-                    echo "including " . eZExtension::baseDirectory() . '/' . $extension . '/' . $serverprotocol . '/initialize.php';
                     include_once( eZExtension::baseDirectory() . '/' . $extension . '/' . $serverprotocol . '/initialize.php' );
                 }
             }
