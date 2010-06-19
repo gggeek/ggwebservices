@@ -30,12 +30,14 @@ abstract class ggWebservicesServer
     const INVALIDPARAMSERROR = -203;
     const INVALIDINTROSPECTIONERROR = -204;
     const GENERICRESPONSEERROR = -205;
+    const INVALIDAUTHERROR = -206;
 
     const INVALIDREQUESTSTRING = 'Request received from client is not valid according to protocol format';
     const INVALIDMETHODSTRING = 'Method not found';
     const INVALIDPARAMSSTRING = 'Parameters not matching method';
     const INVALIDINTROSPECTIONSTRING = 'Can\'t introspect: method unknown';
     const GENERICRESPONSESTRING = 'Internal server error';
+    const INVALIDAUTHSTRING = 'Invalid authentication or not enough rights';
 
     /**
     * Creates a new server object
