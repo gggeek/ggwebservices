@@ -143,7 +143,7 @@ class ggeZWebservices
         sort( $function_list );
         foreach( array_unique( $function_list ) as $key => $method )
         {
-            $result[] = array( 'name' => $method, 'id' => $key );
+            $result[] = array( 'name' => $method, 'id' => $method );
         }
         return $result;
     }
