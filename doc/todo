@@ -1,17 +1,22 @@
-- fix bug: url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)
+- test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
 
-- flesh out soap server
+- in debugger:
+  + add siteaccess choice for local server (if per-sa servers are enabled?)
+  + add a button to add session cookie to requests - or at least a help text
+  + add soap, rest, ezjscore support
+
+- flesh out soap server w. wsdl support (and ezpo2xsd method)
 
 - test objects vs. array return by default with ezsoap (in tpl code especially)
+
+- add a limitation on siteaccess on ws/execute policy
+
+- finish perms checking:
+  + add to docs: how to fix changing perms limitations ids when defined functions change (cache clean?) / test this again
 
 - test support for calling jscore and plain-registered methods with index_ajax controller; test again custom controller too
 
 - add cookie support in the http client
-
-- add to debugger a button to add session cookie to requests - or at least a help text
-
-- finish perms checking:
-  + add to docs: how to fix changing perms limitations ids when defined functions change (cache clean?) / test this again
 
 - add ezjscore client as subclass of ggpostclient
 
@@ -26,12 +31,6 @@
 - test module view that does ws execution (memory, time) vs. using jsonrpc.php vs. index_ajax.php
 
 - add a soap controller based on ggphpsoap instead of ezsoap (needs a server class first)
-
-- add a ws service to log in, allow later ws services to operate as user passing the session id as parameter (but not be able to try using other user's sessions)
-
-- add a ws service that does fetches (all of them) and returns json/xml encoded results
-  + ok: createad generic-encoder tpl operator, in extension ggxmlview
-  + will do in a specific extension: ezwebservicesapi
 
 - finish proxy module
   => add soap support. Need to create a new soap server class, too?
@@ -53,11 +52,7 @@
 
 - add a compatibility layer to import webservices designed for ezrest too
 
-- improve list of local servers in left menu of debugger: if per-sa servers are enabled, show one link per sa?
-
 - move debugger to ez (yui?) classes and remove the phpxmlrpc lib
-
-- add soap, rest, ezjscore support to the debugger
 
 - add js-based debugger for calls to local server
 

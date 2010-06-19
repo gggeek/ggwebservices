@@ -2,7 +2,25 @@ Changes from 0.4 to 0.5 - released 2010/xx/yy
 
 *Incompatible changes
 
+- the policy limitations on webservices/execute have been rewritten to actually
+  work. This unfortunately means that if you used any such limitation, you will
+  have edit your user roles and recreate the limitations
+
 *General:
-- allow to register ws methods with dots in their name; will be mapped to underscores when looking up corresponding php functions
+
+- allow to register ws methods with dots in their name; will be mapped to
+  underscores when looking up corresponding php functions
+
+- add a new webservice: ezp.authandexec; it allows to authenticate and execute a
+  2nd webservice in a single call. Useful e.g. for those ws clients that do not
+  support cookies.
+  Syntax of this new webservice:
+  mixed ezp.authandexecute( string $username, string $password, string $webservicetobeexecuted, array $params )
+  nb: the user account $username must have been given execution rights on $webservicetobeexecuted
 
 *Bugfixes:
+
+- the policy limitations on webservices/execute have been fixed
+
+- the url used in the debugger when cliking on the right-col to test the local
+  server was not correct when eZ Publish is not in vhost mode
