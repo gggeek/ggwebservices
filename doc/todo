@@ -1,7 +1,9 @@
 - test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
 
+- check if dedicated controllers honours execution limitation
+
 - in debugger:
-  + add siteaccess choice for local server on the left-hand col
+  + add siteaccess choice for local server on the left-hand col (nb: looks like getting correct urls for other sa is quite hard... langswitcher does it for nodes only?)
   + add a button to add session cookie to requests - or at least a help text
   + add soap, rest, ezjscore support
   + allow to hide/show client's options
@@ -11,8 +13,6 @@
 
 - test objects vs. array return by default with ezsoap (in tpl code especially)
 
-- add a limitation on siteaccess on ws/execute policy
-
 - finish perms checking:
   + add to docs: how to fix changing perms limitations ids when defined functions change (cache clean?) / test this again
 
@@ -21,6 +21,8 @@
 - add cookie support in the http client
 
 - add ezjscore client as subclass of ggpostclient
+
+- add siteaccess limitation to proxy view
 
 - add example tpl usage for Y.io.jsonrpc file
 

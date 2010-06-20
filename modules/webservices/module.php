@@ -31,6 +31,12 @@ $ViewList = array(
         'functions' => array( 'execute' ),
     ),
 
+    /*'wsdl' => array(
+        'script' => 'wsdl.php',
+        'params' => array( 'webservice' ),
+        'functions' => array( 'execute' ),
+    ),*/
+
     'debugger' => array(
         'script' => 'debugger.php',
         'params' => array( 'target', 'patchtarget' ),
@@ -44,11 +50,20 @@ $FunctionList = array(
         'Webservices' => array(
             'name'=> 'Webservices',
             'values'=> array(),
-            'path' => '../extension/ggwebservices/classes/',
+            'path' => '../extension/ggwebservices/classes/', // starts within 'kernel'...
             'file' => 'ggezwebservices.php',
             'class' => 'ggeZWebservices',
             'function' => 'getMethodsList',
-            'parameter' => array() )
+            'parameter' => array() ),
+        'SiteAccess' => array(
+            'name'=> 'SiteAccess',
+            'values'=> array(),
+            'path' => 'classes/',
+            'file' => 'ezsiteaccess.php',
+            'class' => 'eZSiteAccess',
+            'function' => 'siteAccessList',
+            'parameter' => array()
+            )
          ),
     'proxy' => array(
         'RemoteServers' => array(
