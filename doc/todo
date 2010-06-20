@@ -1,9 +1,11 @@
 - test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
 
 - in debugger:
-  + add siteaccess choice for local server (if per-sa servers are enabled?)
+  + add siteaccess choice for local server on the left-hand col
   + add a button to add session cookie to requests - or at least a help text
   + add soap, rest, ezjscore support
+  + allow to hide/show client's options
+  + add nr. of total w methods found when asking for list of methods
 
 - flesh out soap server w. wsdl support (and ezpo2xsd method)
 
