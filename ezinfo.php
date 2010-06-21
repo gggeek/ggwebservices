@@ -6,8 +6,8 @@ class ggwebservicesInfo
     {
         return array(
             'Name' => "GG Webservices extension",
-            'Version' => "0.5-dev",
-            'Copyright' => "Copyright (C) 2009 Gaetano Giunta",
+            'Version' => "0.5",
+            'Copyright' => "Copyright (C) 2009-2010 Gaetano Giunta",
             'License' => "GNU General Public License v2.0",
             'Includes the following third-party software' => array(
                 'phpxmlrpc' => 'http://phpxmlrpc.sourceforge.net/',

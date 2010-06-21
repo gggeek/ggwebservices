@@ -29,15 +29,35 @@
     http://your.server/ezpublish-root/index.php/siteaccess/webservices/execute/jsonrpc
     (depending on your eZ Publish setup - vhost mode or not)
 
-  + for anonymous user to access to webservices, modify the site.ini.append.php
-    file that is provided within the extension
+  + give to the eZ Publish user who needs to execute webservice calls permission
+    on the 'webservices/execute' function in the 'roles and policies' panel in
+    the administration interface.
 
-  + for fine-grained access control, give to the eZ Publish user who needs to
-    execute webservice calls permission on the 'webservices/execute' function
-    in the 'roles and setting' panel in the administration interface.
-    Please note: the permission on webservice 'system.multiCall' allows automatically
-    execution of ANY defined webservice
+    A good starting point is to give to the Anonymous role access limited to:
+    . system.listMethods
+    . system.methodHelp
+    . system.methodSignature
+    With this, non-logged-in-users will be able to see the complete list of
+    available webservices and their signature, but execute none.
 
+    NB: non-logged-in-users includes the calls which are sent from the debugger
+    to the server itself, unless you manually add your session cookie in the
+    client options in the debugger.
+
+    Please note: the permission on webservice 'system.multiCall' allows
+    execution of ANY defined webservice without further permission checking
+    on the encapsulated webservices
+
+  + if your webservice client is remote (non-ajax) and it does not support
+    session cookies, you can still use the eZ Publish auth mechanism to allow
+	it to log-in and execute calls:
+	a. give to the Anonymous role access to the ezp.authandexec webservice
+	b. create a user account for your ws client, assign it to a new role
+	c. assign to this new role access to the desired webservices
+    d. to execute webservice 'test' with parameters 'p1', 'p2', the client shall
+	   call the following webservice:
+       ezp.authandexec( 'username', 'password', 'test', array( 'p1', 'p2' ) )
+    e. use the built-in debugger to help with troubleshooting
 
 3b - an alternative to receive jsonrpc or xmlrpc webservice calls:
 
@@ -60,10 +80,13 @@
     rewrite rules. If no rewrite rules are in use, it will be like this:
     http://your.server/ezpublish-root/jsonrpc.php
 
+  + optionally, set up auth mechanism in your web server to access the new urls
+    (e.g. BASIC or DIGEST auth)
+
   + the difference with point 3 above is a slightly more complex install vs. a
     smaller execution time and memory usage. In this configuration it is also
     not possible to assign execution permissions to callers - all webservices
-    will be available to everybody
+    will be available to everybody TAKE CARE!
 
 
 4 - to make webservice calls to external servers via templates

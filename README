@@ -1,4 +1,4 @@
-GG Webservices for eZ publish
+GG Webservices extension for eZ publish
 ========================================
 
 Goals:
@@ -9,7 +9,7 @@ Allow to expose functionality as webservice regardless of the protocol used by t
 Provide a proxy module allowing javascript code served by an eZ Publish server to execute cross-domain webservice calls (without resorting to html tricks) and even cross-protocol calls
 Keep the same API as the existing eZ SOAP classes for maximum interoperability
 Improve the existing http client adding features such as support for more authentication schemes, compressed requests etc...
-Long term, the existing SOAP client could be replaced with a new one, based either on NuSOAP, eZSOAP, or PHP::SOAP
+Long term, the existing SOAP client and server could be replaced with a new one, based either on NuSOAP, eZSOAP, or PHP::SOAP
 Allow easy debugging of webservice calls via inclusion of a complete debugging interface
 Allow usage of JSONRPC or XMLRPC (and eventually SOAP) to calls functions exposed via the ezjscore extension API
 

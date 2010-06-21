@@ -1,7 +1,5 @@
 - test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
 
-- check if dedicated controllers honours execution limitation
-
 - in debugger:
   + add siteaccess choice for local server on the left-hand col (nb: looks like getting correct urls for other sa is quite hard... langswitcher does it for nodes only?)
   + add a button to add session cookie to requests - or at least a help text
@@ -13,8 +11,7 @@
 
 - test objects vs. array return by default with ezsoap (in tpl code especially)
 
-- finish perms checking:
-  + add to docs: how to fix changing perms limitations ids when defined functions change (cache clean?) / test this again
+- move debugger to standard design, so that it can be used in frontends too
 
 - test support for calling jscore and plain-registered methods with index_ajax controller; test again custom controller too
 
