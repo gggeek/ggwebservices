@@ -5,7 +5,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) G. Giunta 2009
+ * @copyright (C) G. Giunta 2009-2010
  *
  * @see http://json-rpc.org/wiki/specification
  */

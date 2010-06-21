@@ -3,7 +3,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) G. Giunta 2009
+ * @copyright (C) G. Giunta 2009-2010
  */
 
 $Module = array( 'name' => 'Webservices', "variable_params" => true );

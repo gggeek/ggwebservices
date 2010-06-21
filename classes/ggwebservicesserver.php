@@ -15,7 +15,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) G. Giunta 2009
+ * @copyright (C) G. Giunta 2009-2010
  *
  * @todo add a better way to register methods, supporting definition of type of return value and per-param help text
  * @todo add support for compressed requests
