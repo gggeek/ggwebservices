@@ -99,7 +99,7 @@ class ggeZWebservices
             {
                 if ( $wsINI->hasVariable( $groupname, 'providerType' ) )
                 {
-                    $target_list[] = array( 'name' => $groupname, 'id' => $groupname );
+                    $target_list[] = array( 'name' => $groupname, 'id' => md5( $groupname ) );
                 }
                 else
                 {
@@ -143,7 +143,7 @@ class ggeZWebservices
         sort( $function_list );
         foreach( array_unique( $function_list ) as $key => $method )
         {
-            $result[] = array( 'name' => $method, 'id' => $method );
+            $result[] = array( 'name' => $method, 'id' => md5( $method ) );
         }
         return $result;
     }
@@ -187,16 +187,15 @@ class ggeZWebservices
 
     /**
     * Used by the permission system: check if current user has access to ws method
-    * @param string $methodName
+    * @param string $functionName
     * @param ezuser $user
     */
-    static function checkAccess( $methodName, $user=null )
+    static function checkAccess( $functionName, $user=null )
     {
         if ( $user == null )
         {
             $user = eZUser::currentUser();
         }
-        //$userID = $user->attribute( 'contentobject_id' );
 
         $access = false;
         $accessResult = $user->hasAccessTo( 'webservices' , 'execute' );
@@ -208,6 +207,7 @@ class ggeZWebservices
         else if ( $accessWord != 'no' ) // with limitation
         {
             $currentsa = eZSys::ezcrc32( $GLOBALS['eZCurrentAccess']['name'] );
+            $functionName = md5( $functionName );
             $accessws = 1;
             $accesssa = 1;
             foreach ( $accessResult['policies'] as $key => $policy )
@@ -232,7 +232,35 @@ class ggeZWebservices
             $access = $accessws && $accesssa;
         }
 
-        return $saccess;
+        return $access;
+    }
+
+    static function checkAccessToServer( $remoteserver, $user=null )
+    {
+        if ( $user == null )
+        {
+            $user = eZUser::currentUser();
+        }
+        $access = false;
+        $accessResult = $user->hasAccessTo( 'webservices' , 'proxy' );
+        $accessWord = $accessResult['accessWord'];
+        if ( $accessWord == 'yes' )
+        {
+            $access = true;
+        }
+        else if ( $accessWord != 'no' ) // with limitation
+        {
+            $remoteserver = md5( $remoteserver );
+            foreach ( $accessResult['policies'] as $key => $policy )
+            {
+                if ( isset( $policy['RemoteServers'] ) && in_array( $remoteserver, $policy['RemoteServers'] ) )
+                {
+                    $access = true;
+                    break;
+                }
+            }
+        }
+        return $access;
     }
 
     /**

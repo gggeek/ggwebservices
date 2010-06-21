@@ -48,25 +48,7 @@ if ( !is_object( $request ) ) /// @todo use is_a instead
 
 // check perms
 $user = eZUser::currentUser();
-$accessResult = $user->hasAccessTo( 'webservices' , 'proxy' );
-$accessWord = $accessResult['accessWord'];
-$access = false;
-if ( $accessWord == 'yes' )
-{
-    $access = true;
-}
-else if ( $accessWord != 'no' ) // with limitation
-{
-    //$policies = $accessResult['policies'];
-    foreach ( $accessResult['policies'] as $key => $policy )
-    {
-        if ( isset( $policy['RemoteServers'] ) && in_array( $remoteserver, $policy['RemoteServers'] ) )
-        {
-            $access = true;
-            break;
-        }
-    }
-}
+$access = ggeZWebservices::checkAccessToServer( $remoteserver, $user );
 if ( !$access )
 {
     // Error access denied
