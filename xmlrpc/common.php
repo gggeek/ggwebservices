@@ -39,25 +39,8 @@ function ezp_authandexec( $user, $password, $functionName, $params )
             //if ( $hasAccessToSite )
             //{
                 // check if new user has access to the actual ws
-                $accessResult = $user->hasAccessTo( 'webservices' , 'execute' );
-                $accessWord = $accessResult['accessWord'];
-                $access = false;
-                if ( $accessWord == 'yes' )
-                {
-                    $access = true;
-                }
-                else if ( $accessWord != 'no' ) // with limitation
-                {
-                    //$policies = $accessResult['policies'];
-                    foreach ( $accessResult['policies'] as $key => $policy )
-                    {
-                        if ( isset( $policy['Webservices'] ) && in_array( $functionName, $policy['Webservices'] ) )
-                        {
-                            $access = true;
-                            break;
-                        }
-                    }
-                }
+                $access = ggeZWebservices::checkAccess( $functionName, $user );
+
                 if ( !$access )
                 {
                     return new ggWebservicesFault( ggWebservicesServer::INVALIDAUTHERROR, ggWebservicesServer::INVALIDAUTHSTRING );

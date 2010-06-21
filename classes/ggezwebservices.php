@@ -188,53 +188,51 @@ class ggeZWebservices
     /**
     * Used by the permission system: check if current user has access to ws method
     * @param string $methodName
+    * @param ezuser $user
     */
-    static function checkAccess( $methodName )
+    static function checkAccess( $methodName, $user=null )
     {
-        $user = eZUser::currentUser();
+        if ( $user == null )
+        {
+            $user = eZUser::currentUser();
+        }
         //$userID = $user->attribute( 'contentobject_id' );
 
+        $access = false;
         $accessResult = $user->hasAccessTo( 'webservices' , 'execute' );
         $accessWord = $accessResult['accessWord'];
-
         if ( $accessWord == 'yes' )
         {
-            return 1;
+            $access = true;
         }
-        elseif ( $accessWord == 'no' )
+        else if ( $accessWord != 'no' ) // with limitation
         {
-            return 0;
-        }
-        else
-        {
-            $accessWs = false;
-            $policies = $accessResult['policies'];
-            foreach ( array_keys( $policies ) as $pkey  )
+            $currentsa = eZSys::ezcrc32( $GLOBALS['eZCurrentAccess']['name'] );
+            $accessws = 1;
+            $accesssa = 1;
+            foreach ( $accessResult['policies'] as $key => $policy )
             {
-                $limitationArray = $policies[ $pkey ];
-                foreach ( $limitationArray as $key => $value  )
+                if ( isset( $policy['Webservices'] ) && $accessws === 1 )
                 {
-                    switch( $key )
-                    {
-                        case 'Webservices':
-                        {
-                            if( $methodName === false || in_array( $methodName, $value ) )
-                            {
-                                $accessWs = true;
-                            }
-
-                        } break;
-                    }
+                    $accessws = false;
                 }
-
-                if ( $accessWs )
+                if ( isset( $policy['Webservices'] ) && in_array( $functionName, $policy['Webservices'] ) )
                 {
-                    return 1;
+                    $accessws = true;
+                }
+                if ( isset( $policy['SiteAccess'] ) && $accesssa === 1 )
+                {
+                    $accesssa = false;
+                }
+                if ( isset( $policy['SiteAccess'] ) && in_array( $currentsa, $policy['SiteAccess'] ) )
+                {
+                    $accesssa = true;
                 }
             }
-
-            return 0;
+            $access = $accessws && $accesssa;
         }
+
+        return $saccess;
     }
 
     /**

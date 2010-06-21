@@ -77,39 +77,7 @@ if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
 
     // check perms
     $user = eZUser::currentUser();
-    $accessResult = $user->hasAccessTo( 'webservices' , 'execute' );
-    $accessWord = $accessResult['accessWord'];
-    $access = false;
-    if ( $accessWord == 'yes' )
-    {
-        $access = true;
-    }
-    else if ( $accessWord != 'no' ) // with limitation
-    {
-        $currentsa = eZSys::ezcrc32( $GLOBALS['eZCurrentAccess']['name'] );
-        $accessws = 1;
-        $accesssa = 1;
-        foreach ( $accessResult['policies'] as $key => $policy )
-        {
-            if ( isset( $policy['Webservices'] ) && $accessws === 1 )
-            {
-                $accessws = false;
-            }
-            if ( isset( $policy['Webservices'] ) && in_array( $functionName, $policy['Webservices'] ) )
-            {
-                $accessws = true;
-            }
-            if ( isset( $policy['SiteAccess'] ) && $accesssa === 1 )
-            {
-                $accesssa = false;
-            }
-            if ( isset( $policy['SiteAccess'] ) && in_array( $currentsa, $policy['SiteAccess'] ) )
-            {
-                $accesssa = true;
-            }
-        }
-        $access = $accessws && $accesssa;
-    }
+    $access = ggeZWebservices::checkAccess( $functionName, $user );
     if ( !$access )
     {
         // Error access denied - shall we show an error response in protocol format instead of html?
