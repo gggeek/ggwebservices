@@ -9,6 +9,11 @@
 
 - flesh out soap server w. wsdl support (and ezpo2xsd method)
 
+- add jsonrpc 2.0 support
+
+- flesh out rest server w. callback (jsonp) support (output types: json, php, ... ?) - see http://developer.yahoo.com/common/json.html & http://www.ibm.com/developerworks/library/wa-aj-jsonp1/
+  or http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/ http://svn.php.net/viewvc/pear/packages/XML_Serializer/trunk/XML/Serializer.php?revision=294967&view=markup
+
 - test objects vs. array return by default with ezsoap (in tpl code especially)
 
 - move debugger to standard design, so that it can be used in frontends too
