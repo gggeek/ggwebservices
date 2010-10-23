@@ -8,6 +8,7 @@
  * @license code licensed under the GNU GPL. See LICENSE file
  */
 
+// include client classes (this is done by autload when within an eZP context)
 include_once( "ggwebservices/classes/ggwebservicesserver.php" );
 include_once( "ggwebservices/classes/ggxmlrpcserver.php" );
 include_once( "ggwebservices/classes/ggwebservicesrequest.php" );

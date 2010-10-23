@@ -18,7 +18,7 @@ include_once( "ggwebservices/classes/ggwebservicesresponse.php" );
 include_once( "ggwebservices/classes/ggxmlrpcresponse.php" );
 
 // create a new client
-$client = new ggXMLRPCClient( "phpxmlrpc.sf.net", "/server.php" );
+$client = new ggXMLRPCClient( "phpxmlrpc.sourceforge.net", "/server.php" );
 
 // define the request
 $request = new ggXMLRPCRequest( "examples.addtwo", array( 44, 45 ) );
