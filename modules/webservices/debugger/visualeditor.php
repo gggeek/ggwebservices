@@ -2,7 +2,7 @@
 /**
  * Dialog for visually editing trees of json/xmlrpc values
  * @version $Id$
- * @copyright G. Giunta 2006
+ * @copyright G. Giunta 2006-2010
  * @author Gaetano Giunta
  *
  * @todo do not set to "null" new nodes
@@ -56,15 +56,15 @@ $noadd = (isset($_GET['noadd'])) ? (bool)$_GET['noadd'] : false;
 <title>XMLRPC Debugger Visual Editor</title>
 
 <!-- YUI Treeview component: base libs -->
-<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/yui/yahoo.js" ></script>
-<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/yui/event.js" ></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/lib/yui/2.5.0/build/yahoo/yahoo.js" ></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/lib/yui/2.5.0/build/event/event.js" ></script>
 <!-- YUI Treeview component: treeview -->
-<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/yui/treeview.js" ></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/lib/yui/2.5.0/build/treeview/treeview.js" ></script>
 <link rel="stylesheet" type="text/css" href="<?php echo $editorpath; ?>admin/debugger/tree.css" />
 <!-- YUI Dialog component -->
-<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/yui/dom.js" ></script>
-<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/yui/dragdrop.js" ></script>
-<script type="text/javascript" src="<?php echo $editorpath; ?>standard/javascript/yui/container.js" ></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/lib/yui/2.5.0/build/dom/dom.js" ></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/lib/yui/2.5.0/build/dragdrop/dragdrop.js" ></script>
+<script type="text/javascript" src="<?php echo $editorpath; ?>standard/lib/yui/2.5.0/build/container/container.js" ></script>
 <link rel="stylesheet" type="text/css" href="<?php echo $editorpath; ?>admin/debugger/container.css" />
 
 <!-- xmlrpc/jsonrpc base library -->
