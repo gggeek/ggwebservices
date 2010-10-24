@@ -2,8 +2,16 @@ Changes from 0.5 to 0.6 - released 2010/xx/yy
 
 *Incompatible changes
 
+- Shuffled around all design elements used by the debugger, to make it more
+  consistent with eZ Publish standard practices
+
 *General:
 
-- added more sample php files, in doc/samples
+- Added more sample php files, in doc/samples
+- Two out of three debugger views now use templates for rendering
 
 *Bugfixes:
+
+- Debugger is now available in every design, not only admin
+- Make sure debugger views are not accessible directly even when rewrite rules
+  are not active

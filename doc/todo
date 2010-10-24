@@ -3,11 +3,12 @@
 - in debugger:
   + add siteaccess choice for local server on the left-hand col (nb: looks like getting correct urls for other sa is quite hard... langswitcher does it for nodes only?)
   + add a button to add session cookie to requests - or at least a help text
-  + add soap, rest, ezjscore support
+  + add ezjscore, soap, rest support
   + allow to hide/show client's options
   + add nr. of total w methods found when asking for list of methods
+  + improve formatting (eg. 1st line, visualeditor space on top, etc...)
 
-- flesh out soap server w. wsdl support (and ezpo2xsd method)
+- flesh out soap server w. wsdl support (use ezpo2xsd method from ezpo_insepctor)
 
 - add jsonrpc 2.0 support
 
@@ -15,8 +16,6 @@
   or http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/ http://svn.php.net/viewvc/pear/packages/XML_Serializer/trunk/XML/Serializer.php?revision=294967&view=markup
 
 - test objects vs. array return by default with ezsoap (in tpl code especially)
-
-- move debugger to standard design, so that it can be used in frontends too
 
 - test support for calling jscore and plain-registered methods with index_ajax controller; test again custom controller too
 
@@ -29,8 +28,9 @@
 - add example tpl usage for Y.io.jsonrpc file
 
 - verify js changes in Y.io.ez from 1.0.0 to 1.0.2 and 1.1.0 and merge in Y.io.jsonrpc
+  + test loading Y.io.ez from Yui 3.1.0 in eZP 4.4
 
-- use ezjscore to load yui 3 in debugger <= upgrade debugger to yui3
+- use ezjscore to load yui 3 in debugger <= upgrade debugger to yui3, or at least allow it to use latest yui2
 
 - test https support with and without curl, with and without proxy too
 
@@ -43,7 +43,7 @@
   => add POST/GET (rest) support. Need to create a new server class, too? nb: could do with basically json/php serialized/ encoding of results (see solr-supported formats too)
   => add fine-grained policy control with per_server_per_method limitations (this one needs server to support listMethods() call), possibly per_siteaccess?
 
-- allow ws controllers to operate in no-session mode
+- allow ws controllers to operate in no-session mode (useful? since 4.4 whole of eZ can be sessionless)
 
 - add a new controller file capable to do multi-protocol requests
   + make it also compatible with ezsjcore
