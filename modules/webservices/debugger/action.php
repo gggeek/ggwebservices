@@ -1,5 +1,7 @@
 <?php
 /**
+ * WS debugger: bottom frame
+ *
  * @version $Id$
  * @author Gaetano Giunta
  * @copyright (C) 2005-2008 G. Giunta
@@ -8,6 +10,8 @@
  * @todo switch params for http compression from 0,1,2 to values to be used directly
  * @todo use ob_start to catch debug info and echo it AFTER method call results?
  * @todo be smarter in creating client stub for proxy/auth cases: only set appropriate property of client obj
+ *
+ * @todo move to template-based output
  **/
 
 ?>
@@ -509,3 +513,6 @@ Path: /server.php
 ?>
 </body>
 </html>
+<?php
+eZExecution::cleanExit();
+?>
