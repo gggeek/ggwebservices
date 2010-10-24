@@ -12,7 +12,7 @@
  * @todo parse content of payload textarea to be fed to visual editor
  *       (reload at least number of vars when v.ed. feeds again the textarea)
  *
- * @todo move inline css, js to external files
+ * @todo move inline js to external file
  *}
 <head>
 <title>XMLRPC Debugger</title>
@@ -20,18 +20,9 @@
 <!-- xmlrpc/jsonrpc base library -->
 <script type="text/javascript" src={'javascript/xmlrpc_lib.js'|ezdesign()}></script>
 <script type="text/javascript" src={'javascript/jsonrpc_lib.js'|ezdesign()}></script>
-<style type="text/css">
-<!--{literal}
-html {overflow: -moz-scrollbars-vertical;}
-body {padding: 0.5em; background-color: #EEEEEE; font-family: Verdana, Arial, Helvetica; font-size: 8pt;}
-h1 {font-size: 12pt; margin: 0.5em;}
-h2 {font-size: 10pt; display: inline; vertical-align: top;}
-table {border: 1px solid gray; margin-bottom: 0.5em; padding: 0.25em; width: 100%;}
-#methodpayload {display: inline;}
-td {vertical-align: top; font-family: Verdana, Arial, Helvetica; font-size: 8pt;}
-.labelcell {text-align: right;}
-{/literal}-->
-</style>
+
+<link rel="stylesheet" type="text/css" href={'stylesheets/debugger/controller.css'|ezdesign()} />
+
 <script language="JavaScript" type="text/javascript">
 <!--{literal}
   function verifyserver()

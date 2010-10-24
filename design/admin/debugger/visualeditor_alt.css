@@ -1,9 +1,0 @@
-html { overflow: -moz-scrollbars-vertical; }
-body { margin: 0; padding: 0; background-color: white; font-family: sans-serif; }
-h2 { background-color: #8888DD; margin: 0; padding: 0.25em; border: 0; color: white; font-weight: bold; font-size: 100%; }
-h3 { margin: 0; padding: 0.25em 0.5em 0.25em 1em; background-color: #DDDDFF; border-bottom: 1px solid #8888DD; font-size: 100%; font-weight: normal;}
-h3 a { text-decoration: none; color: #0000BB; }
-h3 a:hover { text-decoration: underline; }
-h3 a:visited { color: #0000BB; }
-.paramdiv { border-bottom: 1px dotted silver; vertical-align: middle; } /* freaky IE7 will NOT honour a border: 0 declaration... */
-ol { margin-top: 0; margin-bottom: 0; }

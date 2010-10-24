@@ -16,19 +16,19 @@
 <script type="text/javascript" src={'lib/yui/2.5.0/build/event/event.js'|ezdesign()} ></script>
 <!-- YUI Treeview component: treeview -->
 <script type="text/javascript" src={'lib/yui/2.5.0/build/treeview/treeview.js'|ezdesign()} ></script>
-<link rel="stylesheet" type="text/css" href={'debugger/tree.css'|ezdesign()} />
+<link rel="stylesheet" type="text/css" href={'stylesheets/debugger/tree.css'|ezdesign()} />
 <!-- YUI Dialog component -->
 <script type="text/javascript" src={'lib/yui/2.5.0/build/dom/dom.js'|ezdesign()} ></script>
 <script type="text/javascript" src={'lib/yui/2.5.0/build/dragdrop/dragdrop.js'|ezdesign()} ></script>
 <script type="text/javascript" src={'lib/yui/2.5.0/build/container/container.js'|ezdesign()} ></script>
-<link rel="stylesheet" type="text/css" href={'/debugger/container.css'|ezdesign()} />
+<link rel="stylesheet" type="text/css" href={'stylesheets/debugger/container.css'|ezdesign()} />
 
 <!-- xmlrpc/jsonrpc base library -->
 <script type="text/javascript" src={'javascript/xmlrpc_lib.js'|ezdesign()}></script>
 <script type="text/javascript" src={'javascript/jsonrpc_lib.js'|ezdesign()}></script>
 <!-- display components -->
 <script type="text/javascript" src={'javascript/xmlrpc_display.js'|ezdesign()}></script>
-<link rel="stylesheet" type="text/css" href={'debugger/xmlrpc_tree.css'|ezdesign()} />
+<link rel="stylesheet" type="text/css" href={'stylesheets/debugger/xmlrpc_tree.css'|ezdesign()} />
 
 <script type="text/javascript">
 <!--
@@ -183,7 +183,7 @@ function done()
 {/literal}//-->
 </script>
 
-<link rel="stylesheet" type="text/css" href={'debugger/visualeditor.css'|ezdesign()} />
+<link rel="stylesheet" type="text/css" href={'stylesheets/debugger/visualeditor.css'|ezdesign()} />
 
 </head>
 <body onload="treeInit();">
