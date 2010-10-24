@@ -7,6 +7,10 @@
  * @copyright (C) 2010 Gaetano Giunta
  */
 
+// this line moved to the top for a small bit extra safety when no rewrite rules
+// are in place
+require_once( "kernel/common/template.php" );
+
 //$query_string = '';
 
 $wsINI = eZINI::instance( 'wsproviders.ini' );
@@ -83,7 +87,6 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
     }
 }
 // display the iframe_based template
-require_once( "kernel/common/template.php" );
 $tpl = templateInit();
 //$tpl->setVariable( 'query_string', $query_string );
 $tpl->setVariable( 'target_list', $target_list );

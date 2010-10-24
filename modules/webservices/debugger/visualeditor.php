@@ -12,6 +12,10 @@
  * @todo improve display: do not show up/down arrows, 'angle line' for parameters, move up list numbers in ff
  */
 
+// this line moved to the top for a small bit extra safety when no rewrite rules
+// are in place
+require_once( "kernel/common/template.php" );
+
 // parse GET parameters and html-cleanse them
 
 /// semicolon-separated list of types for the starting parameters
@@ -49,7 +53,6 @@ else
 /// when set to true/1, adding new vals or modifying type of initial values is forbidden
 $noadd = ( isset( $_GET['noadd'] ) ) ? (bool)$_GET['noadd'] : false;
 
-require_once( "kernel/common/template.php" );
 $tpl = templateInit();
 $tpl->setVariable( 'noadd', $noadd );
 $tpl->setVariable( 'type', $type );
