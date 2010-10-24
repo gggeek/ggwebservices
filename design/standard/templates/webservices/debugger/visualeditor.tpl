@@ -1,7 +1,7 @@
 {**
  * Dialog for visually editing trees of json/xmlrpc values
- * @version $Id: visualeditor.php 161 2010-10-23 22:36:17Z gg $
- * @copyright G. Giunta 2006-2010
+ * @version $Id$
+ * @copyright (C) 2006-2010 G. Giunta
  * @author Gaetano Giunta
  *
  * @todo do not set to "null" new nodes

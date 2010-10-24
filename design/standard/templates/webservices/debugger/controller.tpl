@@ -1,7 +1,7 @@
 {**
- * @version $Id: controller.php 115 2009-10-02 22:38:16Z gg $
+ * @version $Id$
  * @author Gaetano Giunta
- * @copyright (C) 2005-2008 G. Giunta
+ * @copyright (C) 2005-2010 G. Giunta
  * @license code licensed under the BSD License: http://phpxmlrpc.sourceforge.net/license.txt
  *
  * @todo add links to documentation from every option caption

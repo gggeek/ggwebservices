@@ -4,7 +4,10 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright 2010
+ * @copyright (C) 2010 Gaetano Giunta
+ *
+ * @todo add support for more options, such as ntlm auth to proxy, or request charset encoding
+ * @todo switch params for http compression from 0,1,2 to values to be used directly
  */
 
 include( dirname( __FILE__ ) . "/common.php" );

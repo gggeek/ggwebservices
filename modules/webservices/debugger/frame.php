@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id: debugger.php 145 2010-06-19 20:25:32Z gg $
- * @copyright 2010
+ * @copyright (C) 2010 Gaetano Giunta
  */
 
 //$query_string = '';

@@ -1,8 +1,9 @@
 <?php
 /**
  * WS debugger: Dialog for visually editing trees of json/xmlrpc values
+ *
  * @version $Id$
- * @copyright G. Giunta 2006-2010
+ * @copyright (C) 2006-2010 G. Giunta
  * @author Gaetano Giunta
  *
  * @todo do not set to "null" new nodes
