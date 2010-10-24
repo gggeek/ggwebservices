@@ -10,6 +10,7 @@
  * @todo add support for more options, such as ntlm auth to proxy, or request charset encoding
  *
  * @todo parse content of payload textarea to be fed to visual editor
+ *       (reload at least number of vars when v.ed. feeds again the textarea)
  *
  * @todo move inline css, js to external files
  *}
@@ -167,7 +168,7 @@ td {vertical-align: top; font-family: Verdana, Arial, Helvetica; font-size: 8pt;
 
   function activateeditor()
   {
-	  var url = '{/literal}{concat('webservices/debugger/visualeditor?params=',$alt_payload)|ezurl(no)}{literal}';
+	  var url = '{/literal}{concat('webservices/debugger/visualeditor?params=',$params.alt_payload)|ezurl(no)}{literal}';
 	  if (document.frmaction.wstype.value == "1")
 	    url += '&type=jsonrpc';
 	  var wnd = window.open(url, '_blank', 'width=750, height=400, location=0, resizable=1, menubar=0, scrollbars=1');
@@ -199,7 +200,7 @@ td {vertical-align: top; font-family: Verdana, Arial, Helvetica; font-size: 8pt;
 {/literal}//-->
 </script>
 </head>
-<body onload="switchtransport({$wstype}); switchaction(); switchssl(); switchauth(); swicthcainfo();{if $run} document.forms[2].submit();{/if}">
+<body onload="switchtransport({$params.wstype}); switchaction(); switchssl(); switchauth(); swicthcainfo();{if $params.run} document.forms[2].submit();{/if}">
 <h1>XMLRPC <form name="frmxmlrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(0);"/></form>
 /<form name="frmjsonrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(1);"/></form>JSONRPC Debugger (based on the <a href="http://phpxmlrpc.sourceforge.net">PHP-XMLRPC</a> library)</h1>
 <form name="frmaction" method="get" action="../action/" target="frmaction" onSubmit="switchFormMethod();"
@@ -208,30 +209,30 @@ td {vertical-align: top; font-family: Verdana, Arial, Helvetica; font-size: 8pt;
 <table id="serverblock">
 <tr>
 <td><h2>Target server</h2></td>
-<td class="labelcell">Address:</td><td><input type="text" name="host" value="{$host|wash()}" /></td>
-<td class="labelcell">Port:</td><td><input type="text" name="port" value="{$port|wash()}" size="5" maxlength="5" /></td>
-<td class="labelcell">Path:</td><td><input type="text" name="path" value="{$path|wash()}" /></td>
+<td class="labelcell">Address:</td><td><input type="text" name="host" value="{$params.host|wash()}" /></td>
+<td class="labelcell">Port:</td><td><input type="text" name="port" value="{$params.port|wash()}" size="5" maxlength="5" /></td>
+<td class="labelcell">Path:</td><td><input type="text" name="path" value="{$params.path|wash()}" /></td>
 </tr>
 </table>
 
 <table id="actionblock">
 <tr>
 <td><h2>Action</h2></td>
-<td>List available methods<input type="radio" name="action" value="list"{if eq($action,'list')} checked="checked"{/if} onclick="switchaction();" /></td>
-<td>Describe method<input type="radio" name="action" value="describe"{if eq($action, 'describe')} checked="checked"{/if} onclick="switchaction();" /></td>
-<td>Execute method<input type="radio" name="action" value="execute"{if eq($action, 'execute')} checked="checked"{/if} onclick="switchaction();" /></td>
-<!--<td>Generate stub for method call<input type="radio" name="action" value="wrap"{if eq($action, 'wrap')} checked="checked"{/if} onclick="switchaction();" /></td>-->
+<td>List available methods<input type="radio" name="action" value="list"{if eq($params.action,'list')} checked="checked"{/if} onclick="switchaction();" /></td>
+<td>Describe method<input type="radio" name="action" value="describe"{if eq($params.action, 'describe')} checked="checked"{/if} onclick="switchaction();" /></td>
+<td>Execute method<input type="radio" name="action" value="execute"{if eq($params.action, 'execute')} checked="checked"{/if} onclick="switchaction();" /></td>
+<!--<td>Generate stub for method call<input type="radio" name="action" value="wrap"{if eq($params.action, 'wrap')} checked="checked"{/if} onclick="switchaction();" /></td>-->
 </tr>
 </table>
-<input type="hidden" name="methodsig" value="{$methodsig|wash()}" />
+<input type="hidden" name="methodsig" value="{$params.methodsig|wash()}" />
 
 <table id="methodblock">
 <tr>
 <td><h2>Method</h2></td>
-<td class="labelcell">Name:</td><td><input type="text" name="method" value="{$method|wash()}" /></td>
-<td class="labelcell">Payload:<br/><div id="methodpayloadbtn"></div></td><td><textarea id="methodpayload" name="methodpayload" rows="1" cols="40">{$payload|wash()}</textarea></td>
-<td class="labelcell" id="idcell">Msg id: <input type="text" name="id" size="3" value="{$id|wash()}"/></td>
-<td><input type="hidden" name="wstype" value="{$wstype}" />
+<td class="labelcell">Name:</td><td><input type="text" name="method" value="{$params.method|wash()}" /></td>
+<td class="labelcell">Payload:<br/><div id="methodpayloadbtn"></div></td><td><textarea id="methodpayload" name="methodpayload" rows="1" cols="40">{$params.payload|wash()}</textarea></td>
+<td class="labelcell" id="idcell">Msg id: <input type="text" name="id" size="3" value="{$params.id|wash()}"/></td>
+<td><input type="hidden" name="wstype" value="{$params.wstype}" />
 <input type="submit" value="Execute" onclick="return verifyserver();"/></td>
 </tr>
 </table>
@@ -240,63 +241,63 @@ td {vertical-align: top; font-family: Verdana, Arial, Helvetica; font-size: 8pt;
 <tr>
 <td><h2>Client options</h2></td>
 <td class="labelcell">Show debug info:</td><td><select name="debug">
-<option value="0"{if eq($debug, 0)} selected="selected"{/if}>No</option>
-<option value="1"{if eq($debug, 1)} selected="selected"{/if}>Yes</option>
-<option value="2"{if eq($debug, 2)} selected="selected"{/if}>More</option>
+<option value="0"{if eq($params.debug, 0)} selected="selected"{/if}>No</option>
+<option value="1"{if eq($params.debug, 1)} selected="selected"{/if}>Yes</option>
+<option value="2"{if eq($params.debug, 2)} selected="selected"{/if}>More</option>
 </select>
 </td>
-<td class="labelcell">Timeout:</td><td><input type="text" name="timeout" size="3" value="{if gt($timeout, 0)}$timeout{/if}" /></td>
+<td class="labelcell">Timeout:</td><td><input type="text" name="timeout" size="3" value="{if gt($params.timeout, 0)}{$params.timeout}{/if}" /></td>
 <td class="labelcell">Protocol:</td><td><select name="protocol" onchange="switchssl(); switchauth(); swicthcainfo();">
-<option value="0"{if eq($protocol, 0)} selected="selected"{/if}>HTTP 1.0</option>
-<option value="1"{if eq($protocol, 1)} selected="selected"{/if}>HTTP 1.1</option>
-<option value="2"{if eq($protocol, 2)} selected="selected"{/if}>HTTPS</option>
+<option value="0"{if eq($params.protocol, 0)} selected="selected"{/if}>HTTP 1.0</option>
+<option value="1"{if eq($params.protocol, 1)} selected="selected"{/if}>HTTP 1.1</option>
+<option value="2"{if eq($params.protocol, 2)} selected="selected"{/if}>HTTPS</option>
 </select></td>
 </tr>
 <tr>
 <td class="labelcell">AUTH:</td>
-<td class="labelcell">Username:</td><td><input type="text" name="username" value="{$username|wash()}" /></td>
-<td class="labelcell">Pwd:</td><td><input type="password" name="password" value="{$password|wash()}" /></td>
+<td class="labelcell">Username:</td><td><input type="text" name="username" value="{$params.username|wash()}" /></td>
+<td class="labelcell">Pwd:</td><td><input type="password" name="password" value="{$params.password|wash()}" /></td>
 <td class="labelcell">Type</td><td><select name="authtype">
-<option value="1"{if eq($authtype, 1)} selected="selected"{/if}>Basic</option>
-<option value="2"{if eq($authtype, 2)} selected="selected"{/if}>Digest</option>
-<option value="8"{if eq($authtype, 8)} selected="selected"{/if}>NTLM</option>
+<option value="1"{if eq($params.authtype, 1)} selected="selected"{/if}>Basic</option>
+<option value="2"{if eq($params.authtype, 2)} selected="selected"{/if}>Digest</option>
+<option value="8"{if eq($params.authtype, 8)} selected="selected"{/if}>NTLM</option>
 </select></td>
 <td></td>
 </tr>
 <tr>
 <td class="labelcell">SSL:</td>
 <td class="labelcell">Verify Host's CN:</td><td><select name="verifyhost">
-<option value="0"{if eq($verifyhost, 0)} selected="selected"{/if}>No</option>
-<option value="1"{if eq($verifyhost, 1)} selected="selected"{/if}>Check CN existance</option>
-<option value="2"{if eq($verifyhost, 2)} selected="selected"{/if}>Check CN match</option>
+<option value="0"{if eq($params.verifyhost, 0)} selected="selected"{/if}>No</option>
+<option value="1"{if eq($params.verifyhost, 1)} selected="selected"{/if}>Check CN existance</option>
+<option value="2"{if eq($params.verifyhost, 2)} selected="selected"{/if}>Check CN match</option>
 </select></td>
-<td class="labelcell">Verify Cert:</td><td><input type="checkbox" value="1" name="verifypeer" onclick="swicthcainfo();"{if $verifypeer} checked="checked"{/if} /></td>
-<td class="labelcell">CA Cert file:</td><td><input type="text" name="cainfo" value="{$cainfo|wash()}" /></td>
+<td class="labelcell">Verify Cert:</td><td><input type="checkbox" value="1" name="verifypeer" onclick="swicthcainfo();"{if $params.verifypeer} checked="checked"{/if} /></td>
+<td class="labelcell">CA Cert file:</td><td><input type="text" name="cainfo" value="{$params.cainfo|wash()}" /></td>
 </tr>
 <tr>
 <td class="labelcell">PROXY:</td>
-<td class="labelcell">Server:</td><td><input type="text" name="proxy" value="{$proxy|wash()}" /></td>
-<td class="labelcell">Proxy user:</td><td><input type="text" name="proxyuser" value="{$proxyuser|wash()}" /></td>
-<td class="labelcell">Proxy pwd:</td><td><input type="password" name="proxypwd" value="{$proxypwd|wash()}" /></td>
+<td class="labelcell">Server:</td><td><input type="text" name="proxy" value="{$params.proxy|wash()}" /></td>
+<td class="labelcell">Proxy user:</td><td><input type="text" name="proxyuser" value="{$params.proxyuser|wash()}" /></td>
+<td class="labelcell">Proxy pwd:</td><td><input type="password" name="proxypwd" value="{$params.proxypwd|wash()}" /></td>
 </tr>
 <tr>
 <td class="labelcell">COMPRESSION:</td>
 <td class="labelcell">Request:</td><td><select name="requestcompression">
-<option value="0"{if eq($requestcompression, 0)} selected="selected"{/if}>None</option>
-<option value="1"{if eq($requestcompression, 1)} selected="selected"{/if}>Gzip</option>
-<option value="2"{if eq($requestcompression, 2)} selected="selected"{/if}>Deflate</option>
+<option value="0"{if eq($params.requestcompression, 0)} selected="selected"{/if}>None</option>
+<option value="1"{if eq($params.requestcompression, 1)} selected="selected"{/if}>Gzip</option>
+<option value="2"{if eq($params.requestcompression, 2)} selected="selected"{/if}>Deflate</option>
 </select></td>
 <td class="labelcell">Response:</td><td><select name="responsecompression">
-<option value="0"{if eq($responsecompression, 0)} selected="selected"{/if}>None</option>
-<option value="1"{if eq($responsecompression, 1)} selected="selected"{/if}>Gzip</option>
-<option value="2"{if eq($responsecompression, 2)} selected="selected"{/if}>Deflate</option>
-<option value="3"{if eq($responsecompression, 3)} selected="selected"{/if}>Any</option>
+<option value="0"{if eq($params.responsecompression, 0)} selected="selected"{/if}>None</option>
+<option value="1"{if eq($params.responsecompression, 1)} selected="selected"{/if}>Gzip</option>
+<option value="2"{if eq($params.responsecompression, 2)} selected="selected"{/if}>Deflate</option>
+<option value="3"{if eq($params.responsecompression, 3)} selected="selected"{/if}>Any</option>
 </select></td>
 <td></td>
 </tr>
 <tr>
 <td class="labelcell">COOKIES:</td>
-<td colspan="4" class="labelcell"><input type="text" name="clientcookies" size="80" value="{$clientcookies|wash()}" /></td>
+<td colspan="4" class="labelcell"><input type="text" name="clientcookies" size="80" value="{$params.clientcookies|wash()}" /></td>
 <td colspan="2">Format: 'cookie1=value1, cookie2=value2'</td>
 </tr>
 </table>

@@ -42,6 +42,11 @@ td form {margin: 0;}
 <?php
 
   include(dirname(__FILE__).'/common.php');
+  // Play it quick & dirty here: we are not going to rename all vars used in this
+  // php file until we have readied the version based on template usage.
+  // So we stick to the old convention of having many variables in scope
+  extract( $params );
+
   if ($action)
   {
 

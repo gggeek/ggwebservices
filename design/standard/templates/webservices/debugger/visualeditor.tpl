@@ -35,7 +35,8 @@
 /* set up xmlrpc lib display options */
 askDeleteConfirmation = true;
 editElementDiv = 'dlgpanel';
-{if $noadd|not()}allowTopLevelElementTypeChange = true{/if}
+
+{if $noadd|not()}allowTopLevelElementTypeChange = true;{/if}
 
 elementType = '{$type}val';
 
@@ -44,7 +45,9 @@ var nodes = [];
 var previewDlg = null;
 
 function treeInit()
+
 {ldelim}
+
   trees = [];
   nodes = [];
 {def $divs = ''
@@ -66,12 +69,13 @@ function treeInit()
         {set $trees = $trees|append("  nodes[",$i,"] = new YAHOO.widget.XMLRPCNode(new ",$type,"val(), trees[",$i,"].getRoot(), true, null, true);\n")}
     {/if}
     {set $trees = $trees|append("  trees[",$i,"].draw()\n")}
-    //echo "<h3>Parameter $i: $ptype</h3>\n";
+    {*echo "<h3>Parameter $i: $ptype</h3>\n";*}
     {set $divs = $divs|append("<li id=\"param",$i,"\" class=\"paramdiv\"></li>\\n")}
 {/foreach}
-document.getElementById('valuepanel').innerHTML = '{$divs}';
+  document.getElementById('valuepanel').innerHTML = '{$divs}';
 {$trees}
-document.getElementById('numparams').innerHTML = '{$params|count()}';
+  document.getElementById('numparams').innerHTML = '{$params|count()}';
+
 {rdelim}
 
 {literal}
@@ -112,8 +116,9 @@ function buildthem()
 
   out = out.slice(0, -2)+'\\n';
 {else}
-    out += '<param>\\n'+root.data.serialize()+'</param>\\n';
-  {ldelim}
+
+    out += '<param>\n'+root.data.serialize()+'</param>\n';
+  {rdelim}
 
 {/if}
 
@@ -184,7 +189,9 @@ function done()
 <body onload="treeInit();">
 <h2>Editing <span id="numparams"></span>&nbsp;{$type} parameters</h2>
 <h3>
-{if $noadd|not()}<a href="#" onclick="addParam(); return false;">Add parameter</a> | {/if}
+{if $noadd|not()}
+<a href="#" onclick="addParam(); return false;">Add parameter</a> |
+{/if}
 <a href="#" onclick="treeInit(); return false;">Reset all</a> |
 <a href="#" onclick="preview(); return false;">Preview</a> |
 <a href="#" onclick="window.close();">Cancel</a> |

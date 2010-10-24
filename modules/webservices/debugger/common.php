@@ -1,5 +1,7 @@
 <?php
 /**
+ * Initialize user parameters received via GET (or POST): set defaults, cleanup
+ *
  * @version $Id$
  * @author Gaetano Giunta
  * @copyright (C) 2005-2008 G. Giunta
@@ -30,101 +32,101 @@
   }
 
 // recover input parameters
-  $debug = false;
-  $protocol = 0;
-  $run = false;
-  $wstype = 0;
-  $id = '';
+  $params['debug'] = false;
+  $params['protocol'] = 0;
+  $params['run'] = false;
+  $params['wstype'] = 0;
+  $params['id'] = '';
   if (isset($_GET['action']))
   {
     if (isset($_GET['wstype']) && $_GET['wstype'] == '1')
     {
-      $wstype = 1;
+      $params['wstype'] = 1;
       if (isset($_GET['id']))
-        $id = $_GET['id'];
+        $params['id'] = $_GET['id'];
     }
-    $host = isset($_GET['host']) ? $_GET['host'] : 'localhost'; // using '' will trigger an xmlrpc error...
+    $params['host'] = isset($_GET['host']) ? $_GET['host'] : 'localhost'; // using '' will trigger an xmlrpc error...
     if (isset($_GET['protocol']) && ($_GET['protocol'] == '1' || $_GET['protocol'] == '2'))
-      $protocol = $_GET['protocol'];
-    if (strpos($host, 'http://') === 0)
-      $host = substr($host, 7);
-    else if (strpos($host, 'https://') === 0)
+      $params['protocol'] = $_GET['protocol'];
+    if (strpos($params['host'], 'http://') === 0)
+      $params['host'] = substr($params['host'], 7);
+    else if (strpos($params['host'], 'https://') === 0)
     {
-      $host = substr($host, 8);
-      $protocol = 2;
+      $params['host'] = substr($host, 8);
+      $params['protocol'] = 2;
     }
-    $port = isset($_GET['port']) ? $_GET['port'] : '';
-    $path = isset($_GET['path']) ? $_GET['path'] : '';
+    $params['port'] = isset($_GET['port']) ? $_GET['port'] : '';
+    $params['path'] = isset($_GET['path']) ? $_GET['path'] : '';
     // in case user forgot initial '/' in xmlrpc server path, add it back
-    if ($path && ($path[0]) != '/')
-      $path = '/'.$path;
+    if ($params['path'] && ($params['path'][0]) != '/')
+      $params['path'] = '/'.$params['path'];
 
     if (isset($_GET['debug']) && ($_GET['debug'] == '1' || $_GET['debug'] == '2'))
-      $debug = $_GET['debug'];
+      $params['debug'] = $_GET['debug'];
 
-    $verifyhost = (isset($_GET['verifyhost']) && ($_GET['verifyhost'] == '1' || $_GET['verifyhost'] == '2')) ? $_GET['verifyhost'] : 0;
+    $params['verifyhost'] = (isset($_GET['verifyhost']) && ($_GET['verifyhost'] == '1' || $_GET['verifyhost'] == '2')) ? $_GET['verifyhost'] : 0;
     if (isset($_GET['verifypeer']) && $_GET['verifypeer'] == '1')
-      $verifypeer = true;
+      $params['verifypeer'] = true;
     else
-      $verifypeer = false;
-    $cainfo= isset($_GET['cainfo']) ? $_GET['cainfo'] : '';
-    $proxy = isset($_GET['proxy']) ? $_GET['proxy'] : 0;
-    if (strpos($proxy, 'http://') === 0)
-      $proxy = substr($proxy, 7);
-    $proxyuser= isset($_GET['proxyuser']) ? $_GET['proxyuser'] : '';
-    $proxypwd = isset($_GET['proxypwd']) ? $_GET['proxypwd'] : '';
-    $timeout = isset($_GET['timeout']) ? $_GET['timeout'] : 0;
-    if (!is_numeric($timeout))
-      $timeout = 0;
-    $action = $_GET['action'];
+      $params['verifypeer'] = false;
+    $params['cainfo'] = isset($_GET['cainfo']) ? $_GET['cainfo'] : '';
+    $params['proxy'] = isset($_GET['proxy']) ? $_GET['proxy'] : 0;
+    if (strpos($params['proxy'], 'http://') === 0)
+      $params['proxy'] = substr($proxy, 7);
+    $params['proxyuser'] = isset($_GET['proxyuser']) ? $_GET['proxyuser'] : '';
+    $params['proxypwd'] = isset($_GET['proxypwd']) ? $_GET['proxypwd'] : '';
+    $params['timeout'] = isset($_GET['timeout']) ? $_GET['timeout'] : 0;
+    if (!is_numeric($params['timeout']))
+      $params['timeout'] = 0;
+    $params['action'] = $_GET['action'];
 
-    $method = isset($_GET['method']) ? $_GET['method'] : '';
-    $methodsig = isset($_GET['methodsig']) ? $_GET['methodsig'] : 0;
-    $payload = isset($_GET['methodpayload']) ? $_GET['methodpayload'] : '';
-    $alt_payload = isset($_GET['altmethodpayload']) ? $_GET['altmethodpayload'] : '';
+    $params['method'] = isset($_GET['method']) ? $_GET['method'] : '';
+    $params['methodsig'] = isset($_GET['methodsig']) ? $_GET['methodsig'] : 0;
+    $params['payload'] = isset($_GET['methodpayload']) ? $_GET['methodpayload'] : '';
+    $params['alt_payload'] = isset($_GET['altmethodpayload']) ? $_GET['altmethodpayload'] : '';
 
     if (isset($_GET['run']) && $_GET['run'] == 'now')
-      $run = true;
+      $params['run'] = true;
 
-    $username = isset($_GET['username']) ? $_GET['username'] : '';
-    $password = isset($_GET['password']) ? $_GET['password'] : '';
+    $params['username'] = isset($_GET['username']) ? $_GET['username'] : '';
+    $params['password'] = isset($_GET['password']) ? $_GET['password'] : '';
 
-    $authtype = (isset($_GET['authtype']) && ($_GET['authtype'] == '2' || $_GET['authtype'] == '8')) ? $_GET['authtype'] : 1;
+    $params['authtype'] = (isset($_GET['authtype']) && ($_GET['authtype'] == '2' || $_GET['authtype'] == '8')) ? $_GET['authtype'] : 1;
 
     if (isset($_GET['requestcompression']) && ($_GET['requestcompression'] == '1' || $_GET['requestcompression'] == '2'))
-      $requestcompression = $_GET['requestcompression'];
+      $params['requestcompression'] = $_GET['requestcompression'];
     else
-      $requestcompression = 0;
+      $params['requestcompression'] = 0;
     if (isset($_GET['responsecompression']) && ($_GET['responsecompression'] == '1' || $_GET['responsecompression'] == '2' || $_GET['responsecompression'] == '3'))
-      $responsecompression = $_GET['responsecompression'];
+      $params['responsecompression'] = $_GET['responsecompression'];
     else
-      $responsecompression = 0;
+      $params['responsecompression'] = 0;
 
-    $clientcookies = isset($_GET['clientcookies']) ? $_GET['clientcookies'] : '';
+    $params['clientcookies'] = isset($_GET['clientcookies']) ? $_GET['clientcookies'] : '';
   }
   else
   {
-    $host = '';
-    $port = '';
-    $path = '';
-    $action = '';
-    $method = '';
-    $methodsig = 0;
-    $payload = '';
-    $alt_payload = '';
-    $username = '';
-    $password = '';
-    $authtype = 1;
-    $verifyhost = 0;
-    $verifypeer = false;
-    $cainfo = '';
-    $proxy = '';
-    $proxyuser = '';
-    $proxypwd = '';
-    $timeout = 0;
-    $requestcompression = 0;
-    $responsecompression = 0;
-    $clientcookies = '';
+    $params['host'] = '';
+    $params['port'] = '';
+    $params['path'] = '';
+    $params['action'] = '';
+    $params['method'] = '';
+    $params['methodsig'] = 0;
+    $params['payload'] = '';
+    $params['alt_payload'] = '';
+    $params['username'] = '';
+    $params['password'] = '';
+    $params['authtype'] = 1;
+    $params['verifyhost'] = 0;
+    $params['verifypeer'] = false;
+    $params['cainfo'] = '';
+    $params['proxy'] = '';
+    $params['proxyuser'] = '';
+    $params['proxypwd'] = '';
+    $params['timeout'] = 0;
+    $params['requestcompression'] = 0;
+    $params['responsecompression'] = 0;
+    $params['clientcookies'] = '';
   }
 
   // check input for known XMLRPC attacks against this or other libs

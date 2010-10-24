@@ -15,38 +15,38 @@
 
 /// semicolon-separated list of types for the starting parameters
 /// (hint: the number of shown parameters depends on this)
-if (isset($_GET['params']) && $_GET['params'] != '')
+if ( isset( $_GET['params'] ) && $_GET['params'] != '' )
 {
-    $params = split(';', $_GET['params']);
+    $params = explode(';', $_GET['params'] );
 }
 else
 {
-  $params = array();
+    $params = array();
 }
 
 /// choose between json and xmlrpc
-if (isset($_GET['type']) && $_GET['type'] == 'jsonrpc')
+if ( isset( $_GET['type'] ) && $_GET['type'] == 'jsonrpc' )
 {
-  $type = 'jsonrpc';
-  /// list of scalar types we accept as valid (struct, arrays are always ok)
-  $valid_types = array('string', 'null', 'double', 'boolean');
-  // be kind when receiving a param specced as int: treat it as double
-  foreach($params as $key => $val)
-  {
-  	if (preg_match('/^(i4|int)$/i', $val))
-	{
-  	  $params[$key] = 'double';
-  	}
-  }
+    $type = 'jsonrpc';
+    /// list of scalar types we accept as valid (struct, arrays are always ok)
+    $valid_types = array( 'string', 'null', 'double', 'boolean' );
+    // be kind when receiving a param specced as int: treat it as double
+    foreach( $params as $key => $val )
+    {
+  	    if ( preg_match( '/^(i4|int)$/i', $val ) )
+    	{
+      	    $params[$key] = 'double';
+      	}
+    }
 }
 else
 {
-  $type = 'xmlrpc';
-  $valid_types = array('string', 'i4', 'int', 'double', 'boolean', 'base64', 'datetime.iso8601');
+    $type = 'xmlrpc';
+    $valid_types = array( 'string', 'i4', 'int', 'double', 'boolean', 'base64', 'datetime.iso8601' );
 }
 
 /// when set to true/1, adding new vals or modifying type of initial values is forbidden
-$noadd = (isset($_GET['noadd'])) ? (bool)$_GET['noadd'] : false;
+$noadd = ( isset( $_GET['noadd'] ) ) ? (bool)$_GET['noadd'] : false;
 
 require_once( "kernel/common/template.php" );
 $tpl = templateInit();
