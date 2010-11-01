@@ -2,7 +2,6 @@
 
 - in debugger:
   + add siteaccess choice for local server on the left-hand col (nb: looks like getting correct urls for other sa is quite hard... langswitcher does it for nodes only?)
-  + add a button to add session cookie to requests - or at least a help text
   + add ezjscore, soap, rest support
   + allow to hide/show client's options
   + add nr. of total w methods found when asking for list of methods
