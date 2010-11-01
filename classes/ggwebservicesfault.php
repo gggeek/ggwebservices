@@ -34,6 +34,15 @@ class  ggWebservicesFault
         return $this->FaultString;
     }
 
+    /**
+    * This is called when an error is converted to plain text (without indication
+    * of the expected text format), such as eg. by ezjscore "call" view
+    */
+    function __tostring()
+    {
+        return $this->FaultCode . ': "' . $this->FaultString . '"';
+    }
+
     /// Contains the fault code
     protected $FaultCode;
 
