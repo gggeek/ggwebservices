@@ -35,6 +35,13 @@ foreach ( array( 'jsonrpc' , 'xmlrpc' ) as  $protocol )
         {
             $params .= '&wstype=1';
         }
+        /// @todo filtyer out all cookies except the one for current session ?
+        $ccookies = array();
+        foreach ( $_COOKIE as $cn => $cv )
+        {
+            $ccookies[] = $cn.urlencode('=').$cv;
+        }
+        $params .= '&clientcookies=' . implode( ', ', $ccookies );
         $server_list[$protocol] = $params;
     }
     else
