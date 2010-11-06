@@ -516,6 +516,13 @@ Server Address: phpxmlrpc.sourceforge.net<br/>
 Path: /server.php
 </p>
 
+<h3>Notes:</h3>
+<ul>
+<li>The method calls are executed from the server (php code), not from the browser (javascript)</li>
+<li>Clicking on the left menu links will preload the address of this server itself for testing in the debugger. In this case the server will send a call to itself</li>
+<li>If you get an error <i>Fault code: [2] Reason: 'Invalid return payload: enable debugging to examine incoming payload Invalid data'</i> when testing the server itself, a probable cause is that you did neither specify a session cookie for your call, nor give rights to the anonymous user to execute webservice calls</li>
+</ul>
+
 <?php
   }
 ?>
