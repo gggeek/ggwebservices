@@ -43,6 +43,7 @@ class ggeZWebservicesClient
         $providerURI = $ini->variable( $server, 'providerUri' );
         $providerType = $ini->variable( $server, 'providerType' );
         $wsdl = $ini->hasVariable( $server, 'WSDL' ) ? $ini->variable( $server, 'WSDL' ) : '';
+        $soapversion = ( $ini->hasVariable( $server, 'SoapVersion' ) && strtolower( $ini->variable( $server, 'SoapVersion' ) ) == 'soap12' ) ? SOAP_1_2 : SOAP_1_1;
         $providerAuthtype = $ini->hasVariable( $server, 'providerAuthtype' ) ? $ini->variable( $server, 'providerAuthtype' ) : false; /// @TODO: to be implemented
         $providerSSLRequired = $ini->hasVariable( $server, 'providerSSLRequired' ) ? $ini->variable( $server, 'providerSSLRequired' ) : false; /// @TODO: to be implemented
         $providerUsername = $ini->hasVariable( $server, 'providerUsername' ) ? $ini->variable( $server, 'providerUsername' ) : false;
@@ -178,6 +179,10 @@ class ggeZWebservicesClient
             if ( $providerType != 'PhpSOAP' )
             {
                 ggeZWebservices::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
+            }
+            else
+            {
+                $client->setSoapVersion( $soapversion );
             }
             $response = $client->send( $request );
             if ( $providerType == 'PhpSOAP' )

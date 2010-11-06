@@ -42,8 +42,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
     function send( $request )
     {
         /// @todo add a check that request is a soap / phpsoap one, or it will have no namespace method...
-
-        $options = array( 'trace' => true, 'user_agent' => $this->UserAgent, 'connection_timeout' => $this->Timeout, 'exceptions' => true );
+        $options = array( 'trace' => true, 'user_agent' => $this->UserAgent, 'connection_timeout' => $this->Timeout, 'exceptions' => true, 'soap_version' => $this->SoapVersion );
         if ( $this->RequestCompression == 'deflate' )
         {
             $options['compression'] = SOAP_COMPRESSION_DEFLATE | 9;
@@ -141,10 +140,16 @@ class ggPhpSOAPClient extends ggWebservicesClient
         return $this->requestPayload;
     }
 
+    public function setSoapVersion( $version )
+    {
+        $this->SoapVersion = $version;
+    }
+
     /// @todo override function payload() of parent and throw an exception when called, as we do not set up proper RequestHeaders anyway
 
     protected $Wsdl;
     protected $requestPayload = '';
+    protected $SoapVersion = SOAP_1_1;
 }
 
 ?>
