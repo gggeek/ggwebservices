@@ -136,6 +136,8 @@
       document.frmxmlrpc.yes.checked = true;
       document.frmezjscore.yes.checked = false;
       document.frmaction.wstype.value="0";
+      document.frmaction.listmethods.disabled = false;
+      document.frmaction.describemethod.disabled = false;
     }
     else if (wstype == 1)
     {
@@ -144,6 +146,8 @@
       document.frmxmlrpc.yes.checked = false;
       document.frmezjscore.yes.checked = false;
       document.frmaction.wstype.value="1";
+      document.frmaction.listmethods.disabled = false;
+      document.frmaction.describemethod.disabled = false;
     }
     else if (wstype == 2)
     {
@@ -152,7 +156,11 @@
       document.frmxmlrpc.yes.checked = false;
       document.frmezjscore.yes.checked = true;
       document.frmaction.wstype.value="2";
-      //displaydialogeditorbtn(false);
+      document.frmaction.executemethod.checked = true;
+      document.frmaction.listmethods.checked = false;
+      document.frmaction.listmethods.disabled = true;
+      document.frmaction.describemethod.checked = false;
+      document.frmaction.describemethod.disabled = true;
     }
     // used to make sure the 'edit' link to the visual editor gets reset properly
     switchaction();
@@ -206,7 +214,7 @@
 {/literal}//-->
 </script>
 </head>
-<body onload="switchtransport({$params.wstype}); switchaction(); switchssl(); switchauth(); swicthcainfo();{if $params.run} document.forms[2].submit();{/if}">
+<body onload="switchtransport({$params.wstype}); switchssl(); switchauth(); swicthcainfo();{if $params.run} document.forms[2].submit();{/if}">
 <h1>XMLRPC <form name="frmxmlrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(0);"/></form>
 /<form name="frmjsonrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(1);"/></form>JSONRPC
 /<form name="frmezjscore" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(2);"/></form>EZJSCORE
@@ -226,9 +234,9 @@ Debugger (based on the <a href="http://phpxmlrpc.sourceforge.net">PHP-XMLRPC</a>
 <table id="actionblock">
 <tr>
 <td><h2>Action</h2></td>
-<td>List available methods<input type="radio" name="action" value="list"{if eq($params.action,'list')} checked="checked"{/if} onclick="switchaction();" /></td>
-<td>Describe method<input type="radio" name="action" value="describe"{if eq($params.action, 'describe')} checked="checked"{/if} onclick="switchaction();" /></td>
-<td>Execute method<input type="radio" name="action" value="execute"{if eq($params.action, 'execute')} checked="checked"{/if} onclick="switchaction();" /></td>
+<td>List available methods<input type="radio" id="listmethods" name="action" value="list"{if eq($params.action,'list')} checked="checked"{/if} onclick="switchaction();" /></td>
+<td>Describe method<input type="radio" id="describemethod" name="action" value="describe"{if eq($params.action, 'describe')} checked="checked"{/if} onclick="switchaction();" /></td>
+<td>Execute method<input type="radio" id="executemethod" name="action" value="execute"{if eq($params.action, 'execute')} checked="checked"{/if} onclick="switchaction();" /></td>
 <!--<td>Generate stub for method call<input type="radio" name="action" value="wrap"{if eq($params.action, 'wrap')} checked="checked"{/if} onclick="switchaction();" /></td>-->
 </tr>
 </table>

@@ -2,7 +2,8 @@ html {overflow: -moz-scrollbars-vertical;}
 body {padding: 0.5em; background-color: #EEEEEE; font-family: Verdana, Arial, Helvetica; font-size: 8pt;}
 h1 {font-size: 12pt; margin: 0.5em;}
 h2 {font-size: 10pt; display: inline; vertical-align: top;}
-table {border: 1px solid gray; margin-bottom: 0.5em; padding: 0.25em; width: 100%;}
+table {border-style: solid; border-width: 1px 1px 0 1px; border-color: gray; padding: 0.25em; width: 100%;}
+#optionsblock {border-width:1px;}
 #methodpayload {display: inline;}
 td {vertical-align: top; font-family: Verdana, Arial, Helvetica; font-size: 8pt;}
 .labelcell {text-align: right;}
