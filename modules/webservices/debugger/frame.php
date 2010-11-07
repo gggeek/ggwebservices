@@ -16,11 +16,19 @@ require_once( "kernel/common/template.php" );
 $wsINI = eZINI::instance( 'wsproviders.ini' );
 
 // calculate params for local server, for consistency with what we do below
-foreach ( array( 'jsonrpc' , 'xmlrpc' ) as  $protocol )
+foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore' ) as  $i => $protocol )
 {
-    $uri = "webservices/execute/$protocol";
+    if ( $protocol == 'ezjscore' )
+    {
+        $uri = "ezjscore/call";
+    }
+    else
+    {
+        $uri = "webservices/execute/$protocol";
+    }
     eZURI::transformURI( $uri , false, 'full' );
-    if ( $wsINI->variable( 'GeneralSettings', 'Enable' . strtoupper( $protocol ) ) == 'true' )
+/// @todo disable link if ezjscore not active ...
+    if ( ( $protocol == 'ezjscore' && true ) || $wsINI->variable( 'GeneralSettings', 'Enable' . strtoupper( $protocol ) ) == 'true' )
     {
         $url = parse_url( $uri );
         $params = '?action=';
@@ -31,10 +39,7 @@ foreach ( array( 'jsonrpc' , 'xmlrpc' ) as  $protocol )
         {
             $params .= '&protocol=2';
         }
-        if ( $protocol == 'jsonrpc' )
-        {
-            $params .= '&wstype=1';
-        }
+        $params .= "&wstype=$i";
         /// @todo filtyer out all cookies except the one for current session ?
         $ccookies = array();
         foreach ( $_COOKIE as $cn => $cv )

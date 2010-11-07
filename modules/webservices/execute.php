@@ -60,7 +60,7 @@ if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
     $wsINI = eZINI::instance( 'wsproviders.ini' );
     if ( $wsINI->variable( 'GeneralSettings', 'JscoreIntegration' ) == 'enabled' && class_exists( 'ezjscServerRouter' ) )
     {
-        if ( strpos( $functionName, '::' ) !== false)
+        if ( strpos( $functionName, '::' ) !== false )
         {
             $jscserver = ezjscServerRouter::getInstance( array_merge( explode( '::', $functionName ), $params ) );
             if ( $jscserver != null )

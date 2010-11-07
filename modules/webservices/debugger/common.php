@@ -39,9 +39,10 @@
   $params['id'] = '';
   if (isset($_GET['action']))
   {
-    if (isset($_GET['wstype']) && $_GET['wstype'] == '1')
+    if (isset($_GET['wstype']) && ($_GET['wstype'] == '1' || $_GET['wstype'] == '2'))
     {
-      $params['wstype'] = 1;
+      $params['wstype'] = $_GET['wstype'];
+      // this is only unseful for jsonrpc, but anyway
       if (isset($_GET['id']))
         $params['id'] = $_GET['id'];
     }

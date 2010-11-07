@@ -58,7 +58,18 @@ td form {margin: 0;}
       set_time_limit($timeout+10);
 
     //include('xmlrpc.inc');
-    if ($wstype == 1)
+    if ($wstype == 2)
+    {
+      //@include('ezjscore.inc');
+      if (!class_exists('ezjscore_client'))
+      {
+        die('Error: to debug the ezjscore protocol the ezjscore.inc file is needed');
+      }
+      $clientclass = 'ezjscore_client';
+      $msgclass = 'ezjscoremsg';
+      $protoname = 'EZJSCORE';
+    }
+    else if ($wstype == 1)
     {
       //@include('jsonrpc.inc');
       if (!class_exists('jsonrpc_client'))
@@ -184,8 +195,12 @@ td form {margin: 0;}
         if (!payload_is_safe($payload))
           die("Tsk tsk tsk, please stop it or I will have to call in the cops!");
         $msg[0] = new $msgclass($method, null, $id);
-        // hack! build xml payload by hand
-        if ($wstype == 1)
+        // hack! build payload by hand
+        if ($wstype == 2)
+        {
+          $msg[0]->payload = "ezjscServer_function_arguments=" . urlencode($method) . '&' . $payload;
+        }
+        else if ($wstype == 1)
         {
           $msg[0]->payload = "{\n".
             '"method": "' . $method . "\",\n\"params\": [" .
@@ -234,6 +249,8 @@ td form {margin: 0;}
     foreach ($msg as $message)
     {
       // catch errors: for older xmlrpc libs, send does not return by ref
+var_dump($client);
+var_dump($message);
       @$response =& $client->send($message, $timeout, $httpprotocol);
       $resp[] = $response;
       if (!$response || $response->faultCode())
@@ -353,7 +370,7 @@ td form {margin: 0;}
                 {
                   $y = $x->arraymem($k);
                   echo $y->scalarval();
-                  if ($wstype != 1)
+                  if ($wstype != 1 && $wstype != 2)
                   {
                     $payload = $payload . '<param><value><'.htmlspecialchars($y->scalarval()).'></'.htmlspecialchars($y->scalarval())."></value></param>\n";
                   }
@@ -399,7 +416,7 @@ td form {margin: 0;}
             "<input type=\"hidden\" name=\"altmethodpayload\" value=\"".htmlspecialchars($alt_payload)."\" />".
             "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
             "<input type=\"hidden\" name=\"action\" value=\"execute\" />";
-            if ($wstype != 1)
+            if ($wstype != 1 && $wstype != 2)
               echo "<input type=\"submit\" value=\"Load method synopsis\" />";
             echo "</form></td>\n";
 
@@ -459,7 +476,11 @@ td form {margin: 0;}
           {
             $opts = 1; // complete client copy in stub code
           }
-          if ($wstype == 1)
+          if ($wstype == 2)
+          {
+            $prefix = 'ezjscore';
+          }
+          else if ($wstype == 1)
           {
             $prefix = 'jsonrpc';
           }

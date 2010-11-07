@@ -64,7 +64,7 @@
     if (action == 'execute')
     {
       document.frmaction.methodpayload.disabled = false;
-      displaydialogeditorbtn(true);//if (document.getElementById('methodpayloadbtn') != undefined) document.getElementById('methodpayloadbtn').disabled = false;
+      displaydialogeditorbtn(document.frmezjscore.yes.checked == false);//if (document.getElementById('methodpayloadbtn') != undefined) document.getElementById('methodpayloadbtn').disabled = false;
       document.frmaction.method.disabled = false;
       document.frmaction.methodpayload.rows = 10;
     }
@@ -127,22 +127,35 @@
     }
   }
 
-  function switchtransport(is_json)
+  function switchtransport(wstype)
   {
-    if (is_json == 0)
+    if (wstype == 0)
     {
       document.getElementById("idcell").style.visibility = 'hidden';
       document.frmjsonrpc.yes.checked = false;
       document.frmxmlrpc.yes.checked = true;
+      document.frmezjscore.yes.checked = false;
       document.frmaction.wstype.value="0";
     }
-    else
+    else if (wstype == 1)
     {
       document.getElementById("idcell").style.visibility = 'visible';
       document.frmjsonrpc.yes.checked = true;
       document.frmxmlrpc.yes.checked = false;
+      document.frmezjscore.yes.checked = false;
       document.frmaction.wstype.value="1";
     }
+    else if (wstype == 2)
+    {
+      document.getElementById("idcell").style.visibility = 'hidden';
+      document.frmjsonrpc.yes.checked = false;
+      document.frmxmlrpc.yes.checked = false;
+      document.frmezjscore.yes.checked = true;
+      document.frmaction.wstype.value="2";
+      //displaydialogeditorbtn(false);
+    }
+    // used to make sure the 'edit' link to the visual editor gets reset properly
+    switchaction();
   }
 
   function displaydialogeditorbtn(show)
@@ -162,6 +175,8 @@
 	  var url = '{/literal}{concat('webservices/debugger/visualeditor?params=',$params.alt_payload)|ezurl(no)}{literal}';
 	  if (document.frmaction.wstype.value == "1")
 	    url += '&type=jsonrpc';
+      else if (document.frmaction.wstype.value == "2")
+	    url += '&type=ezjscore';
 	  var wnd = window.open(url, '_blank', 'width=750, height=400, location=0, resizable=1, menubar=0, scrollbars=1');
   }
 
@@ -193,7 +208,9 @@
 </head>
 <body onload="switchtransport({$params.wstype}); switchaction(); switchssl(); switchauth(); swicthcainfo();{if $params.run} document.forms[2].submit();{/if}">
 <h1>XMLRPC <form name="frmxmlrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(0);"/></form>
-/<form name="frmjsonrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(1);"/></form>JSONRPC Debugger (based on the <a href="http://phpxmlrpc.sourceforge.net">PHP-XMLRPC</a> library)</h1>
+/<form name="frmjsonrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(1);"/></form>JSONRPC
+/<form name="frmezjscore" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(2);"/></form>EZJSCORE
+Debugger (based on the <a href="http://phpxmlrpc.sourceforge.net">PHP-XMLRPC</a> library)</h1>
 <form name="frmaction" method="get" action="../action/" target="frmaction" onSubmit="switchFormMethod();"
 >
 
