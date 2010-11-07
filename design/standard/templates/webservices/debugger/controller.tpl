@@ -225,9 +225,9 @@ Debugger (based on the <a href="http://phpxmlrpc.sourceforge.net">PHP-XMLRPC</a>
 <table id="serverblock">
 <tr>
 <td><h2>Target server</h2></td>
-<td class="labelcell">Address:</td><td><input type="text" name="host" value="{$params.host|wash()}" /></td>
+<td class="labelcell">Address:</td><td><input type="text" name="host" value="{$params.host|wash()}" size="25" /></td>
 <td class="labelcell">Port:</td><td><input type="text" name="port" value="{$params.port|wash()}" size="5" maxlength="5" /></td>
-<td class="labelcell">Path:</td><td><input type="text" name="path" value="{$params.path|wash()}" /></td>
+<td class="labelcell">Path:</td><td><input type="text" name="path" value="{$params.path|wash()}" size="40" /></td>
 </tr>
 </table>
 
@@ -245,7 +245,7 @@ Debugger (based on the <a href="http://phpxmlrpc.sourceforge.net">PHP-XMLRPC</a>
 <table id="methodblock">
 <tr>
 <td><h2>Method</h2></td>
-<td class="labelcell">Name:</td><td><input type="text" name="method" value="{$params.method|wash()}" /></td>
+<td class="labelcell">Name:</td><td><input type="text" name="method" value="{$params.method|wash()}" size="25" /></td>
 <td class="labelcell">Payload:<br/><div id="methodpayloadbtn"></div></td><td><textarea id="methodpayload" name="methodpayload" rows="1" cols="40">{$params.payload|wash()}</textarea></td>
 <td class="labelcell" id="idcell">Msg id: <input type="text" name="id" size="3" value="{$params.id|wash()}"/></td>
 <td><input type="hidden" name="wstype" value="{$params.wstype}" />
@@ -268,6 +268,12 @@ Debugger (based on the <a href="http://phpxmlrpc.sourceforge.net">PHP-XMLRPC</a>
 <option value="1"{if eq($params.protocol, 1)} selected="selected"{/if}>HTTP 1.1</option>
 <option value="2"{if eq($params.protocol, 2)} selected="selected"{/if}>HTTPS</option>
 </select></td>
+</tr>
+<tr>
+<td class="labelcell">COOKIES:</td>
+<td></td>
+<td colspan="5"><input type="text" name="clientcookies" size="100" value="{$params.clientcookies|wash()}" /></td>
+<!--<td colspan="2">Format: 'cookie1=value1, cookie2=value2'</td>-->
 </tr>
 <tr>
 <td class="labelcell">AUTH:</td>
@@ -310,11 +316,7 @@ Debugger (based on the <a href="http://phpxmlrpc.sourceforge.net">PHP-XMLRPC</a>
 <option value="3"{if eq($params.responsecompression, 3)} selected="selected"{/if}>Any</option>
 </select></td>
 <td></td>
-</tr>
-<tr>
-<td class="labelcell">COOKIES:</td>
-<td colspan="4" class="labelcell"><input type="text" name="clientcookies" size="80" value="{$params.clientcookies|wash()}" /></td>
-<td colspan="2">Format: 'cookie1=value1, cookie2=value2'</td>
+<td></td>
 </tr>
 </table>
 
