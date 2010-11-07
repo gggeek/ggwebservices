@@ -840,6 +840,10 @@
 		* curl_version() to determine wheter compression is supported or not
 		*/
 		var $accepted_compression = array();
+
+		/** If not empty, used for 'Accept:' headers in request */
+		var $accepted_content_type = array();
+
 		/**
 		* Name of compression scheme to be used for sending requests.
 		* Either null, gzip or deflate
@@ -1066,6 +1070,14 @@
 		}
 
 		/**
+		* @param array $contenttype
+		*/
+		function setAcceptedMediaType($contenttype)
+		{
+			$this->accepted_content_type = $contenttype;
+		}
+
+		/**
 		* Enables/disables http compression of xmlrpc request.
 		* Take care when sending compressed requests: servers might not support them
 		* (and automatic fallback to uncompressed requests is not yet implemented)
@@ -1289,6 +1301,11 @@
 				$accepted_encoding = 'Accept-Encoding: ' . implode(', ', $this->accepted_compression) . "\r\n";
 			}
 
+			if(is_array($this->accepted_content_type) && count($this->accepted_content_type))
+			{
+				$accepted_content_type = 'Accept: ' . implode(', ', $this->accepted_content_type) . "\r\n";
+			}
+
 			$proxy_credentials = '';
 			if($proxyhost)
 			{
@@ -1348,6 +1365,7 @@
 				$credentials .
 				$proxy_credentials .
 				$accepted_encoding .
+				$accepted_content_type .
 				$encoding_hdr .
 				'Accept-Charset: ' . implode(',', $this->accepted_charset_encodings) . "\r\n" .
 				$cookieheader .
@@ -1552,6 +1570,10 @@
 			}
 			// extra headers
 			$headers = array('Content-Type: ' . $msg->content_type , 'Accept-Charset: ' . implode(',', $this->accepted_charset_encodings));
+			if(is_array($this->accepted_content_type) && count($this->accepted_content_type))
+			{
+				$headers[] = 'Accept: ' . implode(', ', $this->accepted_content_type);
+			}
 			// if no keepalive is wanted, let the server know it in advance
 			if(!$keepalive)
 			{
