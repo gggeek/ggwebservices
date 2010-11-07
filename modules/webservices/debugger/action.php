@@ -249,8 +249,6 @@ td form {margin: 0;}
     foreach ($msg as $message)
     {
       // catch errors: for older xmlrpc libs, send does not return by ref
-var_dump($client);
-var_dump($message);
       @$response =& $client->send($message, $timeout, $httpprotocol);
       $resp[] = $response;
       if (!$response || $response->faultCode())
@@ -542,6 +540,7 @@ Path: /server.php
 <li>The method calls are executed from the server (php code), not from the browser (javascript)</li>
 <li>Clicking on the left menu links will preload the address of this server itself for testing in the debugger. In this case the server will send a call to itself</li>
 <li>If you get an error <i>Fault code: [2] Reason: 'Invalid return payload: enable debugging to examine incoming payload Invalid data'</i> when testing the server itself, a probable cause is that you did neither specify a session cookie for your call, nor give rights to the anonymous user to execute webservice calls</li>
+<li>The format for cookies is to separate them using a comma</li>
 </ul>
 
 <?php
