@@ -7,15 +7,16 @@ Changes from 0.5 to 0.6 - released 2010/xx/yy
 
 *General:
 
-- Added more sample php files, in doc/samples
-- Two out of three debugger views now use templates for rendering
+- The debugger now supports debugging ezjscore methods
 - The debugger automatically loads session cookies when clicking in the left col
   manu to invoke the webservices on the local server, making its usage much more
   streamlined
+- Add support for soap 1.2 besides soap 1.1 (the standard) in the soap client
+- Added more sample php files, in doc/samples
 - add a __tostring method to class ggWebservicesFault to allow debugging of
   error responses when the code is invoked via ezjscore with no specific
   content-type header in the request
-- Add support for soap 1.2 besides soap 1.1 (the standard)
+- Two out of three debugger views now use templates for rendering
 
 *Bugfixes:
 

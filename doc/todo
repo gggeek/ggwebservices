@@ -2,10 +2,11 @@
 
 - in debugger:
   + add siteaccess choice for local server on the left-hand col (nb: looks like getting correct urls for other sa is quite hard... langswitcher does it for nodes only?)
-  + add ezjscore, soap, rest support
+  + add soap, rest support
   + allow to hide/show client's options
   + add nr. of total w methods found when asking for list of methods
-  + improve formatting (eg. 1st line, visualeditor space on top, etc...)
+  + improve formatting (eg. 1st line, visualeditor space on top, add admin2 tpl for left menu with resizing handle, etc...)
+  + allow picking preferred content-type for responses when using ezjscore
 
 - flesh out soap server w. wsdl support (use ezpo2xsd method from ezpo_insepctor)
 
