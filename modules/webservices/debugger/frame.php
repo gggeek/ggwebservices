@@ -28,7 +28,7 @@ foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore' ) as  $i => $protocol )
     }
     eZURI::transformURI( $uri , false, 'full' );
 /// @todo disable link if ezjscore not active ...
-    if ( ( $protocol == 'ezjscore' && in_array( 'ezjscore', eZExtension::activeExtensions() ) ) || $wsINI->variable( 'GeneralSettings', 'Enable' . strtoupper( $protocol ) ) == 'true' )
+    if ( ( $protocol == 'ezjscore' && in_array( 'ezjscore', eZExtension::activeExtensions() ) ) || ( $protocol != 'ezjscore' && $wsINI->variable( 'GeneralSettings', 'Enable' . strtoupper( $protocol ) ) == 'true' ) )
     {
         $url = parse_url( $uri );
         $params = '?action=';
