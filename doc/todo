@@ -21,6 +21,8 @@
 
 - add cookie support in the http client
 
+- add support for limiting access to webservices by incoming IP address (often doen for stupid ws clients that cannot login)
+
 - add ezjscore client as subclass of ggpostclient
 
 - add siteaccess limitation to proxy view
