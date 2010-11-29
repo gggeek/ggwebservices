@@ -1,10 +1,14 @@
+- add support for limiting access to webservices by incoming IP address (often done for stupid ws clients that cannot login)
+
+- add system::listMethods webservice to ezjscore
+
 - test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
 
 - in debugger:
   + add siteaccess choice for local server on the left-hand col (nb: looks like getting correct urls for other sa is quite hard... langswitcher does it for nodes only?)
   + add soap, rest support
   + allow to hide/show client's options
-  + add nr. of total w methods found when asking for list of methods
+  + add nr. of total ws methods found when asking for list of methods
   + improve formatting (eg. 1st line, visualeditor space on top, add admin2 tpl for left menu with resizing handle, etc...)
   + allow picking preferred content-type for responses when using ezjscore
 
@@ -20,8 +24,6 @@
 - test support for calling jscore and plain-registered methods with index_ajax controller; test again custom controller too
 
 - add cookie support in the http client
-
-- add support for limiting access to webservices by incoming IP address (often doen for stupid ws clients that cannot login)
 
 - add ezjscore client as subclass of ggpostclient
 
