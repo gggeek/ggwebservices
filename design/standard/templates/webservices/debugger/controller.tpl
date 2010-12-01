@@ -136,7 +136,7 @@
       document.frmxmlrpc.yes.checked = true;
       document.frmezjscore.yes.checked = false;
       document.frmaction.wstype.value="0";
-      document.frmaction.listmethods.disabled = false;
+      //document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
     }
     else if (wstype == 1)
@@ -146,7 +146,7 @@
       document.frmxmlrpc.yes.checked = false;
       document.frmezjscore.yes.checked = false;
       document.frmaction.wstype.value="1";
-      document.frmaction.listmethods.disabled = false;
+      //document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
     }
     else if (wstype == 2)
@@ -156,9 +156,9 @@
       document.frmxmlrpc.yes.checked = false;
       document.frmezjscore.yes.checked = true;
       document.frmaction.wstype.value="2";
-      document.frmaction.executemethod.checked = true;
-      document.frmaction.listmethods.checked = false;
-      document.frmaction.listmethods.disabled = true;
+      //document.frmaction.executemethod.checked = true;
+      //document.frmaction.listmethods.checked = false;
+      //document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.checked = false;
       document.frmaction.describemethod.disabled = true;
     }

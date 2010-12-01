@@ -188,7 +188,10 @@ td form {margin: 0;}
         $actionname = 'Description of method "'.$method.'"';
         break;
       case 'list':
-        $msg[0] = new $msgclass('system.listMethods', null, $id);
+        if ($wstype == 2)
+            $msg[0] = new $msgclass('system::listMethods', null);
+        else
+            $msg[0] = new $msgclass('system.listMethods', null, $id);
         $actionname = 'List of available methods';
         break;
       case 'execute':
@@ -283,6 +286,10 @@ td form {margin: 0;}
         case 'list':
 
         $v = $response->value();
+        // dirty hack coz we're lazy: encode + redecode just afterwards
+        if (is_array($v)) {
+            $v = php_xmlrpc_encode($v);
+        }
         if ($v->kindOf()=="array")
         {
           $max = $v->arraysize();
@@ -292,7 +299,8 @@ td form {margin: 0;}
           {
             $rec = $v->arraymem($i);
             if ($i%2) $class=' class="oddrow"'; else $class = ' class="evenrow"';
-            echo ("<tr><td$class>".htmlspecialchars($rec->scalarval())."</td><td$class><form action=\"../controller/\" method=\"get\" target=\"frmcontroller\">".
+            echo "<tr><td$class>".htmlspecialchars($rec->scalarval())."</td><td$class>";
+            if ($wstype != 2) echo "<form action=\"../controller/\" method=\"get\" target=\"frmcontroller\">".
               "<input type=\"hidden\" name=\"host\" value=\"".htmlspecialchars($host)."\" />".
               "<input type=\"hidden\" name=\"port\" value=\"".htmlspecialchars($port)."\" />".
               "<input type=\"hidden\" name=\"path\" value=\"".htmlspecialchars($path)."\" />".
@@ -316,7 +324,8 @@ td form {margin: 0;}
               "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
               "<input type=\"hidden\" name=\"action\" value=\"describe\" />".
               "<input type=\"hidden\" name=\"run\" value=\"now\" />".
-              "<input type=\"submit\" value=\"Describe\" /></form></td>");
+              "<input type=\"submit\" value=\"Describe\" /></form>\"";
+            echo "</td>";
             //echo("</tr>\n");
 
             // generate lo scheletro per il method payload per eventuali test
