@@ -20,7 +20,7 @@ abstract class ggWebservicesRequest
     }
 
     /**
-    * Returns the request payload ancoded according to its specific protocol
+    * Returns the request payload encoded according to its specific protocol
     * @return string
     */
     abstract function payload();

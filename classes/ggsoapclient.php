@@ -22,7 +22,7 @@ class ggSOAPClient extends ggWebservicesClient
     */
     function send( $request )
     {
-        /// @todo add a check that request is a sooap one, or it will have no namespace method...
+        /// @todo add a check that request is a soap one, or it will have no namespace method...
         $this->RequestHeaders = array( "SOAPAction" => $request->ns() . '/' . $request->name() );
         $response = parent::send( $request );
         return $response;
