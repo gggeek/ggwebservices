@@ -155,7 +155,7 @@ abstract class ggWebservicesClient
                 stream_set_timeout( $fp, $this->Timeout );
             }
 
-            $HTTPRequest = $this->payload( $request->payload() );
+            $HTTPRequest = $this->payload( $request->payload(), $request->querystring() );
 
             if ( !fwrite( $fp, $HTTPRequest, strlen( $HTTPRequest ) ) )
             {
@@ -177,7 +177,7 @@ abstract class ggWebservicesClient
         }
         else
         {
-            $URL = $this->Protocol . "://" . $this->Server . ":" . $this->Port . $this->Path;
+            $URL = $this->Protocol . "://" . $this->Server . ":" . $this->Port . $this->Path . $request->querystring();
             $ch = curl_init ( $URL );
 
             if ( $ch != 0 )
@@ -237,8 +237,10 @@ abstract class ggWebservicesClient
 
     /**
      * Build and return full HTTP payload out of a request payload (and other server status vars)
+     * @param string $payload
+     * @param string $query_string appended to
      */
-    protected function payload( $payload )
+    protected function payload( $payload, $query_string = '' )
     {
         $authentification = "";
         if ( ( $this->login() != "" ) )
@@ -249,7 +251,7 @@ abstract class ggWebservicesClient
         $proxy_credentials = '';
         if( $this->Proxy != '' )
         {
-            $uri = $this->Protocol . '://' . $this->Server . ':' . $this->Port . $this->Path;
+            $uri = $this->Protocol . '://' . $this->Server . ':' . $this->Port . $this->Path . $query_string;
             if( $this->ProxyLogin != '' )
             {
                 if ( $this->ProxyAuthType != 1 )
@@ -262,7 +264,7 @@ abstract class ggWebservicesClient
         else
         {
             // if no proxy in use, URLS in request are not absolute but relative
-            $uri = $this->Path;
+            $uri = $this->Path . $query_string;
         }
 
         $HTTPRequest = $this->Verb . " " . $uri . " HTTP/1.0\r\n" .

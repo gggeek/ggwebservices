@@ -33,6 +33,17 @@ abstract class ggWebservicesRequest
     abstract function decodeStream( $rawRequest );
 
     /**
+    * Returns an additional part that will be appended at the end of the URL
+    * set in the client. Useful for protocols that encode parameters in the URL and
+    * use GET instead of post.
+    * Override it in case of need.
+    */
+    function queryString()
+    {
+        return '';
+    }
+
+    /**
       Returns the request name.
     */
     function name()
