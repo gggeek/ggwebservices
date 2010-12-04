@@ -137,7 +137,7 @@
       document.frmezjscore.yes.checked = false;
       document.frmaction.wstype.value="0";
       //document.frmaction.listmethods.disabled = false;
-      document.frmaction.describemethod.disabled = false;
+      //document.frmaction.describemethod.disabled = false;
     }
     else if (wstype == 1)
     {
@@ -147,7 +147,7 @@
       document.frmezjscore.yes.checked = false;
       document.frmaction.wstype.value="1";
       //document.frmaction.listmethods.disabled = false;
-      document.frmaction.describemethod.disabled = false;
+      //document.frmaction.describemethod.disabled = false;
     }
     else if (wstype == 2)
     {
@@ -159,8 +159,8 @@
       //document.frmaction.executemethod.checked = true;
       //document.frmaction.listmethods.checked = false;
       //document.frmaction.listmethods.disabled = false;
-      document.frmaction.describemethod.checked = false;
-      document.frmaction.describemethod.disabled = true;
+      //document.frmaction.describemethod.checked = false;
+      //document.frmaction.describemethod.disabled = true;
     }
     // used to make sure the 'edit' link to the visual editor gets reset properly
     switchaction();
