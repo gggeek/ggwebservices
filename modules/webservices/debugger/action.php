@@ -68,6 +68,7 @@ td form {margin: 0;}
       $clientclass = 'ezjscore_client';
       $msgclass = 'ezjscoremsg';
       $protoname = 'EZJSCORE';
+      $methodseparator = '::';
     }
     else if ($wstype == 1)
     {
@@ -79,12 +80,14 @@ td form {margin: 0;}
       $clientclass = 'jsonrpc_client';
       $msgclass = 'jsonrpcmsg';
       $protoname = 'JSONRPC';
+      $methodseparator = '.';
     }
     else
     {
       $clientclass = 'xmlrpc_client';
       $msgclass = 'xmlrpcmsg';
       $protoname = 'XMLRPC';
+      $methodseparator = '.';
     }
 
     if ($port != "")
@@ -172,26 +175,30 @@ td form {margin: 0;}
     $msg = array();
     switch ($action) {
 
-      case 'wrap':
+      // 'wrap' not supported in this version of the debugger
+      /* case 'wrap':
         @include('xmlrpc_wrappers.inc');
         if (!function_exists('build_remote_method_wrapper_code'))
         {
           die('Error: to enable creation of method stubs the xmlrpc_wrappers.inc file is needed');
         }
-        // fall thru intentionally
+        // fall thru intentionally */
       case 'describe':
-      case 'wrap':
-        $msg[0] = new $msgclass('system.methodHelp', null, $id);
-        $msg[0]->addparam(new xmlrpcval($method));
-        $msg[1] = new $msgclass('system.methodSignature', null, $id+1);
-        $msg[1]->addparam(new xmlrpcval($method));
+        if ($wstype != 2)
+        {
+          $msg[0] = new $msgclass('system'.$methodseparator.'methodHelp', null, $id);
+          $msg[0]->addparam(new xmlrpcval($method));
+          $msg[1] = new $msgclass('system'.$methodseparator.'methodSignature', null, $id+1);
+          $msg[1]->addparam(new xmlrpcval($method));
+        }
+        else
+        {
+          $msg[0] = new $msgclass('system'.$methodseparator.'methodHelp'.$methodseparator.$method, null);
+        }
         $actionname = 'Description of method "'.$method.'"';
         break;
       case 'list':
-        if ($wstype == 2)
-            $msg[0] = new $msgclass('system::listMethods', null);
-        else
-            $msg[0] = new $msgclass('system.listMethods', null, $id);
+        $msg[0] = new $msgclass('system'.$methodseparator.'listMethods', null, $id);
         $actionname = 'List of available methods';
         break;
       case 'execute':
@@ -287,8 +294,10 @@ td form {margin: 0;}
 
         $v = $response->value();
         // dirty hack coz we're lazy: encode + redecode just afterwards
-        if (is_array($v)) {
-            $v = php_xmlrpc_encode($v);
+        // if we get a php array (as we get from ezjscore client)
+        if (!is_object($v))
+        {
+          $v = php_xmlrpc_encode($v);
         }
         if ($v->kindOf()=="array")
         {
@@ -300,7 +309,7 @@ td form {margin: 0;}
             $rec = $v->arraymem($i);
             if ($i%2) $class=' class="oddrow"'; else $class = ' class="evenrow"';
             echo "<tr><td$class>".htmlspecialchars($rec->scalarval())."</td><td$class>";
-            if ($wstype != 2) echo "<form action=\"../controller/\" method=\"get\" target=\"frmcontroller\">".
+            echo "<form action=\"../controller/\" method=\"get\" target=\"frmcontroller\">".
               "<input type=\"hidden\" name=\"host\" value=\"".htmlspecialchars($host)."\" />".
               "<input type=\"hidden\" name=\"port\" value=\"".htmlspecialchars($port)."\" />".
               "<input type=\"hidden\" name=\"path\" value=\"".htmlspecialchars($path)."\" />".
@@ -324,7 +333,7 @@ td form {margin: 0;}
               "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
               "<input type=\"hidden\" name=\"action\" value=\"describe\" />".
               "<input type=\"hidden\" name=\"run\" value=\"now\" />".
-              "<input type=\"submit\" value=\"Describe\" /></form>\"";
+              "<input type=\"submit\" value=\"Describe\" /></form>";
             echo "</td>";
             //echo("</tr>\n");
 
@@ -343,12 +352,28 @@ td form {margin: 0;}
           }
           echo "</tbody>\n</table>";
         }
-          break;
+        break;
 
         case 'describe':
 
         $r1 = $resp[0]->value();
-        $r2 = $resp[1]->value();
+        if (!is_object($r1))
+        {
+          $r1 = php_xmlrpc_encode($r1);
+        }
+        if ( count($resp) > 1)
+        {
+          $r2 = $resp[1]->value();
+        }
+        else
+        {
+          $r2 = null;
+        }
+        if (!is_object($r2))
+        {
+          $r2 = php_xmlrpc_encode($r2);
+        }
+
 
         echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
         echo "<thead>\n<tr><th>Method</th><th>".htmlspecialchars($method)."</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n</thead>\n<tbody>\n";
@@ -461,9 +486,9 @@ td form {margin: 0;}
         }
         echo "</tbody>\n</table>";
 
-          break;
+        break;
 
-        case 'wrap':
+        /*case 'wrap':
           $r1 = $resp[0]->value();
           $r2 = $resp[1]->value();
           if ($r2->kindOf()!="array" || $r2->arraysize() <= $methodsig)
@@ -508,11 +533,11 @@ td form {margin: 0;}
           //  echo 'Error while building php code stub...';
           }
 
-          break;
+          break;*/
 
         case 'execute':
           echo '<div id="response"><h2>Response:</h2>'.htmlspecialchars($response->serialize()).'</div>';
-          break;
+        break;
 
         default: // give a warning
       }

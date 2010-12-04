@@ -5,12 +5,18 @@ Changes from 0.5 to 0.6 - released 2010/xx/yy
 - Shuffled around all design elements used by the debugger, to make it more
   consistent with eZ Publish standard practices
 
+- the REST client now puts parameters in the query string by default, no more in
+  the request body (which was wrong since it sent GET requests anyway)
+
 *General:
 
 - The debugger now supports debugging ezjscore methods
-- A new ezjscore webservice is provided: system.listMethods. Same as in xmlrpc!
+- A new ezjscore webservice is provided: system::listMethods. Syntax and results
+  are the same as the homonymous standard method in xmlrpc!
+- A new ezjscore webservice is provided: system::methodHelp. Syntax and results
+  are the same as the homonymous standard method in xmlrpc
 - The debugger automatically loads session cookies when clicking in the left col
-  manu to invoke the webservices on the local server, making its usage much more
+  menu to invoke the webservices on the local server, making its usage much more
   streamlined
 - Add support for soap 1.2 besides soap 1.1 (the standard) in the soap client
 - Added more sample php files, in doc/samples
@@ -24,3 +30,5 @@ Changes from 0.5 to 0.6 - released 2010/xx/yy
 - Debugger is now available in every design, not only admin
 - Make sure debugger views are not accessible directly even when rewrite rules
   are not active
+- Fix php error generated when there is an introspection request with bad params
+  sent by the user (invalid method name)
