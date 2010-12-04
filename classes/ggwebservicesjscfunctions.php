@@ -82,6 +82,8 @@ class ggwebservicesJSCFunctions
     /**
     * Returns a help text descibing a given webservice.
     * The help text is generated via introspection from phpdoc comments on the source code.
+    * Note that it takes 2 params insted of 1 as this helps clients sending requests:
+    * it is hard for ezjscore to send a string param containing two colons in a row...
     * @param string className
     * @param string methodName
     * @return string
@@ -124,7 +126,13 @@ class ggwebservicesJSCFunctions
                 $reflectionMethod = $reflectionClass->getMethod( $functionName );
                 if ( is_object( $reflectionMethod ) && $reflectionMethod->isStatic() )
                 {
-                    return $reflectionMethod->getDocComment();
+                    $doc = $reflectionMethod->getDocComment();
+                    // Clean up a bit the phpdoc format
+                    $doc = preg_replace( '#^(/\*?)#', '', $doc ); // opening comment
+                    $doc = preg_replace( '#(\*/)$#', '', $doc ); // end comment
+                    $doc = preg_replace( '#^( *\*)#m', '', $doc ); // star on begin of line
+                    $doc = preg_replace( '#(\* *)$#m', '', $doc ); // star on end of line
+                    return $doc;
                 }
             }
             else
