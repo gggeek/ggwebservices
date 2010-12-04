@@ -100,7 +100,7 @@ class ggXMLRPCServer extends ggWebservicesServer
                 }
                 if ( !array_key_exists( $params[0], $server->FunctionList ) )
                 {
-                    return new ggWebservicesFault( ggWebservicesResponse::INVALIDINTROSPECTIONERROR, ggWebservicesResponse::INVALIDINTROSPECTIONSTRING );
+                    return new ggWebservicesFault( self::INVALIDINTROSPECTIONERROR, self::INVALIDINTROSPECTIONSTRING );
                 }
                 $results = array();
                 foreach( $server->FunctionList[$params[0]] as $syntax )
@@ -135,7 +135,7 @@ class ggXMLRPCServer extends ggWebservicesServer
                 }
                 if ( !array_key_exists( $params[0], $server->FunctionDescription ) )
                 {
-                    return new ggWebservicesFault( ggWebservicesResponse::INVALIDINTROSPECTIONERROR, ggWebservicesResponse::INVALIDINTROSPECTIONSTRING );
+                    return new ggWebservicesFault( self::INVALIDINTROSPECTIONERROR, self::INVALIDINTROSPECTIONSTRING );
                 }
                 return $server->FunctionDescription[$params[0]];
 
