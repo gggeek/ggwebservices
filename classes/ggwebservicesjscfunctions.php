@@ -13,6 +13,10 @@
 class ggwebservicesJSCFunctions
 {
 
+    /**
+    * Returns the list of all webservices available on this server
+    * @return array
+    */
     static function listMethods( )
     {
         $methods = array();
@@ -51,22 +55,85 @@ class ggwebservicesJSCFunctions
                             }
                         }
                     }
+                    else
+                    {
+                        /// @todo log config error
+                    }
                 }
             }
         }
         return $methods;
     }
 
+    /**
+     * Returns the signature of a given webservice.
+     * Not implemented currently for eZJSCore, and it probably nevr will, due to
+     * the uderlying API.
+     * @param string className
+     * @param string methodName
+     * @return array
+     */
     static function methodSignature( $params )
     {
         // use ezjscServerRouter::instance() to ee if method exists, Reflection for details (???)
         throw new Exception( 'Not implemented yet' );
     }
 
+    /**
+    * Returns a help text descibing a given webservice.
+    * The help text is generated via introspection from phpdoc comments on the source code.
+    * @param string className
+    * @param string methodName
+    * @return string
+    */
     static function methodHelp( $params )
     {
-        // use ezjscServerRouter::instance() to ee if method exists, Reflection for help from javadoc
-        throw new Exception( 'Not implemented yet' );
+        // we can not use ezjscServerRouter::getInstance() to see if method exists,
+        // because it checks permissions!
+
+        if ( count( $params ) != 2 )
+        {
+            throw new Exception( ggWebservicesServer::INVALIDPARAMSERROR . ' ' . ggWebservicesServer::INVALIDPARAMSSTRING );
+        }
+        $className = array_shift( $params );
+        $functionName = array_shift( $params );
+        $ini = eZINI::Instance( 'ezjscore.ini' );
+        if ( $ini->hasGroup( 'ezjscServer_' . $className ) )
+        {
+            if ( $ini->hasVariable( 'ezjscServer_' . $className, 'File' ) )
+                include_once( $ini->variable( 'ezjscServer_' . $className, 'File' ) );
+
+            if ( $ini->hasVariable( 'ezjscServer_' . $className, 'TemplateFunction' ) )
+            {
+                if ( $ini->variable( 'ezjscServer_' . $className, 'TemplateFunction' ) === 'true' )
+                {
+                    return 'No description can be given: method implemented via a template';
+                }
+            }
+            if ( $ini->hasVariable( 'ezjscServer_' . $className, 'Class' ) )
+            {
+                $realclassname = $ini->variable( 'ezjscServer_' . $className, 'Class' );
+            }
+            else
+            {
+                $realclassname = $className;
+            }
+            if ( class_exists( $realclassname ) )
+            {
+                $reflectionClass = new ReflectionClass( $realclassname );
+                $reflectionMethod = $reflectionClass->getMethod( $functionName );
+                if ( is_object( $reflectionMethod ) && $reflectionMethod->isStatic() )
+                {
+                    return $reflectionMethod->getDocComment();
+                }
+            }
+            else
+            {
+                /// @todo log config error
+            }
+        }
+
+        throw new Exception( ggWebservicesServer::INVALIDINTROSPECTIONERROR . ' ' . ggWebservicesServer::INVALIDINTROSPECTIONSTRING );
     }
 
 }
