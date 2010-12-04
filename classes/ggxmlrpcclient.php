@@ -16,19 +16,6 @@ class ggXMLRPCClient extends ggWebservicesClient
         $this->ContentType = 'text/xml';
         parent::__construct( $server, $path, $port, $protocol );
     }
-
-    /**
-      Sends a XMLRPC message and returns the response object.
-    */
-    function send( $request )
-    {
-        $response = parent::send( $request );
-        if ( is_object( $response ) )
-        {
-            // we need to set the response name into the response, since for XMLRPC calls there is no call name in response
-        }
-        return $response;
-    }
 }
 
 ?>

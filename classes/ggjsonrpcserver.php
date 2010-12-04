@@ -20,7 +20,7 @@ class ggJSONRPCServer extends ggXMLRPCServer
 
         $response = new ggJSONRPCResponse( $functionName );
         $response->setValue( $value );
-        /// @todo we need to reinject the request id into the response
+        /// we need to reinject the request id into the response
         $response->setId( $this->Id );
         $payload = $response->payload();
 

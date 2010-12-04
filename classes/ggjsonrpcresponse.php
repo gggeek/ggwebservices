@@ -40,7 +40,7 @@ class ggJSONRPCResponse extends ggWebservicesResponse
     /**
     * Decodes the JSONRPC response stream.
     * Request is used for matching id.
-    * Name is not set to response from request - a bit weird...
+    * @todo Name is not set to response from request - a bit weird...
     */
     function decodeStream( $request, $stream )
     {

@@ -36,7 +36,7 @@ class ggXMLRPCResponse extends ggWebservicesResponse
 
     /**
     * Decodes the XMLRPC response stream.
-    * Name is not set to response from request - a bit weird...
+    * @todo Name is not set to response from request - a bit weird...
     */
     function decodeStream( $request, $stream )
     {

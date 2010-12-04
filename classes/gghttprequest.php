@@ -12,7 +12,7 @@ class ggHTTPRequest extends ggWebservicesRequest
 
     function decodeStream( $rawRequest )
     {
-        /// @todo... split on & then on = and urldecode
+        /// @todo... split on & then on = and urldecode?
     }
 
     /**

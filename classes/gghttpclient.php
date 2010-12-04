@@ -1,6 +1,6 @@
 <?php
 /**
- * Class used to communicate with soap servers
+ * Class used to communicate with plain http servers
  *
  * @author G. Giunta
  * @version $Id$
@@ -23,12 +23,12 @@ class ggHTTPClient extends ggWebservicesClient
     static function get( $url )
     {
         // we send an empty params array to the http request, this will make for an empty payload
-        return ggHTTPClient::call( $url, array(), 'GET' );
+        return self::call( $url, array(), 'GET' );
     }
 
     static function post( $url, $values )
     {
-        return ggHTTPClient::call( $url, $values, 'POST' );
+        return self::call( $url, $values, 'POST' );
     }
 
     protected static function call( $url, $values, $method )
@@ -36,7 +36,7 @@ class ggHTTPClient extends ggWebservicesClient
         $url = parse_url( $url );
         $url = array_merge( array( 'path' => '/', 'port' => 80, 'scheme' => null, 'user' => '', 'pass' => ''), $url );
 
-        // we do not add params to the http request, this will make for an empty payload
+        // if we do not add params to the http request, this will make for an empty payload
         $request = new ggHTTPRequest( '', $values );
         /// @todo are we loosing out fragment, query? ...
         $client = new ggHTTPClient( $url['host'], $url['path'], $url['port'], $url['scheme'] );
