@@ -1,7 +1,5 @@
 - add support for limiting access to webservices by incoming IP address (often done for stupid ws clients that cannot login)
 
-- add system::listMethods webservice to ezjscore
-
 - test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
 
 - in debugger:
@@ -32,9 +30,9 @@
 - add example tpl usage for Y.io.jsonrpc file
 
 - verify js changes in Y.io.ez from 1.0.0 to 1.0.2 and 1.1.0 and merge in Y.io.jsonrpc
-  + test loading Y.io.ez from Yui 3.1.0 in eZP 4.4
+  + test loading Y.io.ez from Yui 3.1.0 in eZP 4.4 and later
 
-- use ezjscore to load yui 3 in debugger <= upgrade debugger to yui3, or at least allow it to use latest yui2
+- use ezjscore to load yui 3 in debugger <= upgrade debugger to yu 2in3
 
 - test https support with and without curl, with and without proxy too
 

@@ -10,17 +10,31 @@
  *}
 <head>
 <title>XMLRPC Debugger Visual Editor</title>
-
+{def $preferred_packing = '-min'}
+{if eq('enabled', ezini('TemplateSettings', 'DevelopmentMode'))}
+    {set $preferred_packing = ''}
+{/if}
+{def $preferred_version = ezini('DebuggerSettings', 'PreferredVersion', 'wsproviders.ini').yui2}
+{* allow user to specify to go with ezjscore's version, whatever that might be *}
+{if eq($preferred_version, 'ezjscore')}
+    {set $preferred_version =  ezini('eZJSCore', 'LocalScriptBasePath', 'ezjscore.ini').yui2}
+{else}
+    {* try to survive misconfigurations at least a bit *}
+    {if eq($preferred_version, '')}
+        {set $preferred_version = '2.5.0'}
+    {/if}
+    {set $preferred_version = concat('lib/yui/', $preferred_version, '/build/')}
+{/if}
 <!-- YUI Treeview component: base libs -->
-<script type="text/javascript" src={'lib/yui/2.5.0/build/yahoo/yahoo.js'|ezdesign()} ></script>
-<script type="text/javascript" src={'lib/yui/2.5.0/build/event/event.js'|ezdesign()} ></script>
+<script type="text/javascript" src={concat($preferred_version, 'yahoo/yahoo', $preferred_packing, '.js')|ezdesign()} ></script>
+<script type="text/javascript" src={concat($preferred_version, 'event/event', $preferred_packing, '.js')|ezdesign()} ></script>
 <!-- YUI Treeview component: treeview -->
-<script type="text/javascript" src={'lib/yui/2.5.0/build/treeview/treeview.js'|ezdesign()} ></script>
+<script type="text/javascript" src={concat($preferred_version, 'treeview/treeview', $preferred_packing, '.js')|ezdesign()} ></script>
 <link rel="stylesheet" type="text/css" href={'stylesheets/debugger/tree.css'|ezdesign()} />
 <!-- YUI Dialog component -->
-<script type="text/javascript" src={'lib/yui/2.5.0/build/dom/dom.js'|ezdesign()} ></script>
-<script type="text/javascript" src={'lib/yui/2.5.0/build/dragdrop/dragdrop.js'|ezdesign()} ></script>
-<script type="text/javascript" src={'lib/yui/2.5.0/build/container/container.js'|ezdesign()} ></script>
+<script type="text/javascript" src={concat($preferred_version, 'dom/dom', $preferred_packing, '.js')|ezdesign()} ></script>
+<script type="text/javascript" src={concat($preferred_version, 'dragdrop/dragdrop', $preferred_packing, '.js')|ezdesign()} ></script>
+<script type="text/javascript" src={concat($preferred_version, 'container/container', $preferred_packing, '.js')|ezdesign()} ></script>
 <link rel="stylesheet" type="text/css" href={'stylesheets/debugger/container.css'|ezdesign()} />
 
 <!-- xmlrpc/jsonrpc base library -->
@@ -29,6 +43,7 @@
 <!-- display components -->
 <script type="text/javascript" src={'javascript/xmlrpc_display.js'|ezdesign()}></script>
 <link rel="stylesheet" type="text/css" href={'stylesheets/debugger/xmlrpc_tree.css'|ezdesign()} />
+{undef $preferred_packing $preferred_version}
 
 <script type="text/javascript">
 <!--
