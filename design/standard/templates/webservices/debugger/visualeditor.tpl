@@ -65,6 +65,7 @@ function treeInit()
 
   trees = [];
   nodes = [];
+
 {def $divs = ''
      $trees = ''}
 {foreach $params as $i => $ptype}
@@ -217,4 +218,5 @@ WARNING: this page is completely useless without javascript support.<br />Please
 </noscript>
 <div id="dlgpanel"></div>
 <ol id="valuepanel"></ol>
+<!--DEBUG_REPORT-->
 </body>
