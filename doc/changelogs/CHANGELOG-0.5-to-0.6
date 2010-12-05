@@ -18,13 +18,22 @@ Changes from 0.5 to 0.6 - released 2010/xx/yy
 - The debugger automatically loads session cookies when clicking in the left col
   menu to invoke the webservices on the local server, making its usage much more
   streamlined
-- Add support for soap 1.2 besides soap 1.1 (the standard) in the soap client
+- Add support for soap 1.2 besides soap 1.1 (the standard) in the phpsoap client
 - Added more sample php files, in doc/samples
 - add a __tostring method to class ggWebservicesFault to allow debugging of
   error responses when the code is invoked via ezjscore with no specific
   content-type header in the request
 - Two out of three debugger views now use templates for rendering
 - Use minified version of YUI libs for visual editor in debugger, unless in DevelopmentMode
+- A major reshuffle of interaction between client, request and response php classes
+  has taken place.
+  This means it will be much easier to add clients that use GET for requests, as
+  well as adding support for compressed http responses and cookies.
+  The utmost care has been taken not to break BC, but if you have subclassed any
+  of the client, request or response classes in your own php code, you will need
+  to merge the changes.
+  Some classes and some methods are considered deprecated and will be removed in
+  future releases (they are marked as such in the javadoc comments).
 
 *Bugfixes:
 
