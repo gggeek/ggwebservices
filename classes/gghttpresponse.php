@@ -20,17 +20,19 @@ class ggHTTPResponse extends ggWebservicesResponse
 
     /**
     * Decodes the HTTP response stream.
-    * Name is not set to response from request - a bit weird...
     */
-    function decodeStream( $request, $stream )
+    function decodeStream( $request, $stream, $headers = false )
     {
 	    // save raw data for debugging purposes
 	    $this->rawResponse = $stream;
 
-	    $this->Value = ggWebservicesResponse::stripHTTPHeader( $stream );
-    }
+        if ( $headers === false )
+        {
+            $stream = self::stripHTTPHeader( $stream );
+        }
 
-    public $rawResponse = null;
+	    $this->Value = $stream;
+    }
 }
 
 ?>

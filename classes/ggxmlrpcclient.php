@@ -1,7 +1,7 @@
 <?php
 /**
  * Class used to communicate with XMLRPC servers
- *
+ * @deprecated use a plain ggWebservicesClient instead of this
  * @author G. Giunta
  * @version $Id$
  * @copyright (C) G. Giunta 2009-2010

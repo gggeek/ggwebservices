@@ -1,6 +1,6 @@
 <?php
 /**
- * Generic class used to wrap webservices responses. Modeled after Soap equivalent.
+ * Generic class used to wrap webservices requests. Modeled after eZP Soap equivalent.
  *
  * @author G. Giunta
  * @version $Id$
@@ -16,11 +16,12 @@ abstract class ggWebservicesRequest
         $this->Name = (string)$name;
         $this->Parameters = $parameters;
         /// @todo check: is this used anywhere? if not, remove it!
-        $this->ContentType = 'application/x-www-form-urlencoded';
+        //$this->ContentType = 'application/x-www-form-urlencoded';
     }
 
     /**
     * Returns the request payload encoded according to its specific protocol
+    * (in HTTP terms, the 'message body')
     * @return string
     */
     abstract function payload();
@@ -35,7 +36,7 @@ abstract class ggWebservicesRequest
     /**
     * Returns an additional part that will be appended at the end of the URL
     * set in the client. Useful for protocols that encode parameters in the URL and
-    * use GET instead of post.
+    * use GET instead of POST.
     * Override it in case of need.
     */
     function queryString()
@@ -61,11 +62,29 @@ abstract class ggWebservicesRequest
         return $this->Parameters;
     }
 
+    function method()
+    {
+        return strtoupper( $this->Verb );
+    }
+
+    function ContentType()
+    {
+        return $this->ContentType;
+    }
+
+    function requestHeaders()
+    {
+        return array();
+    }
+
     /// Contains the request parameters
     protected $Parameters = array();
 
     protected $Name;
 
+    protected $Verb = '';
+
+    protected $ContentType = '';
 }
 
 ?>

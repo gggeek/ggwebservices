@@ -36,15 +36,18 @@ class ggXMLRPCResponse extends ggWebservicesResponse
 
     /**
     * Decodes the XMLRPC response stream.
-    * @todo Name is not set to response from request - a bit weird...
     */
-    function decodeStream( $request, $stream )
+    function decodeStream( $request, $stream, $headers=false )
     {
         // save raw data for debugging purposes
         $this->rawResponse = $stream;
 
+        if ( $headers === false )
+        {
+            $stream = self::stripHTTPHeader( $stream );
+        }
         /// @todo test if this automatically groks encoding from xml or not...
-        $results = xmlrpc_decode( self::stripHTTPHeader( $stream ) );
+        $results = xmlrpc_decode( $stream );
 
         if ( $results === null )
         {
@@ -72,7 +75,6 @@ class ggXMLRPCResponse extends ggWebservicesResponse
         }
     }
 
-    public $rawResponse = null;
 }
 
 ?>

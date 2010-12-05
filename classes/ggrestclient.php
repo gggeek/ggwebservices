@@ -1,6 +1,7 @@
 <?php
 /**
- * Class used to communicate with jsonrpc servers
+ * Class used to communicate with 'REST' servers
+ * @deprecated use a plain ggWebservicesClient instead of this
  *
  * @author G. Giunta
  * @version $Id$
@@ -15,19 +16,6 @@ class ggRESTClient extends ggWebservicesClient
         $this->UserAgent = 'gg eZ REST client';
         $this->Verb = 'GET';
         parent::__construct( $server, $path, $port, $protocol );
-    }
-
-    /**
-      Sends a jsonrpc message and returns the response object.
-    */
-    function send( $request )
-    {
-        $response = parent::send( $request );
-        if ( is_object( $response ) )
-        {
-            // we need to set the response name into the response, since for REST calls there is no call name in response
-        }
-        return $response;
     }
 }
 

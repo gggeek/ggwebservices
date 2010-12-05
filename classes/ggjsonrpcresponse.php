@@ -42,12 +42,17 @@ class ggJSONRPCResponse extends ggWebservicesResponse
     * Request is used for matching id.
     * @todo Name is not set to response from request - a bit weird...
     */
-    function decodeStream( $request, $stream )
+    function decodeStream( $request, $stream, $headers = false  )
     {
         // save raw data for debugging purposes
         $this->rawResponse = $stream;
 
-        $results = json_decode( self::stripHTTPHeader( $stream ), true );
+        if ( $headers === false )
+        {
+            $stream = self::stripHTTPHeader( $stream );
+        }
+
+        $results = json_decode( $stream, true );
         if ( !is_array($results) ||
             !array_key_exists( 'result', $results ) ||
             !array_key_exists( 'error', $results ) ||
@@ -107,7 +112,6 @@ class ggJSONRPCResponse extends ggWebservicesResponse
         $this->Id = $id;
     }
 
-    public $rawResponse = null;
     protected $Id;
 }
 

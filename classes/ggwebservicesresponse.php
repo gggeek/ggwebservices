@@ -24,7 +24,7 @@ abstract class ggWebservicesResponse
     }
 
     /**
-      Returns the payload for the response.
+      Returns the payload for the response (in HTTP terms, the 'message body').
       Uses internal members name, value, isFault, faultString and faultCode
       @return string
     */
@@ -33,12 +33,14 @@ abstract class ggWebservicesResponse
     /**
     * Decodes the response to a text stream.
     * Sets internal members value, isFault, faultString and faultCode
-    * Name is not set to response from request - a bit weird...
+    * Name is not set to response from request - a bit weird... but client injects name using the request one anyway
+    * The API is a bit whacky because we want too keep compat with the eZP original version
     * @param ggWebservicesRequest $request
-    * @param string $stream
+    * @param string $stream the complete HTTP response in case $headers is false, the response body if $headers is an array
+    * @param array $headers
     * @return void
     */
-    abstract function decodeStream( $request, $stream );
+    abstract function decodeStream( $request, $stream, $headers=false );
 
     /**
     * This function imported from php-xmlrpc lib: it is more correct than eZ SOAP client one
@@ -142,6 +144,8 @@ abstract class ggWebservicesResponse
     /// Contains the name of the response, i.e. function call name
     protected $Name;
 
+    /// @todo move to protected
+    public $rawResponse = null;
 }
 
 ?>

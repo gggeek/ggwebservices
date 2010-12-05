@@ -11,30 +11,40 @@
 class ggRESTResponse extends ggWebservicesResponse
 {
 
-    const INVALIDRESPONSESTRING = 'Response received from server is not valid xml';
+    const INVALIDRESPONSESTRING = 'Response received from server is not valid';
 
     /**
-      Returns the json payload for the response.
-      @todo
+      Returns the payload for the response.
+      Encoding varies depending on what the request asked for
     */
-    function payload()
+    function payload( $contentType='json' )
     {
-        /*
         if ( $this->IsFault )
         {
-            return json_encode( array(
-                'result' => $this->Value,
-                'error' => null,
-                'id' => $this->Id ) );
+            // default representation of an error, hand picked
+            $value = array( 'faultCode' => $this->FaultCode, 'faultString' => $this->FaultString );
+            // send an HTTP error code, since there is no other way to make sure
+            // that the client can tell apart error responses from valid array responses
+            header( 'HTTP/1.1 500 Internal Server Error' );
         }
         else
         {
-            return json_encode( array(
-                'result' => null,
-                'error' => array( 'faultCode' => $this->FaultCode, 'faultString' => $this->FaultString ),
-                'id' => $this->Id ) );
-        }*/
-        return 'payload method for REST responses is still to be implemented!!!';
+            $value = $this->Value;
+        }
+        switch( $contentType )
+        {
+            case 'php':
+                return var_export( $this->Value );
+            case 'phps':
+                return serialize( $this->Value );
+            case 'json':
+                return json_encode( $this->Value, JSON_FORCE_OBJECT );
+            default:
+                header('HTTP/1.1 406 Not Acceptable');
+                // two 'non standard but existing' mimetype defs for php code and serialized
+                return "REST responses cannot be serialized as '$contentType'. Currently supported: application/json, application/x-httpd-php, application/vnd.php.serialized";
+        }
+
     }
 
     /**
@@ -42,28 +52,61 @@ class ggRESTResponse extends ggWebservicesResponse
     * Request is not used, kept for compat with sibling classes
     * Name is not set to response from request - a bit weird...
     */
-    function decodeStream( $request, $stream )
+    function decodeStream( $request, $stream, $headers=false )
     {
         // save raw data for debugging purposes
         $this->rawResponse = $stream;
 
-        try
+        // save raw data for debugging purposes
+        $this->rawResponse = $stream;
+
+        if ( $headers === false )
         {
-            $xml = new SimpleXMLElement( ggWebservicesResponse::stripHTTPHeader( $stream ) );
-            $this->IsFault = false;
-            $this->FaultString = false;
-            $this->FaultCode = false;
-            $this->Value = $xml;
+            $stream = self::stripHTTPHeader( $stream );
         }
-        catch ( Exception $e )
+
+        /// @todo... parse http headers in $stream for Content-Type header field,
+        ///          then decode it to actual types supported
+        $contentType = '';
+
+        switch( $contentType )
         {
-            $this->IsFault = true;
-            $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
-            $this->Faulstring = ggRESTResponse::INVALIDRESPONSESTRING . $e->getMessage();
+            case 'json':
+                $val = json_decode( $data, true );
+                if ( $err = json_last_error() )
+                {
+                    $this->IsFault = true;
+                    $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
+                    $this->Faulstring = ggRESTResponse::INVALIDRESPONSESTRING . ' json. Decoding error: ' . $err;
+                }
+                else
+                {
+                    $this->Value = $val;
+                }
+                break;
+            case 'xml':
+                try
+                {
+                    $xml = new SimpleXMLElement( $data );
+                    $this->IsFault = false;
+                    $this->FaultString = false;
+                    $this->FaultCode = false;
+                    $this->Value = $xml;
+                }
+                catch ( Exception $e )
+                {
+                    $this->IsFault = true;
+                    $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
+                    $this->Faulstring = ggRESTResponse::INVALIDRESPONSESTRING . ' xml. ' .$e->getMessage();
+                }
+                break;
+            default:
+                $this->IsFault = true;
+                $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
+                $this->Faulstring = ggRESTResponse::INVALIDRESPONSESTRING . " (unsupported format $contentType)";
         }
     }
 
-    public $rawResponse = null;
 }
 
 ?>

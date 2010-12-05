@@ -9,7 +9,7 @@
 
 class ggJSONRPCRequest extends ggWebservicesRequest
 {
-    function __construct( $name='', $parameters=array(), $id=null )
+    function __construct( $name='', $parameters=array(), $id=1 )
     {
         parent::__construct( $name, $parameters );
         $this->Id = $id;
@@ -49,6 +49,10 @@ class ggJSONRPCRequest extends ggWebservicesRequest
     }
 
     protected $Id;
+
+    protected $Verb = 'POST';
+    protected $ContentType = 'application/json';
+
 
 }
 

@@ -35,6 +35,9 @@ class ggXMLRPCRequest extends ggWebservicesRequest
         return xmlrpc_encode_request( $this->Name, $this->Parameters, array( 'verbosity'=> 'newlines_only', 'encoding' => 'utf-8' ) );
     }
 
+    protected $Verb = 'POST';
+    protected $ContentType = 'text/xml';
+
 }
 
 ?>

@@ -6,7 +6,8 @@
  * @version $Id$
  * @copyright (C) G. Giunta 2009-2010
  *
- * @todo add a nusoap version
+ * @todo (!important) add a nusoap version
+ * @todo using SOAP 1.2 requests can be serialized using GET too...
  */
 
 class ggSOAPRequest extends ggWebservicesRequest
@@ -164,9 +165,48 @@ class ggSOAPRequest extends ggWebservicesRequest
     /**
       Returns the request target namespace.
     */
-    function ns()
+    public function ns()
     {
         return $this->ns;
+    }
+
+    public function setSoapVersion( $version )
+    {
+        $this->SoapVersion = $version;
+        if ( $this->SoapVersion == 2 )
+        {
+            /// @todo add also "action =..." ?
+            $this->ContentType = 'application/soap+xml';
+        }
+        else
+        {
+            $this->ContentType = 'text/xml';
+        }
+    }
+
+    public function ContentType()
+    {
+        if ( $this->SoapVersion == 2 )
+        {
+            /// @todo add also "action =..." ?
+            return 'application/soap+xml';
+        }
+        else
+        {
+            return 'text/xml';
+        }
+    }
+
+    public function requestHeaders()
+    {
+        if ( $this->SoapVersion == 2 )
+        {
+            return array( 'Accept' => 'application/soap+xml' );
+        }
+        else
+        {
+            return array( 'SOAPAction' => $this->ns() . '/' . $this->name() );
+        }
     }
 
     protected $ns;
@@ -181,6 +221,10 @@ class ggSOAPRequest extends ggWebservicesRequest
     const XSI_PREFIX = "xsi";
     const XSD_PREFIX = "xsd";
     const REQ_PREFIX = "tns"; // was: req
+
+    protected $Verb = 'POST';
+    /// 1 for SOAP_1_1, 2 for SOAP_1_2
+    protected $SoapVersion = 1;
 
 }
 

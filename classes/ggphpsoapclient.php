@@ -21,10 +21,11 @@ class ggPhpSOAPClient extends ggWebservicesClient
     */
     function __construct( $server, $path = '/', $port = 80, $protocol=null, $wsdl=null )
     {
-        /// @todo verify: the following 2 field is unused?
-        $this->ContentType = 'text/xml'; /// @todo add UTF8 charset by default?
+        /// @todo verify: the following 2 fields are unused?
+        //$this->ContentType = 'text/xml'; /// @todo add UTF8 charset by default?
         $this->ResponseClass = 'ggPhpSOAPResponse';
         $this->UserAgent = 'gg eZ PHPSOAP client';
+
         $this->Wsdl = $wsdl;
 
         // test it here, since we later use an @ operator to catch soap warnings
@@ -70,6 +71,8 @@ class ggPhpSOAPClient extends ggWebservicesClient
         {
             // non-wsdl mode
             $options['location'] = $this->Protocol . "://" . $this->Server . ":" . $this->Port . $this->Path;
+            /// @todo test if request is not a ggsoaprequest / ggphpsoaprequest
+            ///       and has thus no ->ns() method
             $options['uri'] = $request->ns();
         }
         else

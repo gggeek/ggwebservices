@@ -190,26 +190,19 @@ TODO: add encoding checks with schema validation.
         return $returnValue;
     }
 
-    /**
-    * Decodes the JSONRPC response stream.
-    * Request is used for matching id.
-    * Name is not set to response from request - a bit weird...
-    */
-    function decodeStream( $request, $stream )
+    function decodeStream( $request, $stream, $headers=false )
     {
         // save raw data for debugging purposes
         $this->rawResponse = $stream;
 
+        if ( $headers === false )
+        {
+            $stream = self::stripHTTPHeader( $stream );
+        }
+
         $this->IsFault = 1;
         $this->FaultCode = ggWebservicesResponse::INVALIDRESPONSEERROR;
-        $this->FaultString = ggWebservicesResponse::INVALIDREQUESTSTRING;
-
-        $stream = $this->stripHTTPHeader( $stream );
-        if ( $stream == '' )
-        {
-            $this->FaultString .=  " - Could not process XML in response - response is empty!";
-            return;
-        }
+        $this->FaultString = ggWebservicesResponse::INVALIDRESPONSESTRING;
 
         $dom = new DOMDocument( "1.0" );
         $this->DOMDocument = $dom;
@@ -304,7 +297,6 @@ TODO: add encoding checks with schema validation.
         }
     }
 
-    public $rawResponse = null;
 }
 
 ?>

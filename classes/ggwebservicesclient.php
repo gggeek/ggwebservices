@@ -9,16 +9,14 @@
  *
  * @see eZSOAPClient
  *
- * @todo add parsing of response HTTP headers!!!
  * @todo add DIGEST, NTML auth if curl is enabled (for proxy auth too)
  * @todo add a version nr in user-agent string
  * @todo let user decide ssl options, set server and client certs too
  * @todo let client use keepalives for multiple subsequent calls (in curl mode)
  * @todo let client accept compressed responses (declare it in request headers)
  * @todo allow ssl connections without curl (via stream properties)
- * @todo cookie support, so that client can be used for multiple calls with sessions
+ * @todo finish cookie support, so that client can be used for multiple calls with sessions
  * @todo implement following redirects (with a max predefined)
- * @todo move determination of request content type into request itself
  *
  * changes from eZSOAP client:
  * - added support for proxy
@@ -33,11 +31,13 @@
  */
 
 
-abstract class ggWebservicesClient
+class ggWebservicesClient
 {
     const ERROR_MISSING_CURL = -101;
     const ERROR_CANNOT_CONNECT = -102;
     const ERROR_CANNOT_WRITE = -103;
+    const ERROR_NO_DATA = -104;
+    const ERROR_BAD_RESPONSE = -105;
 
     /**
      * Creates a new client.
@@ -155,7 +155,7 @@ abstract class ggWebservicesClient
                 stream_set_timeout( $fp, $this->Timeout );
             }
 
-            $HTTPRequest = $this->payload( $request->payload(), $request->querystring() );
+            $HTTPRequest = $this->payload( $request );
 
             if ( !fwrite( $fp, $HTTPRequest, strlen( $HTTPRequest ) ) )
             {
@@ -187,7 +187,7 @@ abstract class ggWebservicesClient
                     curl_setopt( $ch, CURLOPT_TIMEOUT, $this->TimeOut );
                 }
 
-                $HTTPCall = $this->payload( $request->payload() );
+                $HTTPCall = $this->payload( $request );
 
                 curl_setopt( $ch, CURLOPT_URL, $URL );
 
@@ -224,24 +224,45 @@ abstract class ggWebservicesClient
             }
             else
             {
-                    $this->errorNumber = CURLE_FAILED_INIT * -1;
-                    $this->errorString = "Error: could not send the request. Could not initialize CURL.";
-                    return 0;
+                $this->errorNumber = CURLE_FAILED_INIT * -1;
+                $this->errorString = "Error: could not send the request. Could not initialize CURL.";
+                return 0;
             }
         }
 
-        $response = new $this->ResponseClass();
-        $response->decodeStream( $request, $rawResponse );
+        $respArray = $this->parseHTTPResponse( $rawResponse );
+        // in case an HTTP error is encountered, error number and string will have been set
+        if ( $respArray === false )
+        {
+            return 0;
+        }
+        $this->Cookies = $respArray['cookies'];
+
+        $ResponseClass =  $this->ResponseClass;
+        if ( $ResponseClass == 'ggWebservicesResponse' )
+        {
+            // the client subclass in use did not bother to specify a class for responses:
+            // assume the reponse class is named after the request
+            if ( preg_match( '/^gg(.+)Request$/', get_class( $request ), $matches ) && class_exists( 'gg' . $matches[1] . 'Response' ) )
+            {
+                $ResponseClass = 'gg' . $matches[1] . 'Response';
+            }
+        }
+        $response = new $ResponseClass( $request->name() );
+
+        $response->decodeStream( $request, $rawResponse, $respArray['headers'] );
         return $response;
     }
 
     /**
      * Build and return full HTTP payload out of a request payload (and other server status vars)
-     * @param string $payload
-     * @param string $query_string appended to
+     * @param ggWebservicesRequest $request
+     * @return string
      */
-    protected function payload( $payload, $query_string = '' )
+    protected function payload( $request )
     {
+        $query_string = $request->querystring();
+
         $authentification = "";
         if ( ( $this->login() != "" ) )
         {
@@ -267,18 +288,28 @@ abstract class ggWebservicesClient
             $uri = $this->Path . $query_string;
         }
 
-        $HTTPRequest = $this->Verb . " " . $uri . " HTTP/1.0\r\n" .
+        // backward compatibility: if request does not specify a verb, let the client
+        // pick one on its own
+        $verb = $request->method();
+        if ( $verb == '' )
+        {
+            $verb = $this->Verb;
+        }
+        $HTTPRequest = $verb . " " . $uri . " HTTP/1.0\r\n" .
             "User-Agent: " . $this->UserAgent ."\r\n" .
             "Host: " . $this->Server . ":" . $this->Port . "\r\n" .
             $authentification .
             $proxy_credentials;
 
         // added extra request headers for eg SOAP clients
-        foreach( $this->RequestHeaders as $header => $value )
+        /// @bug what if both client and request want to add eg COOKIES?
+        $RequestHeaders = array_merge( $this->RequestHeaders, $request->RequestHeaders() );
+        foreach( $RequestHeaders as $header => $value )
         {
             $HTTPRequest .= $header . ": " . $value . "\r\n";
         }
 
+        $payload = $request->payload();
         if ( $payload !== '' )
         {
 
@@ -304,8 +335,13 @@ abstract class ggWebservicesClient
                 }
             }
 
+            $ContentType =$request->contentType();
+            if ( $ContentType == '' )
+            {
+                $ContentType = $this->ContentType;
+            }
             $HTTPRequest .=
-                "Content-Type: " . $this->ContentType . "\r\n" .
+                "Content-Type: " . $ContentType . "\r\n" .
                 "Content-Length: " . strlen( $payload ) . "\r\n\r\n" . $payload;
         }
         else
@@ -314,6 +350,271 @@ abstract class ggWebservicesClient
         }
 
         return $HTTPRequest;
+    }
+
+    /**
+    * HTTP parsing code taken from the phpxmlrpc lib
+    * @todo look at PEAR, ZEND, other libs, if they do it better...
+    */
+    protected function parseHTTPResponse( &$data, $headers_processed=false )
+    {
+        if ( $data == '' )
+        {
+            return array( self::ERROR_NO_DATA, 'No data received from server.' );
+        }
+
+        // Support "web-proxy-tunelling" connections for https through proxies
+        if ( preg_match( '/^HTTP\/1\.[0-1] 200 Connection established/', $data ) )
+        {
+            // Look for CR/LF or simple LF as line separator,
+            // (even though it is not valid http)
+            $pos = strpos( $data,"\r\n\r\n" );
+            if( $pos !== false )
+            {
+                $bd = $pos + 4;
+            }
+            else
+            {
+                $pos = strpos( $data, "\n\n" );
+                if( $pos !== false )
+                {
+                    $bd = $pos + 2;
+                }
+                else
+                {
+                    // No separation between response headers and body: fault?
+                    $this->errorNumber = self::ERROR_BAD_RESPONSE;
+                    $this->errorString = "HTTPS via proxy error, tunnel connection possibly failed.";
+                    return false;
+                }
+            }
+            // this filters out all http headers from proxy.
+            // maybe we could take them into account, too?
+            $data = substr( $data, $bd );
+        }
+
+        // Strip HTTP 1.1 100 Continue header if present
+        while( preg_match( '/^HTTP\/1\.1 1[0-9]{2} /', $data ) )
+        {
+            $pos = strpos( $data, 'HTTP', 12 );
+            // server sent a Continue header without any (valid) content following...
+            // give the client a chance to know it
+            if( $pos === false )
+            {
+                break;
+            }
+            $data = substr( $data, $pos );
+        }
+        if( !preg_match( '/^HTTP\/[0-9.]+ 200 /', $data ) )
+        {
+            $errstr = substr( $data, 0, strpos( $data, "\n" ) - 1 );
+            $this->errorNumber = self::ERROR_BAD_RESPONSE;
+            $this->errorString = 'HTTP error (' . $errstr . ')';
+            return false;
+        }
+
+        $headers = array();
+        $cookies = array();
+
+        // be tolerant to usage of \n instead of \r\n to separate headers and data
+        // (even though it is not valid http)
+        $pos = strpos( $data, "\r\n\r\n" );
+        if( $pos !== false )
+        {
+            $bd = $pos + 4;
+        }
+        else
+        {
+            $pos = strpos( $data, "\n\n" );
+            if( $pos !== false )
+            {
+                $bd = $pos + 2;
+            }
+            else
+            {
+                // No separation between response headers and body: fault?
+                // we could take some action here instead of going on...
+                $bd = 0;
+            }
+        }
+        // be tolerant to line endings, and extra empty lines
+        $ar = preg_split( "/\r?\n/", trim( substr( $data, 0, $pos ) ) );
+        foreach( $ar as $line )
+        {
+            // take care of multi-line headers and cookies
+            $arr = explode( ':', $line, 2 );
+            if( count( $arr ) > 1 )
+            {
+                $header_name = strtolower( trim( $arr[0] ) );
+                /// @todo some other headers (the ones that allow a CSV list of values)
+                /// do allow many values to be passed using multiple header lines.
+                /// We should add content to $headers[$header_name]
+                /// instead of replacing it for those...
+                if ( $header_name == 'set-cookie' || $header_name == 'set-cookie2' )
+                {
+                    if ( $header_name == 'set-cookie2' )
+                    {
+                        // version 2 cookies:
+                        // there could be many cookies on one line, comma separated
+                        $lcookies = explode( ',', $arr[1] );
+                    }
+                    else
+                    {
+                        $lcookies = array( $arr[1] );
+                    }
+                    foreach ( $lcookies as $cookie )
+                    {
+                        // glue together all received cookies, using a comma to separate them
+                        // (same as php does with getallheaders())
+                        if ( isset( $headers[$header_name] ) )
+                            $headers[$header_name] .= ', ' . trim( $cookie );
+                        else
+                            $headers[$header_name] = trim( $cookie );
+                        // parse cookie attributes, in case user wants to correctly honour them
+                        // feature creep: only allow rfc-compliant cookie attributes?
+                        // @todo support for server sending multiple time cookie with same name, but using different PATHs
+                        $cookie = explode( ';', $cookie );
+                        foreach ( $cookie as $pos => $val )
+                        {
+                            $val = explode( '=', $val, 2 );
+                            $tag = trim( $val[0] );
+                            $val = trim( @$val[1] );
+                            /// @todo with version 1 cookies, we should strip leading and trailing " chars
+                            if ( $pos == 0 )
+                            {
+                                $cookiename = $tag;
+                                $cookies[$tag] = array();
+                                $cookies[$cookiename]['value'] = urldecode($val);
+                            }
+                            else
+                            {
+                                if ($tag != 'value')
+                                {
+                                    $cookies[$cookiename][$tag] = $val;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    $headers[$header_name] = trim( $arr[1] );
+                }
+            }
+            elseif( isset( $header_name ) )
+            {
+                ///	@todo version1 cookies might span multiple lines, thus breaking the parsing above
+                $headers[$header_name] .= ' ' . trim( $line );
+            }
+        }
+
+        $data = substr( $data, $bd );
+
+        // if CURL was used for the call, http headers have been processed,
+        // and dechunking + reinflating have been carried out
+        if( !$headers_processed )
+        {
+            // Decode chunked encoding sent by http 1.1 servers
+            if( isset( $headers['transfer-encoding'] ) && $headers['transfer-encoding'] == 'chunked' )
+            {
+                if( !$data = self::decode_chunked( $data ) )
+                {
+                    $this->errorNumber = self::ERROR_BAD_RESPONSE;
+                    $this->errorString = "Errors occurred when trying to rebuild the chunked data received from server.";
+                    return false;
+                }
+            }
+
+            // Decode gzip-compressed stuff
+            // code shamelessly inspired from nusoap library by Dietrich Ayala
+            if( isset( $headers['content-encoding'] ) )
+            {
+                $headers['content-encoding'] = str_replace( 'x-', '', $headers['content-encoding'] );
+                if( $headers['content-encoding'] == 'deflate' || $headers['content-encoding'] == 'gzip' )
+                {
+                    // if decoding works, use it. else assume data wasn't gzencoded
+                    if( function_exists( 'gzinflate' ) )
+                    {
+                        if( $headers['content-encoding'] == 'deflate' && $degzdata = @gzuncompress( $data ) )
+                        {
+                            $data = $degzdata;
+                        }
+                        elseif($headers['content-encoding'] == 'gzip' && $degzdata = @gzinflate( substr( $data, 10 ) ) )
+                        {
+                            $data = $degzdata;
+                        }
+                        else
+                        {
+                            $this->errorNumber = self::ERROR_BAD_RESPONSE;
+                            $this->errorString = "Errors occurred when trying to decode the deflated data received from server.";
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        $this->errorNumber = self::ERROR_BAD_RESPONSE;
+                        $this->errorString = "The server sent deflated data. This php install must have the Zlib extension compiled in to support this.";
+                        return false;
+                    }
+                }
+            }
+        } // end of 'if needed, de-chunk, re-inflate response'
+
+        return array( 'headers' => $headers, 'cookies' => $cookies );
+    }
+
+    /**
+     * decode a string that is encoded w. "chunked" transfer encoding
+     * as defined in rfc2068 par. 19.4.6
+     * Code shamelessly stolen from nusoap library by Dietrich Ayala
+     *
+     * @param string $buffer the string to be decoded
+     * @return string
+     */
+    protected static function decode_chunked( $buffer )
+    {
+        $length = 0;
+        $new = '';
+
+        // read chunk-size, chunk-extension (if any) and crlf
+        // get the position of the linebreak
+        $chunkend = strpos($buffer,"\r\n") + 2;
+        $temp = substr($buffer,0,$chunkend);
+        $chunk_size = hexdec( trim($temp) );
+        $chunkstart = $chunkend;
+        while($chunk_size > 0)
+        {
+            $chunkend = strpos($buffer, "\r\n", $chunkstart + $chunk_size);
+
+            // just in case we got a broken connection
+            if($chunkend == false)
+            {
+                $chunk = substr($buffer,$chunkstart);
+                // append chunk-data to entity-body
+                $new .= $chunk;
+                $length += strlen($chunk);
+                break;
+            }
+
+            // read chunk-data and crlf
+            $chunk = substr($buffer,$chunkstart,$chunkend-$chunkstart);
+            // append chunk-data to entity-body
+            $new .= $chunk;
+            // length := length + chunk-size
+            $length += strlen($chunk);
+            // read chunk-size and crlf
+            $chunkstart = $chunkend + 2;
+
+            $chunkend = strpos($buffer,"\r\n",$chunkstart)+2;
+            if($chunkend == false)
+            {
+                break; //just in case we got a broken connection
+            }
+            $temp = substr($buffer,$chunkstart,$chunkend-$chunkstart);
+            $chunk_size = hexdec( trim($temp) );
+            $chunkstart = $chunkend;
+        }
+        return $new;
     }
 
     /**
@@ -392,6 +693,7 @@ abstract class ggWebservicesClient
     /**
     * Used to switch http method used to either POST (default) or GET when using
     * webservice protocols that allow both (eg. REST?)
+    * @deprecated use the method from $request
     */
     function setMethod( $verb )
     {
@@ -421,13 +723,10 @@ abstract class ggWebservicesClient
     /// HTTP password for HTTP authentification
     protected $Password;
 
-    protected $ContentType = 'text/xml'; // set up a default that is most likely
     protected $UserAgent = 'gg eZ webservices client';
     protected $Protocol = 'http';
     protected $ResponseClass = 'ggWebservicesResponse';
-    protected $RequestHeaders = array();
     protected $ForceCURL = false;
-    protected $Verb = 'POST';
     protected $RequestCompression = '';
     protected $Proxy = '';
     protected $ProxyPort = 0;
@@ -447,6 +746,15 @@ abstract class ggWebservicesClient
 
     protected $errorString = '';
     protected $errorNumber = 0;
+
+    protected $Cookies = array();
+
+    // The following 3 members exist for historical reasons only - they should be
+    // removed from the client and moved only to the request classes
+    protected $ContentType = 'text/xml'; // set up a default that is most likely
+    protected $RequestHeaders = array();
+    protected $Verb = 'POST';
+
 }
 
 ?>

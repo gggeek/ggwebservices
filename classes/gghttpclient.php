@@ -10,6 +10,8 @@
 class ggHTTPClient extends ggWebservicesClient
 {
 
+    /// @deprecated the parent class ggWebservicesClient can do everything without
+    ///             us having to change anything here
     function __construct( $server, $path = '/', $port = 80, $protocol=null )
     {
         $this->ResponseClass = 'ggHTTPResponse';
@@ -26,6 +28,9 @@ class ggHTTPClient extends ggWebservicesClient
         return self::call( $url, array(), 'GET' );
     }
 
+    /**
+     * Returns 0 on error, a string if all ok
+     */
     static function post( $url, $values )
     {
         return self::call( $url, $values, 'POST' );
@@ -37,7 +42,7 @@ class ggHTTPClient extends ggWebservicesClient
         $url = array_merge( array( 'path' => '/', 'port' => 80, 'scheme' => null, 'user' => '', 'pass' => ''), $url );
 
         // if we do not add params to the http request, this will make for an empty payload
-        $request = new ggHTTPRequest( '', $values );
+        $request = new ggHTTPRequest( $method, $values );
         /// @todo are we loosing out fragment, query? ...
         $client = new ggHTTPClient( $url['host'], $url['path'], $url['port'], $url['scheme'] );
         if ( $url['user'] != '' )
@@ -45,7 +50,7 @@ class ggHTTPClient extends ggWebservicesClient
             $client->setLogin( $url['user'] );
             $client->setPassword( $url['path'] );
         }
-        $client->setMethod( $method );
+        //$client->setMethod( $method );
         $response = $client->send( $request );
         if ( !is_object( $response ) )
         {

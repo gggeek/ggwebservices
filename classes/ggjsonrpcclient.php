@@ -1,6 +1,7 @@
 <?php
 /**
  * Class used to communicate with jsonrpc servers
+ * @deprecated use a plain ggWebservicesClient instead of this
  *
  * @author G. Giunta
  * @version $Id$
