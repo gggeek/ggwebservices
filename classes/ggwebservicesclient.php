@@ -243,9 +243,9 @@ class ggWebservicesClient
         {
             // the client subclass in use did not bother to specify a class for responses:
             // assume the reponse class is named after the request
-            if ( preg_match( '/^gg(.+)Request$/', get_class( $request ), $matches ) && class_exists( 'gg' . $matches[1] . 'Response' ) )
+            if ( preg_match( '/^(.+)Request$/', get_class( $request ), $matches ) && class_exists( $matches[1] . 'Response' ) )
             {
-                $ResponseClass = 'gg' . $matches[1] . 'Response';
+                $ResponseClass = $matches[1] . 'Response';
             }
         }
         $response = new $ResponseClass( $request->name() );
