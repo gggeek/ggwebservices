@@ -1,11 +1,10 @@
-- add setOption(), setOptions() methods to ggwsclient to allow setting options
-  in one pass
-
 - add addParams() method to ggswrequest
 
 - test: using CURL and proxy / complex auths works?
 
 - add cookie support in the base client, as well as compressed responses support
+
+- finish ggRESTrequest and response
 
 - add support for limiting access to webservices by incoming IP address (often done for stupid ws clients that cannot login)
 

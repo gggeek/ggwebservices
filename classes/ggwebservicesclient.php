@@ -617,22 +617,83 @@ class ggWebservicesClient
         return $new;
     }
 
+    /*
+       One-stop shop for setting all configuration options
+       without haviong to write a haundred method calls
+       @todo move all of these values to an array, for commodity
+   */
+    function setOption( $option, $value )
+    {
+        switch( $option )
+        {
+            case 'timeout':
+                $this->Timeout = (int)$value;
+                break;
+            case 'login':
+                $this->Login = $value;
+                break;
+            case 'password':
+                $this->Password = $value;
+                break;
+            case 'requestCompression':
+                $this->RequestCompression = $value;
+                break;
+            case 'method':
+                $this->Verb = strtoupper( $alue );
+                break;
+            case 'proxyHost':
+                $this->Proxy = $value;
+                break;
+            case 'proxyPort':
+                $this->ProxyPort = ( (int)$value != 0 ? (int)$value : 8080 );
+                break;
+            case 'proxyUser':
+                $this->ProxyUser = $value;
+                break;
+            case 'proxyPassword':
+                $this->ProxyPassword = $value;
+                break;
+            case 'proxyAuthType':
+                $this->proxyAuthType = (int)$value;
+                if ( $value != 1 )
+                {
+                    $this->ForceCURL = true;
+                }
+                break;
+        }
+
+    }
+
+    /**
+    *  Set many options in one fell swoop
+    * @param array $optionArray
+    */
+    function setOptions( $optionArray )
+    {
+        foreach( $optionArray as $name => $value )
+        {
+            $this->setOption( $name, $value );
+        }
+    }
+
     /**
      Set timeout value
 
      @param int $timeout value in seconds. Set to 0 for unlimited.
+     @deprecated use setOption instead
     */
     function setTimeout( $timeout )
     {
-        $this->Timeout = $timeout;
+        $this->setOption( 'timeout', $timeout );
     }
 
     /**
      Sets the HTTP login
+     @deprecated use setOption instead
     */
     function setLogin( $login  )
     {
-        $this->Login = $login;
+        $this->setOption( 'login', $login );
     }
 
     /**
@@ -645,10 +706,11 @@ class ggWebservicesClient
 
     /**
      Sets the HTTP password
+     @deprecated use setOption instead
     */
     function setPassword( $password  )
     {
-        $this->Password = $password;
+        $this->setOption( 'password', $password );
     }
 
     /**
@@ -662,6 +724,7 @@ class ggWebservicesClient
     /**
      * Enable sending compressed requests (needs zlib extension installed)
      * Valid values: 'deflate, 'gzip', null
+     * @deprecated use setOption instead
      */
     function setRequestCompression( $compmethod )
     {
@@ -676,18 +739,17 @@ class ggWebservicesClient
      * @param string $proxypassword Leave blank if proxy has public access
      * @param int $proxyauthtype set to constant CURLAUTH_NTLM to use NTLM auth with proxy
      * @access public
+     * @deprecated use setOptions instead
      */
     function setProxy( $proxyhost, $proxyport, $proxyusername = '', $proxypassword = '', $proxyauthtype = 1 )
     {
-        $this->Proxy = $proxyhost;
-        $this->ProxyPort = ( (int)$proxyport != 0 ? (int)$proxyport : 8080 );
-        $this->ProxyUser = $proxyusername;
-        $this->ProxyPassword = $proxypassword;
-        $this->ProxyAuthType = $proxyauthtype;
-        if ( $proxyauthtype != 1 )
-        {
-            $this->ForceCURL = true;
-        }
+        $this->setOptions( array(
+            'proxyHost' => $proxyhost,
+            'ProxyPort' => $proxyport,
+            'ProxyUser' => $proxyusername,
+            'ProxyPassword' => $proxypassword,
+            'ProxyAuthType' => $proxyauthtype
+        ) );
     }
 
     /**
