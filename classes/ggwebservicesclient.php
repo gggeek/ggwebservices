@@ -84,6 +84,14 @@ class ggWebservicesClient
         {
             $this->Protocol = $protocol;
         }
+
+        // if ZLIB is enabled, let the client by default accept compressed responses
+        if( function_exists( 'gzinflate' ) || (
+            function_exists( 'curl_init' ) && ( ( $info = curl_version() ) &&
+            ( ( is_string( $info ) && strpos( $info, 'zlib' ) !== null ) || isset( $info['libz_version'] ) ) ) ) )
+        {
+            $this->AcceptedCompression = 'gzip, deflate';
+        }
     }
 
     /**
@@ -182,28 +190,41 @@ class ggWebservicesClient
 
             if ( $ch != 0 )
             {
+                curl_setopt( $ch, CURLOPT_HEADER, 1 );
+                curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+
                 if ( $this->Timeout != 0 )
                 {
                     curl_setopt( $ch, CURLOPT_TIMEOUT, $this->TimeOut );
                 }
 
-                $HTTPCall = $this->payload( $request );
+                //curl_setopt( $ch, CURLOPT_URL, $URL );
 
-                curl_setopt( $ch, CURLOPT_URL, $URL );
+                if( $this->login() != "" )
+                {
+                    curl_setopt( $ch, CURLOPT_USERPWD, $this->login() . ':' . $this->password() );
+                    curl_setopt( $ch, CURLOPT_HTTPAUTH, $this->AuthType );
+                }
 
                 if( $this->Proxy != '' )
                 {
-                    curl_setopt($ch, CURLOPT_PROXY, $this->Proxy . ':' . $this->ProxyPort );
+                    curl_setopt( $ch, CURLOPT_PROXY, $this->Proxy . ':' . $this->ProxyPort );
+                    if( $this->ProxyLogin != '' )
+                    {
+                        curl_setopt( $ch, CURLOPT_PROXYUSERPWD, $this->ProxyLogin . ':' . $this->ProxyPassword );
+                        /// @todo check curl version: need 7.1.7 min for CURLOPT_PROXYAUTH
+                        curl_setopt( $ch, CURLOPT_PROXYAUTH, $this->ProxyAuthType );
+                    }
+
                 }
+
+                curl_setopt( $ch, CURLOPT_USERAGENT, $this->UserAgent );
 
                 /// @todo only set this in ssl mode, plus set user decide
                 curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
                 curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 1 );
 
-                curl_setopt( $ch, CURLOPT_HEADER, 1 );
-                curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-                curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, $HTTPCall );  // Don't use CURLOPT_CUSTOMREQUEST without making sure your server supports the custom request method first.
-                //unset( $rawResponse );
+                curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, $this->payload( $request ) );  // Don't use CURLOPT_CUSTOMREQUEST without making sure your server supports the custom request method first.
 
                 $rawResponse = curl_exec( $ch );
 
@@ -264,8 +285,12 @@ class ggWebservicesClient
         $query_string = $request->querystring();
 
         $authentification = "";
-        if ( ( $this->login() != "" ) )
+        if ( $this->login() != "" )
         {
+            if ( $this->AuthType != 1 )
+            {
+                //error_log('Only Basic auth is supported');
+            }
             $authentification = "Authorization: Basic " . base64_encode( $this->login() . ":" . $this->password() ) . "\r\n" ;
         }
 
@@ -297,6 +322,7 @@ class ggWebservicesClient
         }
         $HTTPRequest = $verb . " " . $uri . " HTTP/1.0\r\n" .
             "User-Agent: " . $this->UserAgent ."\r\n" .
+            /// @todo do not add PORT info if on port 80
             "Host: " . $this->Server . ":" . $this->Port . "\r\n" .
             $authentification .
             $proxy_credentials;
@@ -304,6 +330,11 @@ class ggWebservicesClient
         // added extra request headers for eg SOAP clients
         /// @bug what if both client and request want to add eg COOKIES?
         $RequestHeaders = array_merge( $this->RequestHeaders, $request->RequestHeaders() );
+        if ( $this->AcceptedCompression != '' );
+        {
+            $RequestHeaders['Accept-Encoding'] = $this->AcceptedCompression;
+        }
+
         foreach( $RequestHeaders as $header => $value )
         {
             $HTTPRequest .= $header . ": " . $value . "\r\n";
@@ -635,11 +666,21 @@ class ggWebservicesClient
             case 'password':
                 $this->Password = $value;
                 break;
+            case 'authType':
+                $this->AuthType = (int)$value;
+                if ( $value != 1 )
+                {
+                    $this->ForceCURL = true;
+                }
+                break;
             case 'requestCompression':
                 $this->RequestCompression = $value;
                 break;
             case 'method':
                 $this->Verb = strtoupper( $alue );
+                break;
+            case 'acceptedCompression':
+                $this->AcceptedCompression = $value;
                 break;
             case 'proxyHost':
                 $this->Proxy = $value;
@@ -654,12 +695,16 @@ class ggWebservicesClient
                 $this->ProxyPassword = $value;
                 break;
             case 'proxyAuthType':
-                $this->proxyAuthType = (int)$value;
+                $this->ProxyAuthType = (int)$value;
                 if ( $value != 1 )
                 {
                     $this->ForceCURL = true;
                 }
                 break;
+            case 'forceCURL':
+                $this->ForceCURL = (bool)$value;
+                break;
+
         }
 
     }
@@ -784,7 +829,8 @@ class ggWebservicesClient
     protected $Login;
     /// HTTP password for HTTP authentification
     protected $Password;
-
+    /// @see CURLOPT_AUTH for values
+    protected $AuthType = 1;
     protected $UserAgent = 'gg eZ webservices client';
     protected $Protocol = 'http';
     protected $ResponseClass = 'ggWebservicesResponse';
@@ -794,9 +840,10 @@ class ggWebservicesClient
     protected $ProxyPort = 0;
     protected $ProxyLogin = '';
     protected $ProxyPassword = '';
-    // below here: yet to be used...
     protected $ProxyAuthType = 1;
-    protected $AuthType = 1;
+    protected $AcceptedCompression = '';
+
+    // below here: yet to be used...
     protected $Cert = '';
     protected $CertPass = '';
     protected $CACert = '';
@@ -805,6 +852,7 @@ class ggWebservicesClient
     protected $KeyPass = '';
     protected $VerifyPeer = true;
     protected $VerifyHost = 1;
+    protected $KeepAlive = true;
 
     protected $errorString = '';
     protected $errorNumber = 0;
