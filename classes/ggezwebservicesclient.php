@@ -152,15 +152,15 @@ class ggeZWebservicesClient
 
             $client = new $clientClass( $url['host'], $url['path'], $url['port'], $url['scheme'], $wsdl );
             if ( $providerUsername != '' ) {
-                $client->setCredentials( $providerUsername, $providerPassword );
+                $client->setOptions( array( 'login' => $providerUsername, 'password' => $providerPassword ) );
             }
             if ( $timeout )
             {
-                $client->setTimeout( $timeout );
+                $client->setOption( 'timeout', $timeout );
             }
             if ( $providerProxy != '' )
             {
-                $client->setProxy( $providerProxy, $providerProxyPort, $providerProxyUser, $providerProxyPassword );
+                $client->setOptions( array( 'proxyHost' => $providerProxy, 'proxyPort' => $providerProxyPort, 'proxyUser' => $providerProxyUser, 'proxyPassword' => $providerProxyPassword ) );
             }
             if ( $providerType == 'SOAP' || $providerType == 'PhpSOAP' )
             {
@@ -182,7 +182,7 @@ class ggeZWebservicesClient
             }
             else
             {
-                $client->setSoapVersion( $soapversion );
+                $client->setOption( 'soapVersion', $soapversion );
             }
             $response = $client->send( $request );
             if ( $providerType == 'PhpSOAP' )
@@ -229,6 +229,7 @@ class ggeZWebservicesClient
         default:
             // unsupported protocol
             ggeZWebservices::appendLogEntry( 'Error in user request: unsupported protocol ' . $providerType, 'error' );
+            /// @todo shall we return a resp. obj in $return_reponse_obj mode?
             return array( 'error' => 'Error in user request: unsupported protocol ' . $providerType, 'error' );
         }
     }
