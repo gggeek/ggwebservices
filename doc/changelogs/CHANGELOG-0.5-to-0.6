@@ -19,6 +19,8 @@ Changes from 0.5 to 0.6 - released 2010/xx/yy
   menu to invoke the webservices on the local server, making its usage much more
   streamlined
 - Add support for soap 1.2 besides soap 1.1 (the standard) in the phpsoap client
+- Support receiving compressed http responses if zlib is installed (or curl has
+  zlib compiled in)
 - Added more sample php files, in doc/samples
 - add a __tostring method to class ggWebservicesFault to allow debugging of
   error responses when the code is invoked via ezjscore with no specific
@@ -28,7 +30,7 @@ Changes from 0.5 to 0.6 - released 2010/xx/yy
 - A major reshuffle of interaction between client, request and response php classes
   has taken place.
   This means it will be much easier to add clients that use GET for requests, as
-  well as adding support for compressed http responses and cookies.
+  well as adding support for advancved http features.
   The utmost care has been taken not to break BC, but if you have subclassed any
   of the client, request or response classes in your own php code, you will need
   to merge the changes.
@@ -42,3 +44,4 @@ Changes from 0.5 to 0.6 - released 2010/xx/yy
   are not active
 - Fix php error generated when there is an introspection request with bad params
   sent by the user (invalid method name)
+- Sending of username/password now works for ggezwebservicesclient (basic auth)
