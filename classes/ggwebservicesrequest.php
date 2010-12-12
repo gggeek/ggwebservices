@@ -57,6 +57,12 @@ abstract class ggWebservicesRequest
         $this->Parameters[$name] = $value;
     }
 
+    function addParameters( $params )
+    {
+        foreach( $params as $name => $val )
+        $this->addParameter( $name, $value );
+    }
+
     function parameters()
     {
         return $this->Parameters;
