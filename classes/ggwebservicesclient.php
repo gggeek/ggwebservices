@@ -129,6 +129,9 @@ class ggWebservicesClient
                 return 0;
             }
 
+            // generate payload before opening socket, for a smaller connection time
+            $HTTPRequest = $this->payload( $request );
+
             /// @todo add ssl support with raw sockets
             if ( $this->Timeout != 0 )
             {
@@ -145,7 +148,6 @@ class ggWebservicesClient
                                   $this->errorNumber,
                                   $this->errorString );
             }
-
             if ( $fp == 0 )
             {
                 // nb: can we feed back to end user the error codes from fsockopen?
@@ -158,12 +160,11 @@ class ggWebservicesClient
                 $this->errorNumber = self::ERROR_CANNOT_CONNECT;
                 return 0;
             }
+
             if ( $this->Timeout != 0 )
             {
                 stream_set_timeout( $fp, $this->Timeout );
             }
-
-            $HTTPRequest = $this->payload( $request );
 
             if ( !fwrite( $fp, $HTTPRequest, strlen( $HTTPRequest ) ) )
             {
@@ -177,9 +178,9 @@ class ggWebservicesClient
             // fetch the response
             do
 			{
-                /// could we rely on getting false as a sure sign of error and return an ERROR_CABBOT_READ here ?
+                /// could we rely on getting false as a sure sign of error and return an ERROR_CANNOT_READ here ?
                 $rawResponse .= fread( $fp, 32768 );
-            } while( !feof( $fp ) );
+            } while( $fp && !feof( $fp ) );
             // close the socket
             fclose( $fp );
         }
@@ -218,7 +219,10 @@ class ggWebservicesClient
 
                 }
 
-                curl_setopt( $ch, CURLOPT_USERAGENT, $this->UserAgent );
+                if ( $this->UserAgent != '' )
+                {
+                    curl_setopt( $ch, CURLOPT_USERAGENT, $this->UserAgent );
+                }
 
                 /// @todo only set this in ssl mode, plus set user decide
                 curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
@@ -284,19 +288,9 @@ class ggWebservicesClient
     {
         $query_string = $request->querystring();
 
-        $authentification = "";
-        if ( $this->login() != "" )
-        {
-            if ( $this->AuthType != 1 )
-            {
-                //error_log('Only Basic auth is supported');
-            }
-            $authentification = "Authorization: Basic " . base64_encode( $this->login() . ":" . $this->password() ) . "\r\n" ;
-        }
-
-        $proxy_credentials = '';
         if( $this->Proxy != '' )
         {
+            // if proxy in use, URLS in request are absolute
             $uri = $this->Protocol . '://' . $this->Server . ':' . $this->Port . $this->Path . $query_string;
             if( $this->ProxyLogin != '' )
             {
@@ -304,13 +298,14 @@ class ggWebservicesClient
                 {
                     //error_log('Only Basic auth to proxy is supported yet');
                 }
-                $proxy_credentials = 'Proxy-Authorization: Basic ' . base64_encode( $this->ProxyLogin . ':' . $this->ProxyPassword ) . "\r\n";
+                $RequestHeaders = array( 'Proxy-Authorization' => 'Basic ' . base64_encode( $this->ProxyLogin . ':' . $this->ProxyPassword ) );
             }
         }
         else
         {
             // if no proxy in use, URLS in request are not absolute but relative
             $uri = $this->Path . $query_string;
+            $RequestHeaders = array();
         }
 
         // backward compatibility: if request does not specify a verb, let the client
@@ -321,30 +316,38 @@ class ggWebservicesClient
             $verb = $this->Verb;
         }
         $HTTPRequest = $verb . " " . $uri . " HTTP/1.0\r\n" .
-            "User-Agent: " . $this->UserAgent ."\r\n" .
             /// @todo do not add PORT info if on port 80
-            "Host: " . $this->Server . ":" . $this->Port . "\r\n" .
-            $authentification .
-            $proxy_credentials;
+            "Host: " . $this->Server . ":" . $this->Port . "\r\n";
 
         // added extra request headers for eg SOAP clients
         /// @bug what if both client and request want to add eg COOKIES?
-        $RequestHeaders = array_merge( $this->RequestHeaders, $request->RequestHeaders() );
+        $RequestHeaders = array_merge( $this->RequestHeaders, $request->RequestHeaders(), $RequestHeaders );
+
+        $authentification = "";
+        if ( $this->login() != "" )
+        {
+            if ( $this->AuthType != 1 )
+            {
+                //error_log('Only Basic auth is supported');
+            }
+            $RequestHeaders['Authorization'] = "Basic " . base64_encode( $this->login() . ":" . $this->password() ) . "\r\n" ;
+        }
+
+        if ( $this->UserAgent != '' )
+        {
+            $RequestHeaders['User-Agent'] = $this->UserAgent;
+        }
+
         if ( $this->AcceptedCompression != '' );
         {
             $RequestHeaders['Accept-Encoding'] = $this->AcceptedCompression;
-        }
-
-        foreach( $RequestHeaders as $header => $value )
-        {
-            $HTTPRequest .= $header . ": " . $value . "\r\n";
         }
 
         $payload = $request->payload();
         if ( $payload !== '' )
         {
 
-            if( function_exists( 'gzdeflate' ) && ( $this->RequestCompression == 'gzip' || $this->RequestCompression == 'deflate' ) )
+            if( ( $this->RequestCompression == 'gzip' || $this->RequestCompression == 'deflate' ) && function_exists( 'gzdeflate' ) )
             {
                 if( $this->request_compression == 'gzip' )
                 {
@@ -352,7 +355,7 @@ class ggWebservicesClient
                     if( $a )
                     {
                         $payload = $a;
-                        $HTTPRequest .= "Content-Encoding: gzip\r\n";
+                        $RequestHeaders['Content-Encoding'] = 'gzip';
                     }
                 }
                 else
@@ -361,7 +364,7 @@ class ggWebservicesClient
                     if( $a )
                     {
                         $payload = $a;
-                        $HTTPRequest .= "Content-Encoding: deflate\r\n";
+                        $RequestHeaders['Content-Encoding'] = 'deflate';
                     }
                 }
             }
@@ -371,16 +374,16 @@ class ggWebservicesClient
             {
                 $ContentType = $this->ContentType;
             }
-            $HTTPRequest .=
-                "Content-Type: " . $ContentType . "\r\n" .
-                "Content-Length: " . strlen( $payload ) . "\r\n\r\n" . $payload;
-        }
-        else
-        {
-            $HTTPRequest .= "\r\n";
+            $RequestHeaders['Content-Type'] = $ContentType;
+            $RequestHeaders['Content-Length'] = strlen( $payload );
         }
 
-        return $HTTPRequest;
+        foreach ( $RequestHeaders as $key => $val )
+        {
+            $RequestHeaders[$key] = "$key: $val";
+        }
+        /// @bug in case there is no $RequestHeaders, we send one crlf too much?
+        return $HTTPRequest . implode( "\r\n", $RequestHeaders ) . "\r\n\r\n" . $payload;
     }
 
     /**
@@ -652,6 +655,7 @@ class ggWebservicesClient
        One-stop shop for setting all configuration options
        without haviong to write a haundred method calls
        @todo move all of these values to an array, for commodity
+       @todo return true if option exists, false otherwhise?
    */
     function setOption( $option, $value )
     {
