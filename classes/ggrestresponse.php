@@ -80,7 +80,7 @@ class ggRESTResponse extends ggWebservicesResponse
                 {
                     $this->IsFault = true;
                     $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
-                    $this->Faulstring = ggRESTResponse::INVALIDRESPONSESTRING . ' json. Decoding error: ' . $err;
+                    $this->FaultString = ggRESTResponse::INVALIDRESPONSESTRING . ' json. Decoding error: ' . $err;
                 }
                 else
                 {
@@ -101,13 +101,13 @@ class ggRESTResponse extends ggWebservicesResponse
                 {
                     $this->IsFault = true;
                     $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
-                    $this->Faulstring = ggRESTResponse::INVALIDRESPONSESTRING . ' xml. ' .$e->getMessage();
+                    $this->FaultString = ggRESTResponse::INVALIDRESPONSESTRING . ' xml. ' .$e->getMessage();
                 }
                 break;
             default:
                 $this->IsFault = true;
                 $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
-                $this->Faulstring = ggRESTResponse::INVALIDRESPONSESTRING . " (unsupported format $contentType)";
+                $this->FaultString = ggRESTResponse::INVALIDRESPONSESTRING . " (unsupported format $contentType)";
         }
     }
 

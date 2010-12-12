@@ -62,7 +62,7 @@ class ggJSONRPCResponse extends ggWebservicesResponse
             // invalid jsonrpc response
             $this->IsFault = true;
             $this->FaultCode = self::INVALIDRESPONSEERROR;
-            $this->Faulstring = self::INVALIDRESPONSESTRING;
+            $this->FaultString = self::INVALIDRESPONSESTRING;
         }
         else
         {
@@ -73,7 +73,7 @@ class ggJSONRPCResponse extends ggWebservicesResponse
             {
                 $this->IsFault = true;
                 $this->FaultCode = self::INVALIDIDERROR;
-                $this->Faulstring = self::INVALIDIDSTRING;
+                $this->FaultString = self::INVALIDIDSTRING;
             }
             else if ( $results['error'] === null )
             {
