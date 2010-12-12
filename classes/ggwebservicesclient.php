@@ -201,22 +201,22 @@ class ggWebservicesClient
 
                 //curl_setopt( $ch, CURLOPT_URL, $URL );
 
-                if( $this->login() != "" )
-                {
-                    curl_setopt( $ch, CURLOPT_USERPWD, $this->login() . ':' . $this->password() );
-                    curl_setopt( $ch, CURLOPT_HTTPAUTH, $this->AuthType );
-                }
-
                 if( $this->Proxy != '' )
                 {
                     curl_setopt( $ch, CURLOPT_PROXY, $this->Proxy . ':' . $this->ProxyPort );
                     if( $this->ProxyLogin != '' )
                     {
                         curl_setopt( $ch, CURLOPT_PROXYUSERPWD, $this->ProxyLogin . ':' . $this->ProxyPassword );
-                        /// @todo check curl version: need 7.1.7 min for CURLOPT_PROXYAUTH
+                        /// @todo check curl version: need 7.10.7 min for CURLOPT_PROXYAUTH
                         curl_setopt( $ch, CURLOPT_PROXYAUTH, $this->ProxyAuthType );
                     }
 
+                }
+
+                if( $this->login() != "" )
+                {
+                    curl_setopt( $ch, CURLOPT_USERPWD, $this->login() . ':' . $this->password() );
+                    curl_setopt( $ch, CURLOPT_HTTPAUTH, $this->AuthType );
                 }
 
                 if ( $this->UserAgent != '' )
@@ -224,11 +224,27 @@ class ggWebservicesClient
                     curl_setopt( $ch, CURLOPT_USERAGENT, $this->UserAgent );
                 }
 
+                if( $this->AcceptedCompression != '' )
+                {
+                    /// @todo check curl version: need 7.10 for CURLOPT_ENCODING
+                    curl_setopt( $ch, CURLOPT_ENCODING, $this->AcceptedCompression );
+                }
+
+                list( $verb, $headers, $payload ) = $this->payload( $request, true );
+                if ( $payload != '' )
+                {
+                    //curl_setopt( $ch, CURLOPT_POST, true );
+                    curl_setopt( $ch, CURLOPT_POSTFIELDS, $payload );
+                }
+                if ( $verb != 'GET' && $verb != 'POST' )
+                {
+                    curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, $verb );
+                }
+                curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
+
                 /// @todo only set this in ssl mode, plus set user decide
                 curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
                 curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 1 );
-
-                curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, $this->payload( $request ) );  // Don't use CURLOPT_CUSTOMREQUEST without making sure your server supports the custom request method first.
 
                 $rawResponse = curl_exec( $ch );
 
@@ -280,33 +296,14 @@ class ggWebservicesClient
     }
 
     /**
-     * Build and return full HTTP payload out of a request payload (and other server status vars)
+     * Build and return full HTTP payload out of a request obj (and other server status vars)
      * @param ggWebservicesRequest $request
      * @return string
+     * @todo the API and code of this function is quite ugly ($forCurl usage)
      */
-    protected function payload( $request )
+    protected function payload( $request, $forCurl=false )
     {
-        $query_string = $request->querystring();
-
-        if( $this->Proxy != '' )
-        {
-            // if proxy in use, URLS in request are absolute
-            $uri = $this->Protocol . '://' . $this->Server . ':' . $this->Port . $this->Path . $query_string;
-            if( $this->ProxyLogin != '' )
-            {
-                if ( $this->ProxyAuthType != 1 )
-                {
-                    //error_log('Only Basic auth to proxy is supported yet');
-                }
-                $RequestHeaders = array( 'Proxy-Authorization' => 'Basic ' . base64_encode( $this->ProxyLogin . ':' . $this->ProxyPassword ) );
-            }
-        }
-        else
-        {
-            // if no proxy in use, URLS in request are not absolute but relative
-            $uri = $this->Path . $query_string;
-            $RequestHeaders = array();
-        }
+        $RequestHeaders = array();
 
         // backward compatibility: if request does not specify a verb, let the client
         // pick one on its own
@@ -315,29 +312,55 @@ class ggWebservicesClient
         {
             $verb = $this->Verb;
         }
-        $HTTPRequest = $verb . " " . $uri . " HTTP/1.0\r\n" .
-            /// @todo do not add PORT info if on port 80
-            "Host: " . $this->Server . ":" . $this->Port . "\r\n";
+
+        if ( !$forCurl )
+        {
+            $query_string = $request->querystring();
+
+            if( $this->Proxy != '' )
+            {
+                // if proxy in use, URLS in request are absolute
+                $uri = $this->Protocol . '://' . $this->Server . ':' . $this->Port . $this->Path . $query_string;
+                if( $this->ProxyLogin != '' )
+                {
+                    if ( $this->ProxyAuthType != 1 )
+                    {
+                        //error_log('Only Basic auth to proxy is supported yet');
+                    }
+                    $RequestHeaders = array( 'Proxy-Authorization' => 'Basic ' . base64_encode( $this->ProxyLogin . ':' . $this->ProxyPassword ) );
+                }
+            }
+            else
+            {
+                // if no proxy in use, URLS in request are not absolute but relative
+                $uri = $this->Path . $query_string;
+            }
+
+            $HTTPRequest = $verb . " " . $uri . " HTTP/1.0\r\n" .
+                /// @todo do not add PORT info if on port 80
+                "Host: " . $this->Server . ":" . $this->Port . "\r\n";
+        }
 
         // added extra request headers for eg SOAP clients
         /// @bug what if both client and request want to add eg COOKIES?
         $RequestHeaders = array_merge( $this->RequestHeaders, $request->RequestHeaders(), $RequestHeaders );
 
-        $authentification = "";
-        if ( $this->login() != "" )
+        if ( !$forCurl )
         {
-            if ( $this->AuthType != 1 )
+            if ( $this->login() != "" )
             {
-                //error_log('Only Basic auth is supported');
+                if ( $this->AuthType != 1 )
+                {
+                    //error_log('Only Basic auth is supported');
+                }
+                $RequestHeaders['Authorization'] = "Basic " . base64_encode( $this->login() . ":" . $this->password() ) . "\r\n" ;
             }
-            $RequestHeaders['Authorization'] = "Basic " . base64_encode( $this->login() . ":" . $this->password() ) . "\r\n" ;
-        }
 
-        if ( $this->UserAgent != '' )
-        {
-            $RequestHeaders['User-Agent'] = $this->UserAgent;
+            if ( $this->UserAgent != '' )
+            {
+                $RequestHeaders['User-Agent'] = $this->UserAgent;
+            }
         }
-
         if ( $this->AcceptedCompression != '' );
         {
             $RequestHeaders['Accept-Encoding'] = $this->AcceptedCompression;
@@ -369,21 +392,32 @@ class ggWebservicesClient
                 }
             }
 
-            $ContentType =$request->contentType();
+            $ContentType = $request->contentType();
             if ( $ContentType == '' )
             {
                 $ContentType = $this->ContentType;
             }
             $RequestHeaders['Content-Type'] = $ContentType;
-            $RequestHeaders['Content-Length'] = strlen( $payload );
+            if ( !$forCurl )
+            {
+                $RequestHeaders['Content-Length'] = strlen( $payload );
+            }
         }
 
         foreach ( $RequestHeaders as $key => $val )
         {
             $RequestHeaders[$key] = "$key: $val";
         }
-        /// @bug in case there is no $RequestHeaders, we send one crlf too much?
-        return $HTTPRequest . implode( "\r\n", $RequestHeaders ) . "\r\n\r\n" . $payload;
+
+        if ( !$forCurl )
+        {
+            /// @bug in case there is no $RequestHeaders, we send one crlf too much?
+            return $HTTPRequest . implode( "\r\n", $RequestHeaders ) . "\r\n\r\n" . $payload;
+        }
+        else
+        {
+            return array( $verb, $RequestHeaders, $payload );
+        }
     }
 
     /**
