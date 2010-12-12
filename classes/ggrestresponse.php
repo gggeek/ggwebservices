@@ -1,7 +1,7 @@
 <?php
 /**
- * Class used to wrap REST responses (plain, unknown xml). Modeled after Soap equivalent.
- * Needs the simplexml extension
+ * Class used to wrap REST responses.
+ * Needs the simplexml extension when serializing in xml, the json ext. for json
  *
  * @author G. Giunta
  * @version $Id$
@@ -17,15 +17,21 @@ class ggRESTResponse extends ggWebservicesResponse
       Returns the payload for the response.
       Encoding varies depending on what the request asked for
     */
-    function payload( $contentType='json' )
+    function payload( )
     {
+        $contentType = $this->ContentType;
+        if ( $contentType == '' )
+        {
+            $contentType = $this->defaultContentType;
+        }
+
         if ( $this->IsFault )
         {
             // default representation of an error, hand picked
             $value = array( 'faultCode' => $this->FaultCode, 'faultString' => $this->FaultString );
             // send an HTTP error code, since there is no other way to make sure
             // that the client can tell apart error responses from valid array responses
-            header( 'HTTP/1.1 500 Internal Server Error' );
+//            header( 'HTTP/1.1 500 Internal Server Error' );
         }
         else
         {
@@ -34,11 +40,13 @@ class ggRESTResponse extends ggWebservicesResponse
         switch( $contentType )
         {
             case 'php':
-                return var_export( $this->Value );
+            case 'application/x-httpd-php':
+                return var_export( $value );
             case 'phps':
-                return serialize( $this->Value );
-            case 'json':
-                return json_encode( $this->Value, JSON_FORCE_OBJECT );
+            case 'application/vnd.php.serialized':
+                return serialize( $value );
+            case 'application/json':
+                return json_encode( $value, JSON_FORCE_OBJECT );
             default:
                 header('HTTP/1.1 406 Not Acceptable');
                 // two 'non standard but existing' mimetype defs for php code and serialized
@@ -57,22 +65,17 @@ class ggRESTResponse extends ggWebservicesResponse
         // save raw data for debugging purposes
         $this->rawResponse = $stream;
 
-        // save raw data for debugging purposes
-        $this->rawResponse = $stream;
-
         if ( $headers === false )
         {
             $stream = self::stripHTTPHeader( $stream );
         }
 
-        /// @todo... parse http headers in $stream for Content-Type header field,
-        ///          then decode it to actual types supported
-        $contentType = '';
+        $contentType = isset( $headers['content-type'] ) ? $headers['content-type'] : '';
 
         switch( $contentType )
         {
-            case 'json':
-                $val = json_decode( $data, true );
+            case 'application/json':
+                $val = json_decode( $stream, true );
                 if ( $err = json_last_error() )
                 {
                     $this->IsFault = true;
@@ -84,10 +87,11 @@ class ggRESTResponse extends ggWebservicesResponse
                     $this->Value = $val;
                 }
                 break;
-            case 'xml':
+            case 'text/xml':
+            case 'application/xml':
                 try
                 {
-                    $xml = new SimpleXMLElement( $data );
+                    $xml = new SimpleXMLElement( $stream );
                     $this->IsFault = false;
                     $this->FaultString = false;
                     $this->FaultCode = false;
@@ -107,6 +111,13 @@ class ggRESTResponse extends ggWebservicesResponse
         }
     }
 
+    /// @todo (!important) we could filter here accepted types instead of in payload()
+    function setContentType( $type )
+    {
+        $this->ContentType = $type;
+    }
+
+    protected $defaultContentType = 'application/json';
 }
 
 ?>
