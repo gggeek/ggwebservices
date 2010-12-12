@@ -100,8 +100,8 @@ class ggeZWebservicesClient
         case 'JSONRPC':
         case 'SOAP':
         case 'PhpSOAP':
-        case 'XMLRPC' :
-        case 'HTTP' :
+        case 'XMLRPC':
+        case 'HTTP':
             $proxylog = '';
             if ( $providerProxy != '' )
             {
@@ -151,7 +151,8 @@ class ggeZWebservicesClient
             }
 
             $client = new $clientClass( $url['host'], $url['path'], $url['port'], $url['scheme'], $wsdl );
-            if ( $providerUsername != '' ) {
+            if ( $providerUsername != '' )
+            {
                 $client->setOptions( array( 'login' => $providerUsername, 'password' => $providerPassword ) );
             }
             if ( $timeout )

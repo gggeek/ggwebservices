@@ -14,11 +14,13 @@ class ggHTTPRequest extends ggWebservicesRequest
     function decodeStream( $rawRequest )
     {
         /// @todo... look at verb, and recover data from either query string or
-        ///          form/urlencoded data - or both?
+        ///          form/urlencoded data - or both? also, how to decide what is
+        ///          the Name of the request? Is this best left to subclasses?
+        return false;
     }
 
     /**
-    * Methods in rfc2166: 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'CONNECT'
+    * Methods in rfc2166: 'GET', 'POST', 'PUT', 'HEAD', 'OPTIONS', 'DELETE', 'TRACE', 'CONNECT'
     * In theory all of them can accept a req. body, even though in practice
     * body is discarded for GET, and most likely HEAD, OPTIONS, DELETE, TRACE, CONNECT...
     */
