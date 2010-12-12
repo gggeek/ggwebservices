@@ -9,11 +9,10 @@
  *
  * @see eZSOAPClient
  *
- * @todo add DIGEST, NTML auth if curl is enabled (for proxy auth too)
+ * @todo test DIGEST, NTML auth if curl is enabled (for proxy auth too)
  * @todo add a version nr in user-agent string
  * @todo let user decide ssl options, set server and client certs too
- * @todo let client use keepalives for multiple subsequent calls (in curl mode)
- * @todo let client accept compressed responses (declare it in request headers)
+ * @todo let client use keepalives for multiple subsequent calls (both curl and plain mode)
  * @todo allow ssl connections without curl (via stream properties)
  * @todo finish cookie support, so that client can be used for multiple calls with sessions
  * @todo implement following redirects (with a max predefined)
@@ -96,8 +95,6 @@ class ggWebservicesClient
 
     /**
      * Sends a request and returns the response object. 0 on error
-     *
-     * @todo let curl not specify http 1.0 all the time, since he knows better!
      */
     function send( $request )
     {
@@ -372,7 +369,7 @@ class ggWebservicesClient
 
             if( ( $this->RequestCompression == 'gzip' || $this->RequestCompression == 'deflate' ) && function_exists( 'gzdeflate' ) )
             {
-                if( $this->request_compression == 'gzip' )
+                if( $this->RequestCompression == 'gzip' )
                 {
                     $a = @gzencode( $payload );
                     if( $a )
