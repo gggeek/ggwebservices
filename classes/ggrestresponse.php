@@ -71,6 +71,10 @@ class ggRESTResponse extends ggWebservicesResponse
         }
 
         $contentType = isset( $headers['content-type'] ) ? $headers['content-type'] : '';
+        if ( ( $pos = strpos( $contentType, ';' ) ) !== false )
+        {
+            $contentType = substr( $contentType, 0, $pos );
+        }
 
         switch( $contentType )
         {
