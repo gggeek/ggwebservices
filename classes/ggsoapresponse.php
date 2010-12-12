@@ -297,6 +297,8 @@ TODO: add encoding checks with schema validation.
         }
     }
 
+    protected $ContentType = 'application/soap+xml';
+
 }
 
 ?>

@@ -75,6 +75,7 @@ class ggXMLRPCResponse extends ggWebservicesResponse
         }
     }
 
+    protected $ContentType = 'text/xml';
 }
 
 ?>

@@ -113,6 +113,7 @@ class ggJSONRPCResponse extends ggWebservicesResponse
     }
 
     protected $Id;
+    protected $ContentType = 'application/json';
 }
 
 ?>
