@@ -43,7 +43,16 @@ class ggRESTRequest extends ggWebservicesRequest
     */
     function decodeStream( $rawRequest )
     {
-        /// @todo... recover method name from the last fragment in the URL
+        /// recover method name from the last fragment in the URL
+        if( isset( $_SERVER["PATH_INFO"] ) )
+        {
+            $this->Name = $_SERVER["PATH_INFO"];
+        }
+        else
+        {
+            /// @todo test if this is the good var to use for both cgi mode and when rewrite rules are in effect
+            $this->Name = substr( strrchr( $_SERVER["PHP_SELF"], '/' ), 1 );
+        }
         $this->Parameters = $_GET;
         $this->ResponseType = $this->getHttpAccept();
         return true;
