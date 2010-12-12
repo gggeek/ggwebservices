@@ -9,6 +9,7 @@
  *
  * @see http://json-rpc.org/wiki/specification
  */
+
 class ggJSONRPCServer extends ggXMLRPCServer
 {
 

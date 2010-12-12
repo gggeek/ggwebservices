@@ -4,9 +4,8 @@
  * @author G. Giunta
  * @version $Id: ggjsonrpcserver.php 199 2010-12-04 00:06:40Z gg $
  * @copyright (C) G. Giunta 2010
- *
- * @see http://json-rpc.org/wiki/specification
  */
+
 class ggRESTServer extends ggWebservicesServer
 {
 

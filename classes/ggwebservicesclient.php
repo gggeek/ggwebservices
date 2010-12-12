@@ -29,7 +29,6 @@
  * - allow client to do https on ports != 443 (via modified constructor)
  */
 
-
 class ggWebservicesClient
 {
     const ERROR_MISSING_CURL = -101;
