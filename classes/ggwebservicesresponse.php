@@ -132,6 +132,15 @@ abstract class ggWebservicesResponse
         }
     }
 
+    function contentType()
+    {
+        return $this->ContentType;
+    }
+
+    function charset()
+    {
+        return $this->Charset;
+    }
 
     /// Contains the response value
     protected $Value = false;
@@ -146,6 +155,9 @@ abstract class ggWebservicesResponse
 
     /// @todo move to protected
     public $rawResponse = null;
+
+    protected $ContentType = '';
+    protected $Charset = 'UTF-8';
 }
 
 ?>

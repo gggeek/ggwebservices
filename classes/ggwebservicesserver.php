@@ -18,7 +18,6 @@
  * @copyright (C) G. Giunta 2009-2010
  *
  * @todo add a better way to register methods, supporting definition of type of return value and per-param help text
- * @todo add support for compressed requests
  * @todo add propert property support, for $exception_handling and future ones
  */
 
@@ -31,6 +30,7 @@ abstract class ggWebservicesServer
     const INVALIDINTROSPECTIONERROR = -204;
     const GENERICRESPONSEERROR = -205;
     const INVALIDAUTHERROR = -206;
+    const INVALIDCOMPRESSIONERROR = -207;
 
     const INVALIDREQUESTSTRING = 'Request received from client is not valid according to protocol format';
     const INVALIDMETHODSTRING = 'Method not found';
@@ -38,6 +38,7 @@ abstract class ggWebservicesServer
     const INVALIDINTROSPECTIONSTRING = 'Can\'t introspect: method unknown';
     const GENERICRESPONSESTRING = 'Internal server error';
     const INVALIDAUTHSTRING = 'Invalid authentication or not enough rights';
+    const INVALIDCOMPRESSIONSTRING = 'Request received from client could not be reinflated';
 
     /**
     * Creates a new server object
@@ -57,6 +58,8 @@ abstract class ggWebservicesServer
 
     /**
     * Echoes the response, setting http headers and such
+    *
+    * @todo take the method from ggRESTserver and put it here, to get a more generic base server
     */
     abstract function showResponse( $functionName, $namespaceURI, &$value );
 
@@ -67,6 +70,7 @@ abstract class ggWebservicesServer
 
     /**
       Processes the request and prints out the proper response.
+      @todo if function gzinflate does not exist, we should return a more appropriate http-level error
     */
     function processRequest()
     {
@@ -84,6 +88,15 @@ abstract class ggWebservicesServer
         /// @todo reinflate, dechunk, correct encoding, check for supported
         /// http features of the client, etc...
         $data = $this->RawPostData;
+
+        $data = $this->inflateRequest( $data );
+        if ( $data === false )
+        {
+            $this->showResponse(
+                'unknown_function_name',
+                $namespaceURI,
+                new ggWebservicesFault( self::INVALIDCOMPRESSIONERROR, self::INVALIDCOMPRESSIONSTRING ) );
+        }
 
         $request = $this->parseRequest( $data );
 
@@ -108,6 +121,53 @@ abstract class ggWebservicesServer
             }
             $this->showResponse( $functionName, $namespaceURI, $response );
         }
+    }
+
+    /**
+    * @todo use pass-by-ref to save memory (!important)
+    */
+    protected function inflateRequest( $data )
+    {
+        if( isset( $_SERVER['HTTP_CONTENT_ENCODING'] ) )
+        {
+            $content_encoding = str_replace( 'x-', '', $_SERVER['HTTP_CONTENT_ENCODING'] );
+
+            // check if request body has been compressed and decompress it
+            if( $content_encoding != '' && strlen( $data ) )
+            {
+                if( $content_encoding == 'deflate' || $content_encoding == 'gzip' )
+                {
+                    // if decoding works, use it. else assume data wasn't gzencoded
+                    if( function_exists( 'gzinflate' ) )
+                    {
+                        if( $content_encoding == 'deflate' && $degzdata = @gzuncompress( $data ) )
+                        {
+                            //if($this->debug > 1)
+                            //    $this->debugmsg("\n+++INFLATED REQUEST+++[".strlen($data)." chars]+++\n" . $data . "\n+++END+++");
+                            return $degzdata;
+                        }
+                        elseif( $content_encoding == 'gzip' && $degzdata = @gzinflate( substr( $data, 10 ) ) )
+                        {
+                            //if($this->debug > 1)
+                            //    $this->debugmsg("+++INFLATED REQUEST+++[".strlen($data)." chars]+++\n" . $data . "\n+++END+++");
+                            return $degzdata;
+                        }
+                        else
+                        {
+                            //error_log('The server sent deflated data, but an error happened while trying to reinflate it.');
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        //error_log('The server sent deflated data. Your php install must have the Zlib extension compiled in to support this.');
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return $data;
     }
 
     /**
