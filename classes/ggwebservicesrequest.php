@@ -34,14 +34,15 @@ abstract class ggWebservicesRequest
     abstract function decodeStream( $rawRequest );
 
     /**
-    * Returns an additional part that will be appended at the end of the URL
-    * set in the client. Useful for protocols that encode parameters in the URL and
-    * use GET instead of POST.
+    * Returns the final URI that will be used by the client, based on its initial
+    * version (except the protocol://host:port part).
+    * Useful for protocols that encode parameters in the URL and use GET instead
+    * of POST.
     * Override it in case of need.
     */
-    function queryString()
+    function requestURI( $uri )
     {
-        return '';
+        return $uri;
     }
 
     /**
@@ -73,7 +74,7 @@ abstract class ggWebservicesRequest
         return strtoupper( $this->Verb );
     }
 
-    function ContentType()
+    function contentType()
     {
         return $this->ContentType;
     }

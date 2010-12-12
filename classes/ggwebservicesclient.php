@@ -94,7 +94,6 @@ class ggWebservicesClient
 
     /**
      * Sends a request and returns the response object. 0 on error
-     * @todo merge in a more intelligent way $this->path and query string from request
      */
     function send( $request )
     {
@@ -183,7 +182,7 @@ class ggWebservicesClient
         }
         else
         {
-            $URL = $this->Protocol . "://" . $this->Server . ":" . $this->Port . $this->Path . $request->querystring();
+            $URL = $this->Protocol . "://" . $this->Server . ":" . $this->Port . $request->requestURI( $this->Path );
             $ch = curl_init ( $URL );
 
             if ( $ch != 0 )
@@ -311,12 +310,13 @@ class ggWebservicesClient
 
         if ( !$forCurl )
         {
-            $query_string = $request->querystring();
+            // if no proxy in use, URLS in request are not absolute but relative
+            $uri = $request->requestURI( $this->Path );
 
             if( $this->Proxy != '' )
             {
                 // if proxy in use, URLS in request are absolute
-                $uri = $this->Protocol . '://' . $this->Server . ':' . $this->Port . $this->Path . $query_string;
+                $uri = $this->Protocol . '://' . $this->Server . ':' . $this->Port . $uri;
                 if( $this->ProxyLogin != '' )
                 {
                     if ( $this->ProxyAuthType != 1 )
@@ -325,11 +325,6 @@ class ggWebservicesClient
                     }
                     $RequestHeaders = array( 'Proxy-Authorization' => 'Basic ' . base64_encode( $this->ProxyLogin . ':' . $this->ProxyPassword ) );
                 }
-            }
-            else
-            {
-                // if no proxy in use, URLS in request are not absolute but relative
-                $uri = $this->Path . $query_string;
             }
 
             $HTTPRequest = $verb . " " . $uri . " HTTP/1.0\r\n" .

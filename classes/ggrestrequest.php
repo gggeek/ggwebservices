@@ -20,17 +20,38 @@ class ggRESTRequest extends ggWebservicesRequest
     /**
     * Final part of url that is built REST style: /method?p1=val1&p2=val2
     */
-    function queryString()
+    function requestURI( $uri )
     {
-        $return  = '/' . $this->Name;
+        $parsed = parse_url( $uri );
+
+        $return = '';
+        if ( isset( $parsed['user'] ) )
+        {
+            $return  .= $parsed['user'] . '@' . $parsed['pass'];
+        }
+        $return  .= rtrim( $parsed['path'], '/' ) . '/' . $this->Name;
+        if ( isset( $parsed['query'] ) )
+        {
+            $return  .= '?' . $parsed['query'];
+            $next = '&';
+        }
+        else
+        {
+            $next = '?';
+        }
+
         if ( count( $this->Parameters ) )
         {
-            $return .= '?';
+            $return .= $next;
             foreach( $this->Parameters as $key => $val )
             {
                 $return .= urlencode( $key ) . '=' . urlencode( $val ) . '&';
             }
             $return = substr( $return, 0, -1 );
+        }
+        if ( isset( $parsed['fragment'] ) )
+        {
+            $return .= '#' . $parsed['fragment'];
         }
         return $return;
     }
@@ -51,8 +72,9 @@ class ggRESTRequest extends ggWebservicesRequest
         else
         {
             /// @todo test if this is the good var to use for both cgi mode and when rewrite rules are in effect
-            $this->Name = substr( strrchr( $_SERVER["PHP_SELF"], '/' ), 1 );
+            $this->Name = strrchr( $_SERVER["PHP_SELF"], '/' );
         }
+        $this->Name = ltrim( $this->Name, '/' );
         $this->Parameters = $_GET;
         $this->ResponseType = $this->getHttpAccept();
         return true;
