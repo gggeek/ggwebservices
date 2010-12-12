@@ -12,26 +12,9 @@
 class ggJSONRPCServer extends ggXMLRPCServer
 {
 
-    /**
-    * Echoes the response, setting http headers and such
-    */
-    function showResponse( $functionName, $namespaceURI, &$value )
+    function prepareResponse( $response )
     {
-
-        $response = new ggJSONRPCResponse( $functionName );
-        $response->setValue( $value );
-        /// we need to reinject the request id into the response
         $response->setId( $this->Id );
-        $payload = $response->payload();
-
-        //header( "SOAPServer: eZ soap" );
-        header( "Content-Type: application/json; charset=\"UTF-8\"" );
-        header( "Content-Length: " . strlen( $payload ) );
-
-        if ( ob_get_length() )
-            ob_end_clean();
-
-        print( $payload );
     }
 
     /**
@@ -65,7 +48,7 @@ class ggJSONRPCServer extends ggXMLRPCServer
     );
 
     var $Id;
-
+    protected $ResponseClass = 'ggJSONRPCResponse';
 }
 
 ?>

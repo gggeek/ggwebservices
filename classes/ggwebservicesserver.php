@@ -12,6 +12,8 @@
  *   -- handleRequest or handleInternalRequest (builds response as plain php objects)
  *   |
  *   -- showResponse (echoes response in correct format, usually via building of response obj)
+ *        |
+ *        -- prepareResponse (adds to response obj any missing info gathered usually during parseRequest)
  *
  * @author G. Giunta
  * @version $Id$
@@ -58,13 +60,33 @@ abstract class ggWebservicesServer
 
     /**
     * Echoes the response, setting http headers and such
-    *
-    * @todo take the method from ggRESTserver and put it here, to get a more generic base server
     */
-    abstract function showResponse( $functionName, $namespaceURI, &$value );
+    function showResponse( $functionName, $namespaceURI, &$value )
+    {
+        $ResponseClass =  $this->ResponseClass;
+        $response = new $ResponseClass( $functionName );
+        $response->setValue( $value );
+        // allow subclasses to inject in response more info that they have from request
+        $this->prepareResponse( $response );
+        $payload = $response->payload();
+
+        //header( "SOAPServer: eZ soap" );
+        header( "Content-Type: application/json; charset=\"UTF-8\"" );
+        header( "Content-Length: " . strlen( $payload ) );
+
+        if ( ob_get_length() )
+        ob_end_clean();
+
+        print( $payload );
+    }
+
+    /// To be subclassed
+    function prepareResponse( $response )
+    {
+    }
 
     /**
-    * Takes as input the request payload and returns a request obj or false
+    * Takes as input the request payload (body) and returns a request obj or false
     */
     abstract function parseRequest( $payload );
 
@@ -350,6 +372,7 @@ abstract class ggWebservicesServer
      */
 	public $exception_handling = 0;
 
+    protected $ResponseClass = 'ggWebservicesResponse';
 }
 
 ?>
