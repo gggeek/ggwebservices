@@ -14,8 +14,10 @@ class ggRESTResponse extends ggWebservicesResponse
     const INVALIDRESPONSESTRING = 'Response received from server is not valid';
 
     /**
-      Returns the payload for the response.
-      Encoding varies depending on what the request asked for
+    * Returns the payload for the response.
+    * Encoding varies depending on what the request asked for
+    *
+    * @todo add jsonp support for php? note that the validation regexp (in req. class) might need to differ...
     */
     function payload( )
     {
@@ -31,7 +33,7 @@ class ggRESTResponse extends ggWebservicesResponse
             $value = array( 'faultCode' => $this->FaultCode, 'faultString' => $this->FaultString );
             // send an HTTP error code, since there is no other way to make sure
             // that the client can tell apart error responses from valid array responses
-//            header( 'HTTP/1.1 500 Internal Server Error' );
+            header( 'HTTP/1.1 500 Internal Server Error' );
         }
         else
         {
@@ -46,7 +48,12 @@ class ggRESTResponse extends ggWebservicesResponse
             case 'application/vnd.php.serialized':
                 return serialize( $value );
             case 'application/json':
-                return json_encode( $value, JSON_FORCE_OBJECT );
+                $json = json_encode( $value, JSON_FORCE_OBJECT );
+                if ( $this->JsonpCallback != false )
+                {
+                    $json = $this->JsonpCallback . '(' . $json . ')';
+                }
+                return $json;
             default:
                 header('HTTP/1.1 406 Not Acceptable');
                 // two 'non standard but existing' mimetype defs for php code and serialized
@@ -121,7 +128,13 @@ class ggRESTResponse extends ggWebservicesResponse
         $this->ContentType = $type;
     }
 
+    function setJsonpCallback( $callback )
+    {
+        $this->JsonpCallback = $callback;
+    }
+
     protected $defaultContentType = 'application/json';
+    protected $JsonpCallback = false;
 }
 
 ?>

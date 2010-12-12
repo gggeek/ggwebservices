@@ -12,6 +12,7 @@ class ggRESTServer extends ggWebservicesServer
     function prepareResponse( $response )
     {
         $response->setContentType( $this->ResponseType );
+        $response->setJsonpCallback( $this->JsonpCallback );
     }
 
     /**
@@ -23,6 +24,7 @@ class ggRESTServer extends ggWebservicesServer
         if ( $request->decodeStream( $payload ) )
         {
             $this->ResponseType = $request->responseType();
+            $this->JsonpCallback = $request->jsonpCallback();
             return $request;
         }
         else
@@ -34,6 +36,7 @@ class ggRESTServer extends ggWebservicesServer
 
     protected $ResponseType = '';
     protected $ResponseClass = 'ggRESTResponse';
+    protected $JsonpCallback = false;
 }
 
 ?>

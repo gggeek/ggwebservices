@@ -77,6 +77,14 @@ class ggRESTRequest extends ggWebservicesRequest
         $this->Name = ltrim( $this->Name, '/' );
         $this->Parameters = $_GET;
         $this->ResponseType = $this->getHttpAccept();
+        if ( isset( $_GET[$this->JsonpVar] ) && preg_match( $this->JsonpRegexp, $_GET[$this->JsonpVar] ) )
+        {
+            $this->JsonpCallback = $_GET[$this->JsonpVar];
+        }
+        else
+        {
+            $this->JsonpCallback = false;
+        }
         return true;
     }
 
@@ -161,8 +169,23 @@ class ggRESTRequest extends ggWebservicesRequest
         return $this->ResponseType;
     }
 
+    function jsonpCallback()
+    {
+        return $this->JsonpCallback;
+    }
+
     protected $Verb = 'GET';
     protected $ResponseType = '';
+
+    /// name of GET variable used for jsonp output
+    /// 'callback' is used by Yahoo, possibly google too. Flickr uses 'jsoncallback'
+    protected $JsonpVar = 'callback';
+    /// Regexp used to avoid XSS attacks on jsonp: only callbacks matching this
+    /// expression are accepted.
+    /// \w = letters, digits, underscore. See also an alternative here: http://www.json-p.org/
+    protected $JsonpRegexp = '/^\w+$/';
+    /// where we store the callback received in the request
+    protected $JsonpCallback = false;
 }
 
 ?>
