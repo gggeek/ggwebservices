@@ -107,7 +107,7 @@ abstract class ggWebservicesServer
 
         $namespaceURI = 'unknown_namespace_uri';
 
-        /// @todo reinflate, dechunk, correct encoding, check for supported
+        /// @todo dechunk, correct encoding, check for supported
         /// http features of the client, etc...
         $data = $this->RawPostData;
 
