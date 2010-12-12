@@ -54,7 +54,7 @@ class ggXMLRPCResponse extends ggWebservicesResponse
             // invalid XMLRPC response
             $this->IsFault = true;
             $this->FaultCode = self::INVALIDRESPONSEERROR;
-            $this->Faulstring = self::INVALIDRESPONSESTRING;
+            $this->FaultString = self::INVALIDRESPONSESTRING;
         }
         else
         {
