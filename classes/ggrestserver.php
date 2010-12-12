@@ -33,6 +33,7 @@ class ggRESTServer extends ggWebservicesServer
     }
 
     protected $ResponseType = '';
+    protected $ResponseClass = 'ggRESTResponse';
 }
 
 ?>
