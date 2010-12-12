@@ -21,6 +21,7 @@ Changes from 0.5 to 0.6 - released 2010/xx/yy
 - Add support for soap 1.2 besides soap 1.1 (the standard) in the phpsoap client
 - Support receiving compressed http responses if zlib is installed (or curl has
   zlib compiled in)
+- Support receiving compressed http requests if zlib is installed
 - Added more sample php files, in doc/samples
 - add a __tostring method to class ggWebservicesFault to allow debugging of
   error responses when the code is invoked via ezjscore with no specific
@@ -36,6 +37,7 @@ Changes from 0.5 to 0.6 - released 2010/xx/yy
   to merge the changes.
   Some classes and some methods are considered deprecated and will be removed in
   future releases (they are marked as such in the javadoc comments).
+  A few new methods have been added.
 
 *Bugfixes:
 
@@ -45,3 +47,4 @@ Changes from 0.5 to 0.6 - released 2010/xx/yy
 - Fix php error generated when there is an introspection request with bad params
   sent by the user (invalid method name)
 - Sending of username/password now works for ggezwebservicesclient (basic auth)
+- More descriptive error messages when receiving bad responses from servers

@@ -1,10 +1,10 @@
-- add addParams() method to ggswrequest
-
 - test: using CURL and proxy / complex auths works?
 
-- add cookie support in the base client, as well as compressed responses support
+- add to the base client:
+  + cookie support
+  + send($array) with keepalive (both curl & by hand)
 
-- finish ggRESTrequest and response
+- add to ezwsclient support for auth type, proxy auth type, other options...
 
 - add support for limiting access to webservices by incoming IP address (often done for stupid ws clients that cannot login)
 
@@ -22,14 +22,14 @@
 
 - add jsonrpc 2.0 support
 
-- flesh out rest server w. callback (jsonp) support (output types: json, php, ... ?) - see http://developer.yahoo.com/common/json.html & http://www.ibm.com/developerworks/library/wa-aj-jsonp1/
+- add jsonp support to rest server (output types: json, php, ... ?) - see http://developer.yahoo.com/common/json.html & http://www.ibm.com/developerworks/library/wa-aj-jsonp1/
   or http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/ http://svn.php.net/viewvc/pear/packages/XML_Serializer/trunk/XML/Serializer.php?revision=294967&view=markup
 
 - test objects vs. array return by default with ezsoap (in tpl code especially)
 
 - test support for calling jscore and plain-registered methods with index_ajax controller; test again custom controller too
 
-- add ezjscore client
+- add ezjscore client, request, response classes
 
 - add siteaccess limitation to proxy view
 
