@@ -94,6 +94,7 @@ class ggWebservicesClient
 
     /**
      * Sends a request and returns the response object. 0 on error
+     * @todo merge in a more intelligent way $this->path and query string from request
      */
     function send( $request )
     {
