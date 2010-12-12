@@ -246,7 +246,7 @@ abstract class ggWebservicesServer
         }
         else
         {
-            return new ggWebservicesFault( self::INVALIDMETHODERROR, self::INVALIDMETHODSTRING );
+            return new ggWebservicesFault( self::INVALIDMETHODERROR, self::INVALIDMETHODSTRING . " '$functionName'" );
         }
     }
 

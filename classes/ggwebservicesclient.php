@@ -287,7 +287,6 @@ class ggWebservicesClient
             }
         }
         $response = new $ResponseClass( $request->name() );
-
         $response->decodeStream( $request, $rawResponse, $respArray['headers'] );
         return $response;
     }
