@@ -57,6 +57,11 @@ abstract class ggWebservicesRequest
         return $this->Name;
     }
 
+    /**
+    * This call should be reversed: addParameter( $value, $name='' ) to better
+    * support protocols with positional params. Alas we keep compatibility with
+    * the eZP soap request class.
+    */
     function addParameter( $name, $value )
     {
         $this->Parameters[$name] = $value;
@@ -65,7 +70,9 @@ abstract class ggWebservicesRequest
     function addParameters( $params )
     {
         foreach( $params as $name => $val )
-        $this->addParameter( $name, $value );
+        {
+            $this->addParameter( $name, $value );
+        }
     }
 
     function parameters()
