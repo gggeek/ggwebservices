@@ -147,6 +147,7 @@ abstract class ggWebservicesServer
 
     /**
     * @todo use pass-by-ref to save memory (!important)
+    * @todo if content-type is application/x-www-form-urlencoded, we should revuild $_POST
     */
     protected function inflateRequest( $data )
     {
