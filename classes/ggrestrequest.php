@@ -46,7 +46,17 @@ class ggRESTRequest extends ggWebservicesRequest
             $return .= $next;
             foreach( $this->Parameters as $key => $val )
             {
-                $return .= urlencode( $key ) . '=' . urlencode( $val ) . '&';
+                if ( is_array( $val ) )
+                {
+                    foreach ( $val as $vkey => $vval )
+                    {
+                        $return .= urlencode( $key ) . '[' . urlencode( $vkey ) . ']=' . urlencode( $vval ) . '&';
+                    }
+                }
+                else
+                {
+                    $return .= urlencode( $key ) . '=' . urlencode( $val ) . '&';
+                }
             }
             $return = substr( $return, 0, -1 );
         }

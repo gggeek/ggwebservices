@@ -38,7 +38,17 @@ class ggHTTPRequest extends ggWebservicesRequest
         $results = array();
         foreach( $this->Parameters as $key => $val )
         {
-            $results[] = urlencode($key) . '=' . urlencode($val);
+            if ( is_array( $val ) )
+            {
+                foreach ( $val as $vkey => $vval )
+                {
+                    $results[] = urlencode( $key ) . '[' . urlencode( $vkey ) . ']=' . urlencode( $vval );
+                }
+            }
+            else
+            {
+                $results[] = urlencode( $key ) . '=' . urlencode( $val );
+            }
         }
         return implode( '&', $results );
     }
