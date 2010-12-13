@@ -36,6 +36,8 @@
 - add 'plain' xml format to REST server. see eg http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
   or http://svn.php.net/viewvc/pear/packages/XML_Serializer/trunk/XML/Serializer.php?revision=294967&view=markup
 
+- add some doc showing the client/request/response and server/request/response interaction to make it easier to remember that requests are also used server-side (and responses client-side)
+
 - test support for calling jscore and plain-registered methods with index_ajax controller; test again custom controller too
 
 - add siteaccess limitation to proxy view
