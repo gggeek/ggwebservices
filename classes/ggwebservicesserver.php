@@ -1,17 +1,17 @@
 <?php
 /**
  * Base class for handling all incoming webservice calls.
- * API based on the eZSOAPServer class from eZP lib dir. See docs in there.
+ * API based on the eZSOAPServer class from eZP. See docs in there.
  *
  * Process of handling incoming requests:
  *
  * processRequest
  *   |
- *   -- parseRequest (builds request obj out of received data)
+ *   -- parseRequest (builds a request obj out of received data)
  *   |
- *   -- handleRequest or handleInternalRequest (builds response as plain php objects)
+ *   -- handleRequest or handleInternalRequest (builds response as plain php value)
  *   |
- *   -- showResponse (echoes response in correct format, usually via building of response obj)
+ *   -- showResponse (echoes response in correct format, usually via building a response obj and serializing it)
  *        |
  *        -- prepareResponse (adds to response obj any missing info gathered usually during parseRequest)
  *
@@ -60,6 +60,11 @@ abstract class ggWebservicesServer
 
     /**
     * Echoes the response, setting http headers and such
+    * @todo it would be easier if the request object was passed to this method.
+    *       Right now we are forced to duplicate extra info coming from the request
+    *       into the server itself, to reinject it into the response using the
+    *       prepareResponse() method. Examples: request ID for jsonrpc, desired
+    *       response type for rest protocol.
     */
     function showResponse( $functionName, $namespaceURI, &$value )
     {
@@ -80,7 +85,11 @@ abstract class ggWebservicesServer
         print( $payload );
     }
 
-    /// To be subclassed
+    /**
+    * To be subclassed.
+    * A function executed before calling payload() on the response object to generate
+    * the response stream. Useful to inject into the response some missing data.
+    */
     function prepareResponse( $response )
     {
     }
@@ -91,8 +100,8 @@ abstract class ggWebservicesServer
     abstract function parseRequest( $payload );
 
     /**
-      Processes the request and prints out the proper response.
-      @todo if function gzinflate does not exist, we should return a more appropriate http-level error
+    * Processes the request and prints out the proper response.
+    * @todo if function gzinflate does not exist, we should return a more appropriate http-level error
     */
     function processRequest()
     {

@@ -5,7 +5,6 @@
  * @author G. Giunta
  * @version $Id$
  * @copyright (C) G. Giunta 2009-2010
- *
  */
 
 abstract class ggWebservicesRequest
@@ -21,15 +20,20 @@ abstract class ggWebservicesRequest
 
     /**
     * Returns the request payload encoded according to its specific protocol
-    * (in HTTP terms, the 'message body')
+    * (in HTTP terms, this is the message body).
+    * This function is called client-side.
     * @return string
     */
     abstract function payload();
 
     /**
-    * Used by servers when decoding incoming requests
+    * Used by servers when decoding incoming requests from the http request received.
+    * Should set the Parameters and all relevant internal members
     * @param string $rawRequest
-    * @return bool false if received data cannot be parsed back into a valide request
+    * @return bool false if received data cannot be parsed into a valid request
+    * @todo this call is too naive, as it discards both http headers and URL,
+    *       which might be needed for eg. REST protocols
+    *       We keep it like this for now for backward compat, but it might change later on...
     */
     abstract function decodeStream( $rawRequest );
 
@@ -37,7 +41,7 @@ abstract class ggWebservicesRequest
     * Returns the final URI that will be used by the client, based on its initial
     * version (except the protocol://host:port part).
     * Useful for protocols that encode parameters in the URL and use GET instead
-    * of POST.
+    * of POST. Default is not to touch the url received and give it back intact.
     * Override it in case of need.
     */
     function requestURI( $uri )
@@ -69,6 +73,7 @@ abstract class ggWebservicesRequest
         return $this->Parameters;
     }
 
+    /// as in 'http verb'. This is not the method name of the request.
     function method()
     {
         return strtoupper( $this->Verb );

@@ -1,11 +1,10 @@
 <?php
 /**
- * Generic class used to wrap webservices responses. Modeled after Soap equivalent.
+ * Generic class used to wrap webservices responses. Modeled after eZP Soap equivalent.
  *
  * @author G. Giunta
  * @version $Id$
  * @copyright (C) G. Giunta 2009-2010
- *
  */
 
 abstract class ggWebservicesResponse
@@ -31,14 +30,14 @@ abstract class ggWebservicesResponse
     abstract function payload();
 
     /**
-    * Decodes the response to a text stream.
+    * Decodes the response from a text stream (usually the http response body).
     * Sets internal members value, isFault, faultString and faultCode
     * Name is not set to response from request - a bit weird... but client injects name using the request one anyway
     * The API is a bit whacky because we want too keep compat with the eZP original version
-    * @param ggWebservicesRequest $request
+    * @param ggWebservicesRequest $request the original request object
     * @param string $stream the complete HTTP response in case $headers is false, the response body if $headers is an array
-    * @param array $headers
-    * @return void
+    * @param array $headers the http headers received along with the response
+    * @return void (if parsing of stream fails, set isFault to true plus error code and description)
     */
     abstract function decodeStream( $request, $stream, $headers=false );
 
