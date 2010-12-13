@@ -10,16 +10,31 @@
 class ggRESTRequest extends ggWebservicesRequest
 {
     /**
-    * No request body by default
+    * No request body for GET requests, as all aparams are put in the url
     */
     function payload()
     {
-        return '';
+        if ( $this->Verb == 'GET' )
+        {
+            return '';
+        }
+        else
+        {
+            $params = $this->Parameters;
+            if ( $this->NameVar != null )
+            {
+                $params[$this->NameVar] = $this->Name;
+            }
+            return $this->_payload( $params );
+        }
     }
 
     /**
     * Final part of url that is built REST style: /methodName?p1=val1&p2=val2
-    * Flickr uses ?method=methodName&p1=val1&p2=val2
+    * unless request is POST (or other non-GET), then they are snt as part
+    * of body.
+    * Note: Flickr uses calls like this: ?method=methodName&p1=val1&p2=val2
+    *       Google varies a lot
     */
     function requestURI( $uri )
     {
@@ -28,9 +43,22 @@ class ggRESTRequest extends ggWebservicesRequest
         $return = '';
         if ( isset( $parsed['user'] ) )
         {
-            $return  .= $parsed['user'] . '@' . $parsed['pass'];
+            $return .= $parsed['user'] . '@' . $parsed['pass'];
         }
-        $return  .= rtrim( $parsed['path'], '/' ) . '/' . $this->Name;
+        $params = ( $this->Verb == 'GET' ) ? $this->Parameters : array();
+        if ( $this->NameVar == null )
+        {
+            $return .= rtrim( $parsed['path'], '/' ) . '/' . $this->Name;
+        }
+        else
+        {
+            $return .= $parsed['path'];
+            if ( $this->Verb == 'GET' )
+            {
+                $params[$this->NameVar] = $this->Name;
+            }
+        }
+
         if ( isset( $parsed['query'] ) )
         {
             $return  .= '?' . $parsed['query'];
@@ -40,62 +68,81 @@ class ggRESTRequest extends ggWebservicesRequest
         {
             $next = '?';
         }
-
-        if ( count( $this->Parameters ) )
+        if ( count( $params ) )
         {
-            $return .= $next;
-            foreach( $this->Parameters as $key => $val )
-            {
-                if ( is_array( $val ) )
-                {
-                    foreach ( $val as $vkey => $vval )
-                    {
-                        $return .= urlencode( $key ) . '[' . urlencode( $vkey ) . ']=' . urlencode( $vval ) . '&';
-                    }
-                }
-                else
-                {
-                    $return .= urlencode( $key ) . '=' . urlencode( $val ) . '&';
-                }
-            }
-            $return = substr( $return, 0, -1 );
+            $return .= $next . $this->_payload( $params );
         }
         if ( isset( $parsed['fragment'] ) )
         {
             $return .= '#' . $parsed['fragment'];
         }
+
         return $return;
     }
 
+    protected function _payload( $params )
+    {
+        $results = array();
+        foreach( $params as $key => $val )
+        {
+            if ( is_array( $val ) )
+            {
+                foreach ( $val as $vkey => $vval )
+                {
+                    $results[] = urlencode( $key ) . '[' . urlencode( $vkey ) . ']=' . urlencode( $vval );
+                }
+            }
+            else
+            {
+                $results[] = urlencode( $key ) . '=' . urlencode( $val );
+            }
+        }
+        return implode( '&', $results );
+    }
+
     /**
-    * Unlike other requests, $rawRequest here is not used, as GET params are used, not POST.
+    * Unlike other requests, $rawRequest here is not used, as GET params are used,
+    * and for POST we rely on $_POST as it is already there for us.
     * This is a small break of the encapsulation principle of the API, but is
     * faster than having to push this into a specific server class.
-    * While at it, we examine request headers also to determine response type for later
+    * While at it, we examine request headers also to determine response type for later.
+    * Q: what if req. body is not multipart/form-data? A: we just ignore it...
     */
     function decodeStream( $rawRequest )
     {
-        /// recover method name from the last fragment in the URL
-        if( isset( $_SERVER["PATH_INFO"] ) )
+        // q: what if the same param is present in both get & post? post wins, for now...
+        $this->Parameters = array_merge( $_GET, $_POST );
+
+        if ( $this->NameVar == '' )
         {
-            $this->Name = $_SERVER["PATH_INFO"];
+            /// recover method name from the last fragment in the URL
+            if( isset( $_SERVER["PATH_INFO"] ) )
+            {
+                $this->Name = $_SERVER["PATH_INFO"];
+            }
+            else
+            {
+                /// @todo test if this is the good var to use for both cgi mode and when rewrite rules are in effect
+                $this->Name = strrchr( $_SERVER["PHP_SELF"], '/' );
+            }
+            $this->Name = ltrim( $this->Name, '/' );
         }
         else
         {
-            /// @todo test if this is the good var to use for both cgi mode and when rewrite rules are in effect
-            $this->Name = strrchr( $_SERVER["PHP_SELF"], '/' );
+            $this->Name = @$this->Parameters[$this->NameVar];
         }
-        $this->Name = ltrim( $this->Name, '/' );
-        $this->Parameters = $_GET;
+
         $this->ResponseType = $this->getHttpAccept();
-        if ( isset( $_GET[$this->JsonpVar] ) && preg_match( $this->JsonpRegexp, $_GET[$this->JsonpVar] ) )
+
+        if ( isset( $this->Parameters[$this->JsonpVar] ) && preg_match( $this->JsonpRegexp, $this->Parameters[$this->JsonpVar] ) )
         {
-            $this->JsonpCallback = $_GET[$this->JsonpVar];
+            $this->JsonpCallback = $this->Parameters[$this->JsonpVar];
         }
         else
         {
             $this->JsonpCallback = false;
         }
+
         return true;
     }
 
@@ -150,9 +197,13 @@ class ggRESTRequest extends ggWebservicesRequest
 
             // try first we the types that responses can serialize to
             /// @todo add txt, html, php, phps to the list
-            $aliasList = array( 'json' => 'application/json', 'javascript' => 'application/json', 'xml' => 'text/xml', /*'html' => 'text/xhtml', 'text' => 'text'*/ );
+            $aliasList = array( 'json' => 'application/json', 'javascript' => 'application/json', /*'xml' => 'text/xml', 'html' => 'text/xhtml', 'text' => 'text'*/ );
             foreach( $weightedList as $accept )
             {
+                if ( $accept == '*/*' )
+                {
+                    return reset( $aliasList );
+                }
                 foreach( $aliasList as $alias => $returnType )
                 {
                     if ( strpos( $accept, $alias ) !== false )
@@ -189,6 +240,9 @@ class ggRESTRequest extends ggWebservicesRequest
     protected $Verb = 'GET';
     protected $ResponseType = '';
 
+    /// name of GET variable used to specify method name.
+    /// If empty; method name is serialized as last element in url path
+    protected $NameVar = null;
     /// name of GET variable used to specify output format.
     /// ContentType comes from ezjszcore. flickr uses 'format'
     protected $FormatVar = 'ContentType';
