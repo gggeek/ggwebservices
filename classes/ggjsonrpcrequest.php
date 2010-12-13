@@ -11,8 +11,14 @@ class ggJSONRPCRequest extends ggWebservicesRequest
 {
     function __construct( $name='', $parameters=array(), $id=1 )
     {
-        parent::__construct( $name, $parameters );
+        // strip our param names, since jsonrpc only uses postional params
+        parent::__construct( $name, array_values( $parameters ) );
         $this->Id = $id;
+    }
+
+    function addParameter( $name, $value )
+    {
+        $this->Parameters[] = $value;
     }
 
     function decodeStream( $rawResponse )

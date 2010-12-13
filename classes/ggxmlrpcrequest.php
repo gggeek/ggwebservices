@@ -9,10 +9,16 @@
 
 class ggXMLRPCRequest extends ggWebservicesRequest
 {
-    /*function __construct( $name='', $parameters=array() )
+    function __construct( $name='', $parameters=array() )
     {
-        parent::__construct( $name, $parameters );
-    }*/
+        // strip our param names, since xmlrpc only uses postional params
+        parent::__construct( $name, array_values( $parameters ) );
+    }
+
+    function addParameter( $name, $value )
+    {
+        $this->Parameters[] = $value;
+    }
 
     function decodeStream( $rawResponse )
     {
