@@ -18,7 +18,8 @@ class ggRESTRequest extends ggWebservicesRequest
     }
 
     /**
-    * Final part of url that is built REST style: /method?p1=val1&p2=val2
+    * Final part of url that is built REST style: /methodName?p1=val1&p2=val2
+    * Flickr uses ?method=methodName&p1=val1&p2=val2
     */
     function requestURI( $uri )
     {
@@ -89,15 +90,16 @@ class ggRESTRequest extends ggWebservicesRequest
     }
 
     /**
-     * Same logic as used by ezjscore for the 'call' view, but tries to respect weights
+     * Same logic as used by ezjscore for the 'call' view, but tries to respect
+     * weights in http Accept header
      *
      * @todo (!important) recover $aliasList form the response class
      */
     function getHttpAccept()
     {
-        if ( isset( $_GET['ContentType'] ) )
+        if ( isset( $_GET[$this->FormatVar] ) )
         {
-            return $_GET['ContentType'];
+            return $_GET[$this->FormatVar];
         }
         else
         {
@@ -177,6 +179,9 @@ class ggRESTRequest extends ggWebservicesRequest
     protected $Verb = 'GET';
     protected $ResponseType = '';
 
+    /// name of GET variable used to specify output format.
+    /// ContentType comes from ezjszcore. flickr uses 'format'
+    protected $FormatVar = 'ContentType';
     /// name of GET variable used for jsonp output
     /// 'callback' is used by Yahoo, possibly google too. Flickr uses 'jsoncallback'
     protected $JsonpVar = 'callback';
