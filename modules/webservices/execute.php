@@ -14,7 +14,7 @@ $protocol = strtoupper( $Params['protocol'] );
 
 switch( $protocol )
 {
-    //case 'REST':
+    case 'REST':
     case 'JSONRPC':
     //case 'SOAP':
     case 'XMLRPC':
@@ -37,6 +37,22 @@ if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
     // nb: this will register methods declared only for $protocol or for all
     //     protocols, depending on ini settings
     ggeZWebservices::registerAvailableMethods( $server, strtolower( $protocol ) );
+
+    // from here onwards, we do the same as normally the server would do in a
+    // single processRequest call. We need to add extra perms checking halfway
+    // through, so we replicate the code here (we also add some ezjscore-support
+    // hacks)
+
+    $data = $server->inflateRequest( $data );
+    if ( $data === false )
+    {
+        $server->showResponse(
+            'unknown_function_name',
+            $namespaceURI,
+            new ggWebservicesFault( ggWebservicesServer::INVALIDCOMPRESSIONERROR, ggWebservicesServer::INVALIDCOMPRESSIONSTRING ) );
+        eZExecution::cleanExit();
+        die();
+    }
 
     $request = $server->parseRequest( $data );
 

@@ -1,4 +1,4 @@
-Changes from 0.5 to 0.6 - released 2010/xx/yy
+Changes from 0.5 to 0.6 - released 2010/12/XX
 
 *Incompatible changes
 
@@ -23,6 +23,11 @@ Changes from 0.5 to 0.6 - released 2010/xx/yy
 - Support receiving compressed http responses if zlib is installed (or curl has
   zlib compiled in)
 - Support receiving compressed http requests if zlib is installed
+- Added a REST server.
+  It is considered in beta status, and might be subject to change in the future.
+  It currently only supports receiving method name as last part of path in the url,
+  and parameters using the query string. It returns output serialized according
+  to the 'Accept' http header in response (if found) or to get parameter 'ContentType'
 - Added more sample php files, in doc/samples
 - add a __tostring method to class ggWebservicesFault to allow debugging of
   error responses when the code is invoked via ezjscore with no specific

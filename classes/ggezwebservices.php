@@ -21,9 +21,9 @@ class ggeZWebservices
 
     static $debuglevel = -1;
 
-    static $serverprotocols = array( 'soap', 'jsonrpc', 'xmlrpc' );
+    static $serverprotocols = array( 'soap', 'jsonrpc', 'xmlrpc', 'rest' );
 
-    static $protocolconfigs = array( 'soap' => 'soap.ini', 'jsonrpc' => 'wsproviders.ini', 'xmlrpc' => 'wsproviders.ini' );
+    static $protocolconfigs = array( 'soap' => 'soap.ini', 'jsonrpc' => 'wsproviders.ini', 'xmlrpc' => 'wsproviders.ini',  'rest' => 'wsproviders.ini' );
 
     /**
      * Logs the string $logString to the logfile webdav.log
@@ -133,7 +133,7 @@ class ggeZWebservices
                 $function_list = array_merge( $function_list, $server->registeredMethods() );
                 if ( self::isRegisterAllProtocolsFunctionsEnabled() )
                 {
-                    // all methods will have already be registered regardless of protocol,
+                    // all methods will have already been registered regardless of protocol,
                     // so we can skip the rest of the loop
                     break;
                 }

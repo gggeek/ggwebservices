@@ -1,14 +1,17 @@
+- test + fix: when using REST server via ws/execute, the method name should come frome eZ to havoid having different URI parsing
+
 - test: using CURL and proxy / complex auths works?
 
 - add to the base client:
   + cookie support
   + send($array) with keepalive (both curl & by hand)
+  + rebuilding of $_POST for compressed requests containing form data
 
 - add to ezwsclient support for auth type, proxy auth type, other options...
 
 - add support for limiting access to webservices by incoming IP address (often done for stupid ws clients that cannot login)
 
-- test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
+- add ezjscore client, request, response classes
 
 - in debugger:
   + add siteaccess choice for local server on the left-hand col (nb: looks like getting correct urls for other sa is quite hard... langswitcher does it for nodes only?)
@@ -20,16 +23,20 @@
 
 - flesh out soap server w. wsdl support (use ezpo2xsd method from ezpo_insepctor)
 
-- add jsonrpc 2.0 support
+- test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
 
-- add jsonp support to rest server (output types: json, php, ... ?) - see http://developer.yahoo.com/common/json.html & http://www.ibm.com/developerworks/library/wa-aj-jsonp1/
-  or http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/ http://svn.php.net/viewvc/pear/packages/XML_Serializer/trunk/XML/Serializer.php?revision=294967&view=markup
+- add jsonrpc 2.0 support
 
 - test objects vs. array return by default with ezsoap (in tpl code especially)
 
-- test support for calling jscore and plain-registered methods with index_ajax controller; test again custom controller too
+- add support for post parameters in REST requests, also use a get/post var for method name instead of path
 
-- add ezjscore client, request, response classes
+- add support for post vars in REST server (how to tell them apart from GET? also nb: must support compressed requests)
+
+- add 'plain' xml format to REST server. see eg http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
+  or http://svn.php.net/viewvc/pear/packages/XML_Serializer/trunk/XML/Serializer.php?revision=294967&view=markup
+
+- test support for calling jscore and plain-registered methods with index_ajax controller; test again custom controller too
 
 - add siteaccess limitation to proxy view
 
