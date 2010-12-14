@@ -33,7 +33,7 @@ class ggRESTResponse extends ggWebservicesResponse
             $value = array( 'faultCode' => $this->FaultCode, 'faultString' => $this->FaultString );
             // send an HTTP error code, since there is no other way to make sure
             // that the client can tell apart error responses from valid array responses
-            header( 'HTTP/1.1 500 Internal Server Error' );
+//            header( 'HTTP/1.1 500 Internal Server Error' );
         }
         else
         {
@@ -120,6 +120,11 @@ class ggRESTResponse extends ggWebservicesResponse
                 $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
                 $this->FaultString = ggRESTResponse::INVALIDRESPONSESTRING . " (unsupported format $contentType)";
         }
+    }
+
+    function responseHeaders()
+    {
+        return array( 'Vary' => 'Accept' );
     }
 
     /// @todo (!important) we could filter here accepted types instead of in payload()

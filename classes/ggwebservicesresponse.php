@@ -141,6 +141,11 @@ abstract class ggWebservicesResponse
         return $this->Charset;
     }
 
+    function responseHeaders()
+    {
+        return array();
+    }
+
     /// Contains the response value
     protected $Value = false;
     /// Contains fault string

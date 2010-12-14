@@ -75,6 +75,11 @@ abstract class ggWebservicesServer
         $this->prepareResponse( $response );
         $payload = $response->payload();
 
+        foreach( $response->responseHeaders() as $header => $value )
+        {
+            header( "$header: $value" );
+        }
+
         //header( "SOAPServer: eZ soap" );
         $contentType = $response->contentType();
         if ( ( $charset = $response->charset() ) != '')
@@ -83,6 +88,8 @@ abstract class ggWebservicesServer
         }
         header( "Content-Type: $contentType" );
         /// @todo test how this interacts with php/apache later deflating response
+        /// @todo this is mandatory eg. for xmlrpc, but if client uses http 1.1,
+        ///       we could omit it for other protocols
         header( "Content-Length: " . strlen( $payload ) );
 
         if ( ob_get_length() )
