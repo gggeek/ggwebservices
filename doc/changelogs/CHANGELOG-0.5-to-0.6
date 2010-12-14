@@ -54,3 +54,5 @@ Changes from 0.5 to 0.6 - released 2010/12/XX
   sent by the user (invalid method name)
 - Sending of username/password now works for ggezwebservicesclient (basic auth)
 - More descriptive error messages when receiving bad responses from servers
+- adding parameters to xmlrpc requests via addParameter() would result in unexpected
+  xmlrpc calls. Now both xmlrpc and jsonrpc clients only take positional params

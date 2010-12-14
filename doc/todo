@@ -1,7 +1,10 @@
-- test + fix: when using REST server via ws/execute, the method name should come frome eZ to havoid having different URI parsing
+- rebuild $_POST when inflating request
+
+- send a Vary: accept header back with rest responses
 
 - test: using CURL and proxy / complex auths works?
-
+  + prevent curl from adding useles "accept: */*" header
+  
 - add to the base client:
   + cookie support
   + send($array) with keepalive (both curl & by hand)
@@ -29,12 +32,9 @@
 
 - test objects vs. array return by default with ezsoap (in tpl code especially)
 
-- add support for post parameters in REST requests, also use a get/post var for method name instead of path
-
-- add support for post vars in REST server (how to tell them apart from GET? also nb: must support compressed requests)
-
-- add 'plain' xml format to REST server. see eg http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
+- add 'plain' xml format to REST server output. see eg http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
   or http://svn.php.net/viewvc/pear/packages/XML_Serializer/trunk/XML/Serializer.php?revision=294967&view=markup
+  Also finish support for php/phps (parsing of Accept header)
 
 - add some doc showing the client/request/response and server/request/response interaction to make it easier to remember that requests are also used server-side (and responses client-side)
 
