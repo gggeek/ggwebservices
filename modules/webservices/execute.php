@@ -106,6 +106,7 @@ if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
     if ( !$access )
     {
         // Error access denied - shall we show an error response in protocol format instead of html?
+        // in that case, use an INVALIDAUTHERROR error code
         return $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
     }
 
