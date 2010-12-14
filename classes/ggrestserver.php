@@ -6,6 +6,7 @@
  * @copyright (C) G. Giunta 2010
  *
  * @todo implement validateparams
+ * @todo send back a "vary: Accept" header in responses
  */
 
 class ggRESTServer extends ggWebservicesServer
