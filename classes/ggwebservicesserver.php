@@ -76,11 +76,17 @@ abstract class ggWebservicesServer
         $payload = $response->payload();
 
         //header( "SOAPServer: eZ soap" );
-        header( "Content-Type: application/json; charset=\"UTF-8\"" );
+        $contentType = $response->contentType();
+        if ( ( $charset = $response->charset() ) != '')
+        {
+            $contentType .= "; charset=\"$charset\"";
+        }
+        header( "Content-Type: $contentType" );
+        /// @todo test how this interacts with php/apache later deflating response
         header( "Content-Length: " . strlen( $payload ) );
 
         if ( ob_get_length() )
-        ob_end_clean();
+            ob_end_clean();
 
         print( $payload );
     }
@@ -156,7 +162,7 @@ abstract class ggWebservicesServer
 
     /**
     * @todo use pass-by-ref to save memory (!important)
-    * @todo if content-type is application/x-www-form-urlencoded, we should revuild $_POST
+    * @todo if content-type is application/x-www-form-urlencoded, we should rebuild $_POST
     */
     function inflateRequest( $data )
     {
