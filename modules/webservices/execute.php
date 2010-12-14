@@ -67,7 +67,16 @@ if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
         die();
     }
 
-    $functionName = $request->name();
+    if ( $protocol == 'REST' )
+    {
+        // hack! eZ is better at parsing the last path part than the REST request
+        // on its own (in an eZP context...)
+        $functionName = $Params['session'];
+    }
+    else
+    {
+        $functionName = $request->name();
+    }
     $params = $request->parameters();
 
     // if integration with jscore is enabled, look up function there
@@ -109,7 +118,6 @@ if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
         $response = $server->handleRequest( $functionName, $params );
     }
     $server->showResponse( $functionName, $namespaceURI, $response );
-
 
 }
 eZExecution::cleanExit();
