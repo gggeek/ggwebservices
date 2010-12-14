@@ -33,7 +33,24 @@ class ggRESTResponse extends ggWebservicesResponse
             $value = array( 'faultCode' => $this->FaultCode, 'faultString' => $this->FaultString );
             // send an HTTP error code, since there is no other way to make sure
             // that the client can tell apart error responses from valid array responses
-//            header( 'HTTP/1.1 500 Internal Server Error' );
+            // try some meaningful mapping (it's REST, baby!)
+            switch( $this->FaultCode )
+            {
+                case ggWebservicesServer::INVALIDMETHODERROR:
+                    header( 'HTTP/1.1 404 Not Found' );
+                    break;
+                case ggWebservicesServer::INVALIDPARAMSERROR:
+                case ggWebservicesServer::INVALIDCOMPRESSIONERROR:
+                case ggWebservicesServer::INVALIDREQUESTERROR:
+                    header( 'HTTP/1.1 400 Bad Request' );
+                    break;
+                case ggWebservicesServer::INVALIDAUTHERROR:
+                    header( 'HTTP/1.1 403 Forbidden' );
+                    break;
+
+                default:
+                    header( 'HTTP/1.1 500 Internal Server Error' );
+            }
         }
         else
         {
