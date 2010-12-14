@@ -16,16 +16,6 @@ class ggPhpSOAPResponse extends ggWebservicesResponse
         return '';
     }
 
-    /**
-    * Differs from parent's version in that it only saves $stream for debugging
-    * purposes!
-    */
-    function decodeStream( $request, $stream, $headers=false )
-    {
-        // save raw data for debugging purposes
-        $this->rawResponse = $stream;
-    }
-
     public $rawResponse = null;
 }
 

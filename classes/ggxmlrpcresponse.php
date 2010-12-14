@@ -39,13 +39,8 @@ class ggXMLRPCResponse extends ggWebservicesResponse
     */
     function decodeStream( $request, $stream, $headers=false )
     {
-        // save raw data for debugging purposes
-        $this->rawResponse = $stream;
+        parent::decodeStream( $request, $stream, $headers );
 
-        if ( $headers === false )
-        {
-            $stream = self::stripHTTPHeader( $stream );
-        }
         /// @todo test if this automatically groks encoding from xml or not...
         $results = xmlrpc_decode( $stream );
 

@@ -192,13 +192,7 @@ TODO: add encoding checks with schema validation.
 
     function decodeStream( $request, $stream, $headers=false )
     {
-        // save raw data for debugging purposes
-        $this->rawResponse = $stream;
-
-        if ( $headers === false )
-        {
-            $stream = self::stripHTTPHeader( $stream );
-        }
+        parent::decodeStream( $request, $stream, $headers );
 
         $this->IsFault = 1;
         $this->FaultCode = ggWebservicesResponse::INVALIDRESPONSEERROR;
