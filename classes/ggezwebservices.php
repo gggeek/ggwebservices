@@ -26,7 +26,7 @@ class ggeZWebservices
     static $protocolconfigs = array( 'soap' => 'soap.ini', 'jsonrpc' => 'wsproviders.ini', 'xmlrpc' => 'wsproviders.ini',  'rest' => 'wsproviders.ini' );
 
     /**
-     * Logs the string $logString to the logfile webdav.log
+     * Logs the string $logString to the logfile webservices.log
      * in the current log directory (usually var/log).
      * If logging is disabled, nothing is done.
      */
