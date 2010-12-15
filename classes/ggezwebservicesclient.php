@@ -177,18 +177,19 @@ class ggeZWebservicesClient
             {
                 $request = new $requestClass( $method, $parameters );
             }
-            if ( $providerType != 'PhpSOAP' )
-            {
-                ggeZWebservices::appendLogEntry( 'Sending: ' . $request->payload(), 'info' );
-            }
-            else
+            if ( $providerType == 'PhpSOAP' )
             {
                 $client->setOption( 'soapVersion', $soapversion );
             }
+            if ( ggeZWebservices::isLoggingEnabled( 'info' ) )
+            {
+                $client->setOption( 'debug', 2 );
+            }
             $response = $client->send( $request );
-            if ( $providerType == 'PhpSOAP' )
+            if ( ggeZWebservices::isLoggingEnabled( 'info' ) )
             {
                 ggeZWebservices::appendLogEntry( 'Sent: ' . $client->requestPayload(), 'info' );
+                ggeZWebservices::appendLogEntry( 'Received: ' . $client->responsePayload(), 'info' );
             }
             if ( !is_object( $response ) )
             {
@@ -210,7 +211,6 @@ class ggeZWebservicesClient
             else
             {
                 unset( $client );
-                ggeZWebservices::appendLogEntry( 'Received: ' . $response->rawResponse, 'info' );
 
                 if ( $response->isFault() )
                 {

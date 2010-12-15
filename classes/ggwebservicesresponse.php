@@ -39,25 +39,7 @@ abstract class ggWebservicesResponse
     * @param array $headers the http headers received along with the response
     * @return void (if parsing of stream fails, set isFault to true plus error code and description)
     */
-    function decodeStream( $request, $stream, $headers=false )
-    {
-        // save raw data for debugging purposes
-        if ( $headers === false )
-        {
-            $this->rawResponse = $stream;
-            $stream = self::stripHTTPHeader( $stream );
-        }
-        else
-        {
-            $head = '';
-            foreach( $headers as $header => $value )
-            {
-                $head .= "$header: $value\n";
-            }
-            // assumes $headers is an array
-            $this->rawResponse = $head . "\n" . $stream;
-        }
-    }
+    abstract function decodeStream( $request, $stream, $headers=false );
 
     /**
     * This function imported from php-xmlrpc lib: it is more correct than eZ SOAP client one
@@ -174,9 +156,6 @@ abstract class ggWebservicesResponse
     protected $IsFault = false;
     /// Contains the name of the response, i.e. function call name
     protected $Name;
-
-    /// @todo move to protected
-    public $rawResponse = null;
 
     protected $ContentType = '';
     protected $Charset = 'UTF-8';

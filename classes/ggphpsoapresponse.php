@@ -16,7 +16,10 @@ class ggPhpSOAPResponse extends ggWebservicesResponse
         return '';
     }
 
-    public $rawResponse = null;
+    function decodeStream(  $request, $stream, $headers = false )
+    {
+        /// @todo throw exception
+    }
 }
 
 ?>

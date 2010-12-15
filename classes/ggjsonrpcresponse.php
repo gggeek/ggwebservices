@@ -44,8 +44,6 @@ class ggJSONRPCResponse extends ggWebservicesResponse
     */
     function decodeStream( $request, $stream, $headers = false  )
     {
-        parent::decodeStream( $request, $stream, $headers );
-
         $results = json_decode( $stream, true );
         if ( !is_array($results) ||
             !array_key_exists( 'result', $results ) ||

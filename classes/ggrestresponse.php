@@ -86,8 +86,6 @@ class ggRESTResponse extends ggWebservicesResponse
     */
     function decodeStream( $request, $stream, $headers=false )
     {
-        parent::decodeStream( $request, $stream, $headers );
-
         $contentType = isset( $headers['content-type'] ) ? $headers['content-type'] : '';
         if ( ( $pos = strpos( $contentType, ';' ) ) !== false )
         {

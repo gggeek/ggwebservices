@@ -23,8 +23,6 @@ class ggHTTPResponse extends ggWebservicesResponse
     */
     function decodeStream( $request, $stream, $headers = false )
     {
-	    parent::decodeStream( $request, $stream, $headers );
-
 	    $this->Value = $stream;
     }
 }

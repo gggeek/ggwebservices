@@ -115,6 +115,9 @@ class ggWebservicesClient
 
         $this->errorString = '';
         $this->errorNumber = 0;
+        $this->RequestPayload = '';
+        $this->ResponsePayload = '';
+
         // we default to NOT using cURL if not asked to (or if it is not there)
         if ( !$this->ForceCURL || !in_array( "curl", get_loaded_extensions() ) )
         {
@@ -127,6 +130,11 @@ class ggWebservicesClient
 
             // generate payload before opening socket, for a smaller connection time
             $HTTPRequest = $this->payload( $request );
+
+            if ( $this->Debug > 1 )
+            {
+                $this->RequestPayload = $HTTPRequest;
+            }
 
             /// @todo add ssl support with raw sockets
             if ( $this->Timeout != 0 )
@@ -227,6 +235,14 @@ class ggWebservicesClient
                 }
 
                 list( $verb, $headers, $payload ) = $this->payload( $request, true );
+
+                // note: using curl, we have no complete list of hhtp headers.
+                // rather than storing an incomplete set, store none
+                if ( $this->Debug > 1 )
+                {
+                    $this->RequestPayload = $payload;
+                }
+
                 if ( $payload != '' )
                 {
                     //curl_setopt( $ch, CURLOPT_POST, true );
@@ -243,6 +259,20 @@ class ggWebservicesClient
                 curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 1 );
 
                 $rawResponse = curl_exec( $ch );
+
+                // add cURL info to debug?
+                /*if ( $this->Debug > 1 )
+                {
+                    $debug = '';
+                    foreach( curl_getinfo( $ch ) as $name => $val)
+                    {
+                        if ( is_array( $val ) )
+                        {
+                            $val = implode( "\n", $val );
+                        }
+                        $debug .= "$name: $val\n";
+                    }
+                }*/
 
                 if ( $rawResponse === false )
                 {
@@ -265,6 +295,11 @@ class ggWebservicesClient
                 $this->errorString = "Error: could not send the request. Could not initialize CURL.";
                 return 0;
             }
+        }
+
+        if ( $this->Debug > 0 )
+        {
+            $this->ResponsePayload = $rawResponse;
         }
 
         $respArray = $this->parseHTTPResponse( $rawResponse );
@@ -733,7 +768,9 @@ class ggWebservicesClient
             case 'forceCURL':
                 $this->ForceCURL = (bool)$value;
                 break;
-
+            case 'debug':
+                $this->Debug = (int)$value;
+                break;
         }
 
     }
@@ -846,6 +883,18 @@ class ggWebservicesClient
         return $this->errorNumber;
     }
 
+    /// Stored for every send() call when debug > 1
+    function requestPayload()
+    {
+        return $this->RequestPayload;
+    }
+
+    /// Stored for every send() call when debug > 0
+    function responsePayload()
+    {
+        return $this->ResponsePayload;
+    }
+
     /// The name or IP of the server to communicate with
     protected $Server;
     /// The path to the server
@@ -894,6 +943,10 @@ class ggWebservicesClient
     protected $RequestHeaders = array();
     protected $Verb = 'POST';
 
+    /// 1 = keep copy of response, 2 = keep copy of request too
+    protected $Debug = 0;
+    protected $RequestPayload = '';
+    protected $ResponsePayload = '';
 }
 
 ?>
