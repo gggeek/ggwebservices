@@ -1,6 +1,6 @@
 <?php
 /**
- * Class used to wrap soap requests.
+ * Class used to wrap soap requests, for use with the ggPhpSOAPClient.
  *
  * @author G. Giunta
  * @version $Id$
