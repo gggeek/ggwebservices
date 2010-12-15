@@ -16,11 +16,12 @@
  * @todo allow ssl connections without curl (via stream properties)
  * @todo finish cookie support, so that client can be used for multiple calls with sessions
  * @todo implement following redirects (with a max predefined)
+ * @todo add a 'mode 3 debug' where client stores also dezipped data if zipping is enabled
  *
  * changes from eZSOAP client:
  * - added support for proxy
  * - added capability to send compressed request payloads
- * - allowed curl to be used for http too (not yet exposed to class user)
+ * - allowed curl to be used for http too
  * - fix Host http header if port != 80 (needed for proxies)
  * - close socket before returning if error on write
  * - added timeout on socket read/write, not only on socket opening
@@ -447,7 +448,7 @@ class ggWebservicesClient
     }
 
     /**
-    * HTTP parsing code taken from the phpxmlrpc lib
+    * HTTP parsing code taken from the phpxmlrpc lib - should be battle worn.
     * @todo look at PEAR, ZEND, other libs, if they do it better...
     */
     protected function parseHTTPResponse( &$data, $headers_processed=false )
@@ -715,7 +716,7 @@ class ggWebservicesClient
        One-stop shop for setting all configuration options
        without haviong to write a haundred method calls
        @todo move all of these values to an array, for commodity
-       @todo return true if option exists, false otherwhise?
+       @todo return true if option exists, false otherwise?
    */
     function setOption( $option, $value )
     {
