@@ -55,7 +55,7 @@ class ggSOAPClient extends ggWebservicesClient
     }
 
     // by default do not enforce a SOAP version upon requests
-    protected $SoapVersion = 0; //SOAP_1_1;
+    protected $SoapVersion = 0;
 }
 
 ?>
