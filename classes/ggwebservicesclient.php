@@ -311,7 +311,7 @@ class ggWebservicesClient
         }
         $this->Cookies = $respArray['cookies'];
 
-        $ResponseClass =  $this->ResponseClass;
+        $ResponseClass = $this->ResponseClass;
         if ( $ResponseClass == 'ggWebservicesResponse' )
         {
             // the client subclass in use did not bother to specify a class for responses:
