@@ -38,20 +38,16 @@ class ggPhpSOAPClient extends ggWebservicesClient
 
     }
 
-    /// @todo add support for timeout during streaming and not only socket opening (involves changing ini value on the fly ?)
-    /// @todo test if http-layer errors get wrapped in a soap fault or something else...
+    /// @todo what if instead of doing send -> __soapCall -> __doRequest -> _send -> parent::send
+    ///       we just overloaded the request's payload() and the response's decodestream
+    ///       methods? Is it doable at all?
+    /// @todo test: proxy and auth usage of client for getting the wsdl are taken
+    ///       from $options['login'] and $options['proxy_host'] ? ...
     function send( $request )
     {
         /// @todo add a check that request is a soap / phpsoap one, or it will have no namespace method...
-        $options = array( 'trace' => true, 'user_agent' => $this->UserAgent, 'connection_timeout' => $this->Timeout, 'exceptions' => true, 'soap_version' => $this->SoapVersion );
-        if ( $this->RequestCompression == 'deflate' )
-        {
-            $options['compression'] = SOAP_COMPRESSION_DEFLATE | 9;
-        }
-        else if ( $this->RequestCompression == 'gzip' )
-        {
-            $options['compression'] = SOAP_COMPRESSION_GZIP | 9;
-        }
+        $options = array( 'exceptions' => true, 'soap_version' => $this->SoapVersion );
+        /*
         if ( $this->Login != '' )
         {
             $options['login'] = $this->Login;
@@ -66,7 +62,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
                 $options['proxy_login'] = $this->ProxyLogin;
                 $options['proxy_password'] = $this->ProxyPassword;
             }
-        }
+        }*/
         if ( $this->Wsdl == null )
         {
             // non-wsdl mode
@@ -95,15 +91,16 @@ class ggPhpSOAPClient extends ggWebservicesClient
         try
         {
             $response = new $this->ResponseClass();
-            $client = @new SoapClient( $this->Wsdl, $options );
+            $client = @new ggPhpSOAPClientTransport( $this->Wsdl, $options, $this, $request );
             if ( isset( $deftimeout ) )
             {
                 ini_set( 'default_socket_timeout', $deftimeout );
             }
             $results = $client->__soapCall( $request->name(), $request->parameters(), array(), array(), $output_headers );
-            //eZDebug::writeDebug( $client->__getLastRequest(), __METHOD__ );
-            $this->requestPayload = $client->__getLastRequest();
-            $response->decodeStream( null, $client->__getLastResponse() );
+
+            // phpSoapResponse responses do not parse anything anyway - no need to call this
+            //$rawResponse = $client->__getLastResponse();
+            //$response->decodeStream( $request, $rawResponse );
             if ( is_soap_fault( $results ) )
             {
                 $response->setValue( new ggWebservicesFault( $result->faultcode, $result->faultstring ) );
@@ -120,7 +117,11 @@ class ggPhpSOAPClient extends ggWebservicesClient
             {
                 ini_set( 'default_socket_timeout', $deftimeout );
             }
-            if ( $e instanceof SoapFault )
+            if ( $this->errorNumber() )
+            {
+                $response->setValue( new ggWebservicesFault( $this->errorNumber(), $this->errorString() ) );
+            }
+            else if ( $e instanceof SoapFault )
             {
                 $response->setValue( new ggWebservicesFault( $e->faultcode, $e->faultstring ) );
             }
@@ -133,14 +134,43 @@ class ggPhpSOAPClient extends ggWebservicesClient
 
     }
 
-    /**
-     * Return request payload of last executed send call
-     * NOTE: this is different from other client classes, as normally payload is generated
-     * by request itself, but the php ext. API is different.
-     */
-    public function requestPayload()
+    function _send( $request, $location, $action, $version, $one_way = 0 )
     {
-        return $this->requestPayload;
+        if ( $this->Wsdl != null )
+        {
+            /// @todo patch temporarily Server, Path, Port using $location (in wsdl mode)
+var_export($location);
+var_export($this->Server);
+var_export($this->Port);
+var_export($this->Path);
+var_export($version);
+var_export($action);
+        }
+        $response = parent::send( $request );
+        if ( $this->Wsdl != null )
+        {
+            /// ...
+        }
+        if ( is_object( $response ) )
+        {
+            if ( false && !$response->isFault() )
+            {
+                return $response->value();
+            }
+            else
+            {
+                // copy into our members the error codes, so that we can recover them
+                // later while finishing the send() call
+                $this->errorNumber = $response->FaultCode();
+                $this->errorString = $response->FaultString();
+
+                return $response->FaultCode() . ' ' . $response->FaultString();
+            }
+        }
+        else
+        {
+            return $this->errorNumber() . ' ' . $this->errorString();
+        }
     }
 
     public function setSoapVersion( $version )
@@ -151,7 +181,6 @@ class ggPhpSOAPClient extends ggWebservicesClient
     /// @todo override function payload() of parent and throw an exception when called, as we do not set up proper RequestHeaders anyway
 
     protected $Wsdl;
-    protected $requestPayload = '';
     protected $SoapVersion = SOAP_1_1;
 }
 

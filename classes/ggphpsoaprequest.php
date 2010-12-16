@@ -11,36 +11,27 @@
  *       - left as it is now, it cannot be used by a ggsoapclient nor by a ggwebservicesclient
  */
 
-class ggPhpSOAPRequest extends ggWebservicesRequest
+class ggPhpSOAPRequest extends ggSOAPRequest
 {
-    /**
-    * @see ggSOAPRequest::__construct
-    */
-    function __construct( $name='', $parameters=array(), $namespace=null )
-    {
-        parent::__construct( $name, $parameters );
-        $this->ns = $namespace;
-    }
 
     function payload()
     {
-        /// @todo throw exception!
-        return '';
+        return $this->_payload;
     }
 
+    /**
+    * This function is called for once on the client, not on the server:
+    * we leave it up to the php soap lib to generate the payload, then inject it
+    * into the request, and route it through another send() call
+    */
     function decodeStream( $rawRequest )
     {
-        /// @todo throw exception!
+        $this->_payload = $rawRequest;
+        // we return false, in case some freak server tries to call this function anyway
         return false;
     }
 
-    function ns()
-    {
-        return $this->ns;
-    }
-
-    protected $ns;
-
+    protected $_payload = '';
 }
 
 ?>
