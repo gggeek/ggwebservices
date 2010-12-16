@@ -43,7 +43,9 @@ class ggeZWebservicesClient
         $providerURI = $ini->variable( $server, 'providerUri' );
         $providerType = $ini->variable( $server, 'providerType' );
         $wsdl = $ini->hasVariable( $server, 'WSDL' ) ? $ini->variable( $server, 'WSDL' ) : '';
-        $soapversion = ( $ini->hasVariable( $server, 'SoapVersion' ) && strtolower( $ini->variable( $server, 'SoapVersion' ) ) == 'soap12' ) ? SOAP_1_2 : SOAP_1_1;
+
+        /// @deprecated all of the ini vars in this block of code are deprecated
+        $soapversion = ( $ini->hasVariable( $server, 'SoapVersion' ) && strtolower( $ini->variable( $server, 'SoapVersion' ) ) == 'soap12' ) ? 2 : 1; // work even if php soap ext. disabled
         $providerAuthtype = $ini->hasVariable( $server, 'providerAuthtype' ) ? $ini->variable( $server, 'providerAuthtype' ) : false; /// @TODO: to be implemented
         $providerSSLRequired = $ini->hasVariable( $server, 'providerSSLRequired' ) ? $ini->variable( $server, 'providerSSLRequired' ) : false; /// @TODO: to be implemented
         $providerUsername = $ini->hasVariable( $server, 'providerUsername' ) ? $ini->variable( $server, 'providerUsername' ) : false;
@@ -52,6 +54,11 @@ class ggeZWebservicesClient
             $timeout = (int)$ini->variable( $server, 'timeout' );
         else
             $timeout = false;
+
+        // 'new style' server config: make it easier to define any desired client setting,
+        // even ones added in future releases, without having to perse it by hand in this class
+        $providerOptions = $ini->hasVariable( $server, 'Options' ) ? $ini->variable( $server, 'Options' ) : false;
+
         // Proxy: if not specified per-target server, use global one
         $providerProxy = '';
         if ( !$ini->hasVariable( $server, 'ProxyServer' ) )
@@ -162,6 +169,10 @@ class ggeZWebservicesClient
             if ( $providerProxy != '' )
             {
                 $client->setOptions( array( 'proxyHost' => $providerProxy, 'proxyPort' => $providerProxyPort, 'proxyUser' => $providerProxyUser, 'proxyPassword' => $providerProxyPassword ) );
+            }
+            if ( is_array( $providerOptions ) )
+            {
+                $client->setOptions( $providerOptions );
             }
             if ( $providerType == 'SOAP' || $providerType == 'PhpSOAP' )
             {
