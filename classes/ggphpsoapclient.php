@@ -178,6 +178,18 @@ var_export($action);
         $this->SoapVersion = $version;
     }
 
+    public function setOption( $option, $value )
+    {
+        if ( $opption = 'soapVersion' )
+        {
+            $this->SoapVersion = $version;
+        }
+        else
+        {
+            parent::setOption( $option, $value );
+        }
+    }
+
     /// @todo override function payload() of parent and throw an exception when called, as we do not set up proper RequestHeaders anyway
 
     protected $Wsdl;
