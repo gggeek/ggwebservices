@@ -40,7 +40,7 @@ class ggSOAPClient extends ggWebservicesClient
     {
         if ( $option = 'soapVersion' )
         {
-             $this->SoapVersion = $version;
+             $this->SoapVersion = $value;
         }
         else
         {

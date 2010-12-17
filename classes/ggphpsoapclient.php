@@ -182,7 +182,7 @@ var_export($action);
     {
         if ( $option = 'soapVersion' )
         {
-            $this->SoapVersion = $version;
+            $this->SoapVersion = $value;
         }
         else
         {
