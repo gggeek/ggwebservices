@@ -8,6 +8,7 @@ Changes from 0.5 to 0.6 - released 2010/12/XX
 - the REST client now puts parameters in the query string by default, no more in
   the request body (which was wrong since it sent GET requests anyway).
   The method name is appended to the PATH part of the url.
+  This can be customized using the Options parameter in wsproviders.ini.
 
 *General:
 
@@ -23,27 +24,31 @@ Changes from 0.5 to 0.6 - released 2010/12/XX
 - Support receiving compressed http responses if zlib is installed (or curl has
   zlib compiled in)
 - Support receiving compressed http requests if zlib is installed
+- Support sending compressed http requests if zlib is installed
+- Support Digest and NTLM auth schemes in client
 - Added a REST server.
   It is considered in beta status, and might be subject to change in the future.
   It currently only supports receiving method name as last part of path in the url,
-  and parameters using the query string. It returns output serialized according
-  to the 'Accept' http header in response (if found) or to get parameter 'ContentType'
+  and parameters using the query string / request body. It returns output serialized
+   according to the 'Accept' http header in response (if found) or to GET parameter
+   'ContentType'
+- Use minified version of YUI libs for visual editor in debugger, unless in DevelopmentMode
 - Added more sample php files, in doc/samples
 - add a __tostring method to class ggWebservicesFault to allow debugging of
   error responses when the code is invoked via ezjscore with no specific
   content-type header in the request
 - Two out of three debugger views now use templates for rendering
-- Use minified version of YUI libs for visual editor in debugger, unless in DevelopmentMode
-- A major reshuffle of interaction between client, request and response php classes
-  has taken place.
+- A major refacoring of client, request and response php classes has taken place.
   This means it will be much easier to add clients that use GET for requests, as
-  well as adding support for advancved http features.
+  well as adding support for advanced http features.
   The utmost care has been taken not to break BC, but if you have subclassed any
   of the client, request or response classes in your own php code, you will need
   to merge the changes.
   Some classes and some methods are considered deprecated and will be removed in
   future releases (they are marked as such in the javadoc comments).
   A few new methods have been added.
+  For response classes, the RawRequest memeber has been removed. Use the
+  responsepayload() method of the client object instead.
 
 *Bugfixes:
 
@@ -56,3 +61,4 @@ Changes from 0.5 to 0.6 - released 2010/12/XX
 - More descriptive error messages when receiving bad responses from servers
 - adding parameters to xmlrpc requests via addParameter() would result in unexpected
   xmlrpc calls. Now both xmlrpc and jsonrpc clients only take positional params
+  (i.e. the 1st param in calls to addParameter($name, $val) will be ignored)

@@ -1,16 +1,12 @@
-- rebuild $_POST when inflating request
-
-- send a Vary: accept header back with rest responses
-
 - test: using CURL and proxy / complex auths works?
-  + prevent curl from adding useles "accept: */*" header
+  + prevent curl from adding useless "accept: */*" header
   
 - add to the base client:
-  + cookie support
+  + cookie support (simplify parsing: nobody uses version 1 cookies)
   + send($array) with keepalive (both curl & by hand)
   + rebuilding of $_POST for compressed requests containing form data
 
-- add to ezwsclient support for auth type, proxy auth type, other options...
+- add to ezwsclient support for proxy auth type, proxy conf via options[]
 
 - add support for limiting access to webservices by incoming IP address (often done for stupid ws clients that cannot login)
 
@@ -18,6 +14,7 @@
 
 - in debugger:
   + add siteaccess choice for local server on the left-hand col (nb: looks like getting correct urls for other sa is quite hard... langswitcher does it for nodes only?)
+  + move away from usage of phpxmlrpc (as soon as we have feature parity)
   + add soap, rest support
   + allow to hide/show client's options
   + add nr. of total ws methods found when asking for list of methods

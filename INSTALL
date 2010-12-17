@@ -8,10 +8,13 @@
     on how to set it up)
 
 
-2 - there is no fight club!
+2 - clear the template cache
 
 
-3 - to receive jsonrpc or xmlrpc webservice calls:
+3 - there is no fight club!
+
+
+4 - to receive jsonrpc or xmlrpc webservice calls:
 
   + define the php functions you want to expose as webservices in a file
     "initialize.php" in either a "phpxmlrpc" or "jsonrpc" folder in the
@@ -59,7 +62,7 @@
        ezp.authandexec( 'username', 'password', 'test', array( 'p1', 'p2' ) )
     e. use the built-in debugger to help with troubleshooting
 
-3b - an alternative to receive jsonrpc or xmlrpc webservice calls:
+4b - an alternative to receive jsonrpc or xmlrpc webservice calls:
 
   + copy the files jsonrpc.php/xmlrpc.php to the eZ Publish installation root
     folder
@@ -89,25 +92,26 @@
     will be available to everybody TAKE CARE!
 
 
-4 - to make webservice calls to external servers via templates
+5 - to make webservice calls to external servers via templates
 
   + define the remote servers that will be made accessible in the
     wsproviders.ini.append.php file
 
   + use the fetch( 'webservices', 'call' ) template fetch function. It takes
-    3 parameters: name of the remote server, name of the ws method to execute
-    and array of ws method parameters
+    4 parameters: name of the remote server, name of the ws method to execute,
+    array of ws method parameters, array of extra options for the client.
+    Parameters 3 and 4 are optional.
 
   + raise the 'Logging' parameter in wsproviders.ini file to 'info' to have
     complete traces of webservice communication in var/nameofsiteaccess/log
 
 
-5 - to enable js code in the browser to call webservices on the local server
+6 - to enable js code in the browser to call webservices on the local server
 
   + create the desired webservices, as per point 3 or 3b above
 
   + use either
-  
+
     . the Y.io.jsonrpc( string method, array params, object config)
       javascript function, available in the io-jsonropc yui module
       (supports only jsonrpc, not xmlrpc)
@@ -116,7 +120,7 @@
       (docs for it are available at http://phpxmlrpc.sourceforge.net/jsxmlrpc/javadoc/)
 
 
-6 - to enable js code in the browser to call webservices on remote servers
+7 - to enable js code in the browser to call webservices on remote servers
     (cross domain requests) without the need for flash:
 
   + define the remote servers that will be made accessible in the
@@ -133,7 +137,7 @@
     browser)
 
 
-7 - to enable usage of xmlrpc/jsonrpc protocols to call functions that have
+8 - to enable usage of xmlrpc/jsonrpc protocols to call functions that have
     already been made available via the jscore extension:
 
   + make sure the JscoreIntegration parameter is set to "enabled" in wsproviders.ini.append.php
@@ -150,4 +154,4 @@
     available in the io-jsonropc yui module
 
 
-8 - more detailed info in the README file
+9 - more detailed info in the README file
