@@ -10,13 +10,13 @@
 class ggSOAPClient extends ggWebservicesClient
 {
     /// @deprecated the ggWebservicesClient parent class can do by itself all of this
-    function __construct( $server, $path = '/', $port = 80 )
+    /*function __construct( $server, $path = '/', $port = 80, $protocol=null )
     {
         $this->ResponseClass = 'ggSOAPResponse';
         $this->UserAgent = 'gg eZ SOAP client';
         //$this->ContentType = 'text/xml';
-        parent::__construct( $server, $path, $port );
-    }
+        parent::__construct( $server, $path, $port, $protocol );
+    }*/
 
     /**
       Sends a soap message and returns the response object.
@@ -32,19 +32,18 @@ class ggSOAPClient extends ggWebservicesClient
         {
             $request->setSOAPVersion( $this->SoapVersion );
         }
-        $response = parent::send( $request );
-        return $response;
+        return parent::send( $request );
     }
 
     public function setOption( $option, $value )
     {
-        if ( $option = 'soapVersion' )
+        if ( $option == 'soapVersion' )
         {
              $this->SoapVersion = $value;
         }
         else
         {
-            parent::setOption( $option, $value );
+            return parent::setOption( $option, $value );
         }
     }
 
@@ -56,6 +55,9 @@ class ggSOAPClient extends ggWebservicesClient
 
     // by default do not enforce a SOAP version upon requests
     protected $SoapVersion = 0;
+
+    protected $UserAgent = 'gg eZ SOAP client';
+    protected $ResponseClass = 'ggSOAPResponse';
 }
 
 ?>

@@ -23,8 +23,6 @@ class ggPhpSOAPClient extends ggWebservicesClient
     {
         /// @todo verify: the following 2 fields are unused?
         //$this->ContentType = 'text/xml'; /// @todo add UTF8 charset by default?
-        $this->ResponseClass = 'ggPhpSOAPResponse';
-        $this->UserAgent = 'gg eZ PHPSOAP client';
 
         $this->Wsdl = $wsdl;
 
@@ -139,12 +137,12 @@ class ggPhpSOAPClient extends ggWebservicesClient
         if ( $this->Wsdl != null )
         {
             /// @todo patch temporarily Server, Path, Port using $location (in wsdl mode)
-var_export($location);
+/*var_export($location);
 var_export($this->Server);
 var_export($this->Port);
 var_export($this->Path);
 var_export($version);
-var_export($action);
+var_export($action);*/
         }
         $response = parent::send( $request );
         if ( $this->Wsdl != null )
@@ -180,13 +178,13 @@ var_export($action);
 
     public function setOption( $option, $value )
     {
-        if ( $option = 'soapVersion' )
+        if ( $option == 'soapVersion' )
         {
             $this->SoapVersion = $value;
         }
         else
         {
-            parent::setOption( $option, $value );
+            return parent::setOption( $option, $value );
         }
     }
 
@@ -194,6 +192,9 @@ var_export($action);
 
     protected $Wsdl;
     protected $SoapVersion = SOAP_1_1;
+
+    protected $ResponseClass = 'ggPhpSOAPResponse';
+    protected $UserAgent = 'gg eZ PHPSOAP client';
 }
 
 ?>
