@@ -218,6 +218,15 @@ class ggRESTRequest extends ggWebservicesRequest
         }
     }
 
+    function contentType()
+    {
+        if ( $this->Verb == 'GET' )
+        {
+            return '';
+        }
+        return 'application/x-www-form-urlencoded';
+    }
+
     /// New method in this subclass
     function requestHeaders()
     {
