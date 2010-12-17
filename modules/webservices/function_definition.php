@@ -13,7 +13,7 @@ $FunctionList['call'] = array(
     //'operation_types' => array( 'read' ),
     'call_method'     => array( //'include_file' => '.../modules/helloworld/helloworldfunctioncollection.php',
                                 'class'        => 'ggeZWebservicesClient',
-                                'method'       => 'send'
+                                'method'       => 'call'
                          ),
     //'parameter_type'  => 'standard',
     'parameters'      => array( array( 'name'     => 'server',
@@ -23,6 +23,10 @@ $FunctionList['call'] = array(
                                        'type'     => 'string',
                                        'required' => true ),
                                 array( 'name'     => 'parameters',
+                                       'type'     => 'array',
+                                       'required' => false,
+                                       'default'  => array() ),
+                                array( 'name'     => 'options',
                                        'type'     => 'array',
                                        'required' => false,
                                        'default'  => array() ) ) );
