@@ -24,7 +24,7 @@ class ggRESTClient extends ggWebservicesClient
     {
         if ( $this->Verb != '' )
         {
-            $request->setMethod( $this->SoapVersion );
+            $request->setMethod( $this->Verb );
         }
         // use strict comparison, so that setting it to '' by the end user will work
         if ( $this->NameVar !== null )
@@ -38,7 +38,7 @@ class ggRESTClient extends ggWebservicesClient
     {
         if ( $option = 'nameVariable' )
         {
-            $this->NameVar = $version;
+            $this->NameVar = $value;
         }
         else
         {

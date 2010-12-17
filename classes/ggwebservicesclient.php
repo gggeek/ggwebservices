@@ -742,7 +742,7 @@ class ggWebservicesClient
                 $this->RequestCompression = $value;
                 break;
             case 'method':
-                $this->Verb = strtoupper( $alue );
+                $this->Verb = strtoupper( $value );
                 break;
             case 'acceptedCompression':
                 $this->AcceptedCompression = $value;
