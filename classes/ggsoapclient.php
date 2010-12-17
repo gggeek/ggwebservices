@@ -38,7 +38,7 @@ class ggSOAPClient extends ggWebservicesClient
 
     public function setOption( $option, $value )
     {
-        if ( $opption = 'soapVersion' )
+        if ( $option = 'soapVersion' )
         {
              $this->SoapVersion = $version;
         }

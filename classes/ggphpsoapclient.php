@@ -180,7 +180,7 @@ var_export($action);
 
     public function setOption( $option, $value )
     {
-        if ( $opption = 'soapVersion' )
+        if ( $option = 'soapVersion' )
         {
             $this->SoapVersion = $version;
         }
