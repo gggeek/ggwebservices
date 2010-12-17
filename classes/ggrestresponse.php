@@ -37,19 +37,18 @@ class ggRESTResponse extends ggWebservicesResponse
             switch( $this->FaultCode )
             {
                 case ggWebservicesServer::INVALIDMETHODERROR:
-                    header( 'HTTP/1.1 404 Not Found' );
+                    header( $_SERVER['SERVER_PROTOCOL'].' 404 Not Found' );
                     break;
                 case ggWebservicesServer::INVALIDPARAMSERROR:
                 case ggWebservicesServer::INVALIDCOMPRESSIONERROR:
                 case ggWebservicesServer::INVALIDREQUESTERROR:
-                    header( 'HTTP/1.1 400 Bad Request' );
+                    header( $_SERVER['SERVER_PROTOCOL'].' 400 Bad Request' );
                     break;
                 case ggWebservicesServer::INVALIDAUTHERROR:
-                    header( 'HTTP/1.1 403 Forbidden' );
+                    header( $_SERVER['SERVER_PROTOCOL'].' 403 Forbidden' );
                     break;
-
                 default:
-                    header( 'HTTP/1.1 500 Internal Server Error' );
+                    header( $_SERVER['SERVER_PROTOCOL'].' 500 Internal Server Error' );
             }
         }
         else
