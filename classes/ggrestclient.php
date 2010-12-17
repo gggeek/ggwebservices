@@ -22,19 +22,15 @@ class ggRESTClient extends ggWebservicesClient
     /// @todo do not error if we're sending a plain request (test if methods exist)
     function send( $request )
     {
-echo 'A';
         if ( $this->Verb != '' )
         {
-echo 'B';
             $request->setMethod( $this->Verb );
         }
         // use strict comparison, so that setting it to '' by the end user will work
         if ( $this->NameVar !== null )
         {
-echo 'C'; var_dump($this->NameVar);
             $request->setNameVar( $this->NameVar );
         }
-echo 'D';
         return parent::send( $request );
     }
 
