@@ -237,6 +237,18 @@ class ggRESTRequest extends ggWebservicesRequest
         return $this->JsonpCallback;
     }
 
+    // allow easily swapping REST requests from GET to POST and viceversa
+    function setMethod( $method )
+    {
+        $this->Verb = $method;
+    }
+
+    // allow easily changing the format of serialized requests: where to put called method name (GET/POST var, if null as last element in url path)
+    function setNameVar( $var )
+    {
+        $this->NameVar = $var;
+    }
+
     protected $Verb = 'GET';
     protected $ResponseType = '';
 
