@@ -241,7 +241,13 @@ class ggWebservicesClient
                 // rather than storing an incomplete set, store none
                 if ( $this->Debug > 1 )
                 {
-                    $this->RequestPayload = $payload;
+                    // workaround for a bug using CURl+SOAP: a reference to
+                    // the $payload var is apparently somehow stored somewhere else,
+                    // with the result that the RequestPayload gets destroyed
+                    // when the call to 'send' ends. If we add a space at the end,
+                    // we crate presumably a copy of the variable, and all is fine
+                    // (bug experienced on php 5.3.3 on windows vista)
+                    $this->RequestPayload = $payload . ' ';
                 }
 
                 if ( $payload != '' )
@@ -946,7 +952,7 @@ class ggWebservicesClient
 
     /// 1 = keep copy of response, 2 = keep copy of request too
     protected $Debug = 0;
-    protected $RequestPayload = '';
+    var $RequestPayload = '';
     protected $ResponsePayload = '';
 }
 
