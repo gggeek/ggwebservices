@@ -1,4 +1,4 @@
-Changes from 0.5 to 0.6 - released 2010/12/XX
+Changes from 0.5 to 0.6 - released 2010/12/18
 
 *Incompatible changes
 
@@ -8,42 +8,64 @@ Changes from 0.5 to 0.6 - released 2010/12/XX
 - the REST client now puts parameters in the query string by default, no more in
   the request body (which was wrong since it sent GET requests anyway).
   The method name is appended to the PATH part of the url.
-  This can be customized using the Options parameter in wsproviders.ini.
+  This can be customized using the Options[] parameter in wsproviders.ini, or
+  even directly in the template for every invocation of a fetch function webservices/call
 
 *General:
 
 - A 4th, optional parameter has been added to the fetch function webservices/call.
-  It allowsto specify an array of options to tweak the behaviour of the client,
+  It allows to specify an array of options to tweak the behaviour of the client,
   basically overriding the options defines in wsproviders.ini
+
+  Coupled with a new option available for the REST client, that allows to specify
+  whether calls will be made using GET or POST or even PUT, and one that allows
+  to specify the variable to be used for the webservice method name, this should
+  be enough to implement clients for all rest-like services, interacting with
+  applications such as flickr, facebook, google, yahoo, twitter and many more...
+
 - The debugger now supports debugging ezjscore methods
+
 - A new ezjscore webservice is provided: system::listMethods. Syntax and results
   are the same as the homonymous standard method in xmlrpc!
+
 - A new ezjscore webservice is provided: system::methodHelp. Syntax and results
   are the same as the homonymous standard method in xmlrpc
+
 - The debugger automatically loads session cookies when clicking in the left col
   menu to invoke the webservices on the local server, making its usage much more
   streamlined
+
 - Add support for soap 1.2 besides soap 1.1 (the standard) in the phpsoap client
-- Support receiving compressed http responses if zlib is installed (or curl has
-  zlib compiled in)
-- Support receiving compressed http requests if zlib is installed
-- Support sending compressed http requests if zlib is installed
+
+- Clients support receiving compressed http responses if zlib is installed (or curl
+  has zlib compiled in)
+
+- Servers support receiving compressed http requests if zlib is installed
+
+- Clients support sending compressed http requests if zlib is installed
+
 - Support Digest and NTLM auth schemes in client
+
 - Added a REST server.
-  It is considered in beta status, and might be subject to change in the future.
+  It is considered in beta status, and might be subject to changes in the future.
   It currently only supports receiving method name as last part of path in the url,
-  and parameters using the query string / request body. It returns output serialized
-   according to the 'Accept' http header in response (if found) or to GET parameter
-   'ContentType'
+  and url-encoded parameters using the query string / request body. It returns
+  output serialized according to the 'Accept' http header in response (if found)
+  or to GET/POST parameter 'ContentType'
+
 - Use minified version of YUI libs for visual editor in debugger, unless in DevelopmentMode
+
 - Added more sample php files, in doc/samples
+
 - add a __tostring method to class ggWebservicesFault to allow debugging of
   error responses when the code is invoked via ezjscore with no specific
   content-type header in the request
+
 - Two out of three debugger views now use templates for rendering
+
 - A major refacoring of client, request and response php classes has taken place.
-  This means it will be much easier to add clients that use GET for requests, as
-  well as adding support for advanced http features.
+  This means it is now much easier to add support for clients that diverge from
+  rpc-style protocols based on http POST (such as jsonrpc, xmlrpc, soap).
   The utmost care has been taken not to break BC, but if you have subclassed any
   of the client, request or response classes in your own php code, you will need
   to merge the changes.
@@ -56,12 +78,17 @@ Changes from 0.5 to 0.6 - released 2010/12/XX
 *Bugfixes:
 
 - Debugger is now available in every design, not only admin
+
 - Make sure debugger views are not accessible directly even when rewrite rules
   are not active
+
 - Fix php error generated when there is an introspection request with bad params
   sent by the user (invalid method name)
+
 - Sending of username/password now works for ggezwebservicesclient (basic auth)
+
 - More descriptive error messages when receiving bad responses from servers
-- adding parameters to xmlrpc requests via addParameter() would result in unexpected
+
+- Adding parameters to xmlrpc requests via addParameter() would result in unexpected
   xmlrpc calls. Now both xmlrpc and jsonrpc clients only take positional params
   (i.e. the 1st param in calls to addParameter($name, $val) will be ignored)
