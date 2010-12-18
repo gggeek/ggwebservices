@@ -43,6 +43,10 @@ class ggPhpSOAPClient extends ggWebservicesClient
     ///       from $options['login'] and $options['proxy_host'] ? ...
     function send( $request )
     {
+
+        $this->RequestPayload = '';
+        $this->ResponsePayload = '';
+
         /// @todo add a check that request is a soap / phpsoap one, or it will have no namespace method...
         $options = array( 'exceptions' => true, 'soap_version' => $this->SoapVersion );
         /*
