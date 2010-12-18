@@ -89,7 +89,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
         try
         {
             $response = new $this->ResponseClass();
-            $client = @new ggPhpSOAPClientTransport( $this->Wsdl, $options, $this, $request );
+            $client = new ggPhpSOAPClientTransport( $this->Wsdl, $options, $this, $request );
             if ( isset( $deftimeout ) )
             {
                 ini_set( 'default_socket_timeout', $deftimeout );
@@ -136,22 +136,29 @@ class ggPhpSOAPClient extends ggWebservicesClient
     {
         if ( $this->Wsdl != null )
         {
-            /// @todo patch temporarily Server, Path, Port using $location (in wsdl mode)
-/*var_export($location);
-var_export($this->Server);
-var_export($this->Port);
-var_export($this->Path);
-var_export($version);
-var_export($action);*/
+            /// patch temporarily Server, Path, Port using $location (needed in wsdl mode)
+            $server = $this->Server;
+            $path = $this->Path;
+            $port = $this->Port;
+            $protocol = $this->Protocol;
+
+            $parsed = parse_url( $location );
+            $this->Server = $parsed['host'];
+            $this->Path = $parsed['path'];
+            $this->Port = isset( $parsed['port'] ) ? $parsed['port'] : ( @$parsed['scheme'] == 'https' ? 443 : 80 );
+            $this->Protocol = isset( $parsed['scheme'] ) ? $parsed['scheme'] : ( @$parsed['port'] == 443 ? 'https' : 'http' );
         }
         $response = parent::send( $request );
         if ( $this->Wsdl != null )
         {
-            /// ...
+             $this->Server = $server;
+             $this->Path = $path;
+             $this->Port = $port;
+             $this->Protocol = $protocol;
         }
         if ( is_object( $response ) )
         {
-            if ( false && !$response->isFault() )
+            if ( !$response->isFault() )
             {
                 return $response->value();
             }
