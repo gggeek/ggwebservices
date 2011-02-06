@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright 2010
+ * @copyright (C) 2010-2011 G. Giunta
  */
 
 // decode input params

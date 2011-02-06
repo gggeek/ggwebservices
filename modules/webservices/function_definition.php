@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright 2009
+ * @copyright (C) 2009-2011 G. Giunta
  */
 
 $FunctionList = array();

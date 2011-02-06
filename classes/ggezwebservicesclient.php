@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) G. Giunta 2009-2010
+ * @copyright (C) 2009-2011 G. Giunta
  *
  * @todo move ini file name to class constant
  * @todo move log file name to ini entry; parse it for absolute paths

@@ -3,7 +3,7 @@
  * WS debugger: Dialog for visually editing trees of json/xmlrpc values
  *
  * @version $Id$
- * @copyright (C) 2006-2010 G. Giunta
+ * @copyright (C) 2006-2011 G. Giunta
  * @author Gaetano Giunta
  *
  * @todo do not set to "null" new nodes

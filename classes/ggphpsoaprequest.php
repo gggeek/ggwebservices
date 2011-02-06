@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) G. Giunta 2009-2010
+ * @copyright (C) G. Giunta 2009-2011
  *
  * @todo this class could be replaced with a subclass of ggsoaprequest:
  *       - when used by a ggphpsoapclient, only its methods name(), parameters() and ns() are used anyway

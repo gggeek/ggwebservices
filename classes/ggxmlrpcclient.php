@@ -4,7 +4,7 @@
  * @deprecated use a plain ggWebservicesClient instead of this
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) G. Giunta 2009-2010
+ * @copyright (C) G. Giunta 2009-2011
  */
 
 class ggXMLRPCClient extends ggWebservicesClient

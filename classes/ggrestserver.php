@@ -3,7 +3,7 @@
  *
  * @author G. Giunta
  * @version $Id: ggjsonrpcserver.php 199 2010-12-04 00:06:40Z gg $
- * @copyright (C) G. Giunta 2010
+ * @copyright (C) 2010-2011 G. Giunta
  *
  * @todo implement validateparams
  * @todo send back a "vary: Accept" header in responses

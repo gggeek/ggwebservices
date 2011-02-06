@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) G. Giunta 2009-2010
+ * @copyright (C) G. Giunta 2009-2011
  *
  * The BIG difference with the eZ soap class is that this one groks WSDL
  *
