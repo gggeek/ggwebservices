@@ -9,8 +9,6 @@
 
 - add to ezwsclient support for proxy auth type, proxy conf via options[]
 
-- add support for limiting access to webservices by incoming IP address (often done for stupid ws clients that cannot login)
-
 - add ezjscore client, request, response classes
 
 - add more samples, eg. to call webservices on flickr/facebook/twitter
