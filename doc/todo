@@ -1,23 +1,25 @@
-- add support for system.listmethods / et similar in soap mode
-  . use the wsdl module? => then should be able to parse it
-  . use system.listMethods instead? => not quite standard
+- add ezjscore client, request, response classes
+
+- flesh out soap server w. wsdl support (use ezpo2xsd method from ezpo_insepctor)
 
 - test: using CURL and proxy / complex auths works?
   + prevent curl from adding useless "accept: */*" header
   + test: bug using curl+compress request+soap call to ms servers
 
+- test https support with and without curl, with and without proxy too
+
 - add to the base client:
   + automatic cookie support (simplify parsing: nobody uses version 1 cookies)
   + send($array) with keepalive (both curl & by hand)
   + rebuilding of $_POST for compressed requests containing form data
+  + more ssl options (and in debugger too)
 
-- add to ezwsclient support for proxy auth type, proxy conf via options[]
-
-- add ezjscore client, request, response classes
+- add to ezwsclient support for proxy auth type, proxy conf via options[] (and in debugger too)
 
 - add more samples, eg. to call webservices on flickr/facebook/twitter
 
 - in debugger:
+  + improve management of visual payload editing (top-level can be named params for soap, nested arrays/structs support)
   + add siteaccess choice for local server on the left-hand col (nb: looks like getting correct urls for other sa is quite hard... langswitcher does it for nodes only?)
   + add rest support
   + allow to hide/show client's options
@@ -25,11 +27,11 @@
   + improve formatting (eg. 1st line, visualeditor space on top, add admin2 tpl for left menu with resizing handle, etc...)
   + allow picking preferred content-type for responses when using ezjscore
 
-- flesh out soap server w. wsdl support (use ezpo2xsd method from ezpo_insepctor)
-
 - test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
 
 - add jsonrpc 2.0 support (both client and server)
+
+- add support for xmlrpc datatypes base64 and datetime
 
 - test objects vs. array return by default with ezsoap (in tpl code especially)
 
@@ -48,9 +50,7 @@
 - verify js changes in Y.io.ez from 1.0.0 to 1.0.2 and 1.1.0 and merge in Y.io.jsonrpc
   + test loading Y.io.ez from Yui 3.1.0 in eZP 4.4 and later
 
-- use ezjscore to load yui 3 in debugger <= upgrade debugger to yu 2in3
-
-- test https support with and without curl, with and without proxy too
+- use ezjscore to load yui 3 in debugger <= upgrade debugger to yui2in3
 
 - test module view that does ws execution (memory, time) vs. using jsonrpc.php vs. index_ajax.php
 
