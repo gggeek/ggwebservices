@@ -64,7 +64,7 @@
     if (action == 'execute')
     {
       document.frmaction.methodpayload.disabled = false;
-      displaydialogeditorbtn(document.frmezjscore.yes.checked == false);//if (document.getElementById('methodpayloadbtn') != undefined) document.getElementById('methodpayloadbtn').disabled = false;
+      displaydialogeditorbtn(true); //document.frmezjscore.yes.checked == false);//if (document.getElementById('methodpayloadbtn') != undefined) document.getElementById('methodpayloadbtn').disabled = false;
       document.frmaction.method.disabled = false;
       document.frmaction.methodpayload.rows = 10;
     }
@@ -76,12 +76,14 @@
         document.frmaction.methodpayload.disabled = true;
         displaydialogeditorbtn(false); //if (document.getElementById('methodpayloadbtn') != undefined) document.getElementById('methodpayloadbtn').disabled = true;
         document.frmaction.method.disabled = false;
+        document.frmaction.wsdl.checked = true;
       }
       else // list
       {
         document.frmaction.methodpayload.disabled = true;
         displaydialogeditorbtn(false); //if (document.getElementById('methodpayloadbtn') != undefined) document.getElementById('methodpayloadbtn').disabled = false;
         document.frmaction.method.disabled = true;
+        document.frmaction.wsdl.checked = true;
       }
     }
   }
@@ -135,9 +137,11 @@
       document.frmjsonrpc.yes.checked = false;
       document.frmxmlrpc.yes.checked = true;
       document.frmezjscore.yes.checked = false;
+      document.frmsoap.yes.checked = false;
       document.frmaction.wstype.value="0";
-      //document.frmaction.listmethods.disabled = false;
-      //document.frmaction.describemethod.disabled = false;
+      document.frmaction.listmethods.disabled = false;
+      document.frmaction.describemethod.disabled = false;
+      document.frmaction.wsdl.disabled = true;
     }
     else if (wstype == 1)
     {
@@ -145,9 +149,11 @@
       document.frmjsonrpc.yes.checked = true;
       document.frmxmlrpc.yes.checked = false;
       document.frmezjscore.yes.checked = false;
+      document.frmsoap.yes.checked = false;
       document.frmaction.wstype.value="1";
-      //document.frmaction.listmethods.disabled = false;
-      //document.frmaction.describemethod.disabled = false;
+      document.frmaction.listmethods.disabled = false;
+      document.frmaction.describemethod.disabled = false;
+      document.frmaction.wsdl.disabled = true;
     }
     else if (wstype == 2)
     {
@@ -155,12 +161,26 @@
       document.frmjsonrpc.yes.checked = false;
       document.frmxmlrpc.yes.checked = false;
       document.frmezjscore.yes.checked = true;
+      document.frmsoap.yes.checked = false;
       document.frmaction.wstype.value="2";
+      document.frmaction.listmethods.disabled = false;
+      document.frmaction.describemethod.disabled = false;
+      document.frmaction.wsdl.disabled = true;
+    }
+    else if (wstype == 3)
+    {
+      document.getElementById("idcell").style.visibility = 'hidden';
+      document.frmjsonrpc.yes.checked = false;
+      document.frmxmlrpc.yes.checked = false;
+      document.frmezjscore.yes.checked = false;
+      document.frmsoap.yes.checked = true;
+      document.frmaction.wstype.value="3";
       //document.frmaction.executemethod.checked = true;
       //document.frmaction.listmethods.checked = false;
-      //document.frmaction.listmethods.disabled = false;
+      document.frmaction.listmethods.disabled = false;
       //document.frmaction.describemethod.checked = false;
-      //document.frmaction.describemethod.disabled = true;
+      document.frmaction.describemethod.disabled = false;
+      document.frmaction.wsdl.disabled = false;
     }
     // used to make sure the 'edit' link to the visual editor gets reset properly
     switchaction();
@@ -170,7 +190,7 @@
   {
     if (show && ((typeof base64_decode) == 'function'))
     {
-	  document.getElementById('methodpayloadbtn').innerHTML = '[<a href="#" onclick="activateeditor(); return false;">Edit</a>]';
+	  document.getElementById('methodpayloadbtn').innerHTML = '<input type="submit" onclick="activateeditor(); return false;" value="Edit" />';
 	}
 	else
     {
@@ -180,11 +200,14 @@
 
   function activateeditor()
   {
-	  var url = '{/literal}{concat('webservices/debugger/visualeditor?params=',$params.alt_payload)|ezurl(no)}{literal}';
+	  var url = '{/literal}{'webservices/debugger/visualeditor'|ezurl(no)}{literal}';
+	  url =  url + '?params=' + base64_encode( document.getElementById('methodpayload').value );
 	  if (document.frmaction.wstype.value == "1")
 	    url += '&type=jsonrpc';
       else if (document.frmaction.wstype.value == "2")
 	    url += '&type=ezjscore';
+	  else if (document.frmaction.wstype.value == "3")
+	    url += '&type=soap';
 	  var wnd = window.open(url, '_blank', 'width=750, height=400, location=0, resizable=1, menubar=0, scrollbars=1');
   }
 
@@ -214,11 +237,12 @@
 {/literal}//-->
 </script>
 </head>
-<body onload="switchtransport({$params.wstype}); switchssl(); switchauth(); swicthcainfo();{if $params.run} document.forms[3].submit();{/if}">
+<body onload="switchtransport({$params.wstype}); switchssl(); switchauth(); swicthcainfo();{if $params.run} document.forms[4].submit();{/if}">
 <h1><form name="frmxmlrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(0);"/></form>XMLRPC
 /<form name="frmjsonrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(1);"/></form>JSONRPC
 /<form name="frmezjscore" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(2);"/></form>EZJSCORE
-Debugger (based on the <a href="http://phpxmlrpc.sourceforge.net">PHP-XMLRPC</a> library)</h1>
+/<form name="frmsoap" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(3);"/></form>SOAP
+Debugger</h1>
 <form name="frmaction" method="get" action="../action/" target="frmaction" onSubmit="switchFormMethod();">
 
 <table id="serverblock">
@@ -227,6 +251,7 @@ Debugger (based on the <a href="http://phpxmlrpc.sourceforge.net">PHP-XMLRPC</a>
 <td class="labelcell">Address:</td><td><input type="text" name="host" value="{$params.host|wash()}" size="25" /></td>
 <td class="labelcell">Port:</td><td><input type="text" name="port" value="{$params.port|wash()}" size="5" maxlength="5" /></td>
 <td class="labelcell">Path:</td><td><input type="text" name="path" value="{$params.path|wash()}" size="40" /></td>
+<td class="labelcell">WSDL</td><td><input type="checkbox" name="wsdl" value="1"{if eq($params.wsdl, '1')} checked="checked"{/if} /></td>
 </tr>
 </table>
 
@@ -237,6 +262,8 @@ Debugger (based on the <a href="http://phpxmlrpc.sourceforge.net">PHP-XMLRPC</a>
 <td>Describe method<input type="radio" id="describemethod" name="action" value="describe"{if eq($params.action, 'describe')} checked="checked"{/if} onclick="switchaction();" /></td>
 <td>Execute method<input type="radio" id="executemethod" name="action" value="execute"{if eq($params.action, 'execute')} checked="checked"{/if} onclick="switchaction();" /></td>
 <!--<td>Generate stub for method call<input type="radio" name="action" value="wrap"{if eq($params.action, 'wrap')} checked="checked"{/if} onclick="switchaction();" /></td>-->
+<td><input type="hidden" name="wstype" value="{$params.wstype}" />
+<input type="submit" value="Execute" onclick="return verifyserver();"/></td>
 </tr>
 </table>
 <input type="hidden" name="methodsig" value="{$params.methodsig|wash()}" />
@@ -247,8 +274,6 @@ Debugger (based on the <a href="http://phpxmlrpc.sourceforge.net">PHP-XMLRPC</a>
 <td class="labelcell">Name:</td><td><input type="text" name="method" value="{$params.method|wash()}" size="25" /></td>
 <td class="labelcell">Payload:<br/><div id="methodpayloadbtn"></div></td><td><textarea id="methodpayload" name="methodpayload" rows="1" cols="40">{$params.payload|wash()}</textarea></td>
 <td class="labelcell" id="idcell">Msg id: <input type="text" name="id" size="3" value="{$params.id|wash()}"/></td>
-<td><input type="hidden" name="wstype" value="{$params.wstype}" />
-<input type="submit" value="Execute" onclick="return verifyserver();"/></td>
 </tr>
 </table>
 

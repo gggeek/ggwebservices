@@ -29,7 +29,7 @@ require_once( "kernel/common/template.php" );
 body {border-top: 1px solid gray; padding: 1em; font-family: Verdana, Arial, Helvetica; font-size: 8pt;}
 h3 {font-size: 9.5pt;}
 h2 {font-size: 12pt;}
-.dbginfo {padding: 1em; background-color: #EEEEEE; border: 1px dashed silver; font-family: monospace;}
+.dbginfo {padding: 1em; background-color: #EEEEEE; border: 1px dashed silver; font-family: monospace; white-space: pre;}
 #response {padding: 1em; margin-top: 1em; background-color: #DDDDDD; border: 1px solid gray; white-space: pre; font-family: monospace;}
 table {padding: 2px; margin-top: 1em;}
 th {background-color: navy; color: white; padding: 0.5em;}
@@ -58,107 +58,129 @@ td form {margin: 0;}
       set_time_limit($timeout+10);
 
     //include('xmlrpc.inc');
-    if ($wstype == 2)
-    {
-      //@include('ezjscore.inc');
-      if (!class_exists('ezjscore_client'))
-      {
-        die('Error: to debug the ezjscore protocol the ezjscore.inc file is needed');
-      }
-      $clientclass = 'ezjscore_client';
-      $msgclass = 'ezjscoremsg';
-      $protoname = 'EZJSCORE';
-      $methodseparator = '::';
-    }
-    else if ($wstype == 1)
-    {
-      //@include('jsonrpc.inc');
-      if (!class_exists('jsonrpc_client'))
-      {
-        die('Error: to debug the jsonrpc protocol the jsonrpc.inc file is needed');
-      }
-      $clientclass = 'jsonrpc_client';
-      $msgclass = 'jsonrpcmsg';
-      $protoname = 'JSONRPC';
-      $methodseparator = '.';
-    }
-    else
-    {
-      $clientclass = 'xmlrpc_client';
-      $msgclass = 'xmlrpcmsg';
-      $protoname = 'XMLRPC';
-      $methodseparator = '.';
+  	switch( $wstype )
+  	{
+  	  case 3:
+  	    $protoname = 'PhpSOAP';
+  	    $methodseparator = '.';
+  	    break;
+      case 2:
+        $protoname = 'EZJSCORE';
+        $methodseparator = '::';
+        break;
+      case 1:
+        $protoname = 'JSONRPC';
+        $methodseparator = '.';
+        break;
+      default:
+        $protoname = 'XMLRPC';
+        $methodseparator = '.';
     }
 
-    if ($port != "")
+  	$clientClass = 'gg' . $protoname . 'Client';
+  	$requestClass = 'gg' . $protoname . 'Request';
+
+  	if ($path == "")
+  	{
+  	  $path = '/';
+  	}
+    if ($port == "")
     {
-      $client = new $clientclass($path, $host, $port);
-      $server = "$host:$port$path";
-    } else {
-      $client = new $clientclass($path, $host);
-      $server = "$host$path";
+      if ($protocol == 2)
+	  {
+		$port = 443;
+      }
+      else
+      {
+    	$port = 80;
+      }
     }
+  	$sport = ':' . $port;
     if ($protocol == 2)
     {
-      $server = 'https://'.$server;
+      $sprotocol = 'https';
+    	if ( $port == 443 )
+    	{
+    		$sport = '';
+    	}
     }
     else
     {
-      $server = 'http://'.$server;
+      $sprotocol = 'http';
+    	if ( $port == 80 )
+    	{
+    		$sport = '';
+    	}
     }
-    if ($proxy != '') {
+    $server = $sprotocol . '://' . $host . $sport . $path;
+  	if ( $wsdl )
+  	{
+	  	$client = new $clientClass( '', '', 0, '', $server );
+  		$server .= ' (for wsdl)';
+  	}
+  	else
+  	{
+  		$client = new $clientClass( $host, $path, $port, $sprotocol );
+  	}
+
+    if ($proxy != '')
+    {
       $pproxy = explode(':', $proxy);
       if (count($pproxy) > 1)
         $pport = $pproxy[1];
       else
         $pport = 8080;
-      $client->setProxy($pproxy[0], $pport, $proxyuser, $proxypwd);
+      $client->setOptions( array( 'proxyHost' => $pproxy[0], 'proxyPort' => $pport, 'proxyUser' => $proxyuser, 'proxyPassword' => $proxypwd ) );
     }
+
+  	if ( $timeout > 0 )
+  	{
+  		$client->setOption( 'timeout', $timeout );
+  	}
 
     if ($protocol == 2)
     {
-      $client->setSSLVerifyPeer($verifypeer);
-      $client->setSSLVerifyHost($verifyhost);
-      if ($cainfo)
+      $client->setOption( 'SSLVerifyPeer', $verifypeer );
+      $client->setOption( 'SSLVerifyHost', $verifyhost );
+      if ( $cainfo )
       {
-        $client->setCaCertificate($cainfo);
+        $client->setOption( 'SSLCAInfo', $cainfo );
       }
-      $httpprotocol = 'https';
     }
-    else if ($protocol == 1)
-      $httpprotocol = 'http11';
-    else
-      $httpprotocol = 'http';
+    else if ( $protocol == 1 )
+    {
+      $client->setOption( 'forceCURL', true );
+    }
 
     if ($username)
-      $client->setCredentials($username, $password, $authtype);
+      $client->setOptions( array( 'login' => $username, 'password' => $password, 'authType' => $authtype ) );
 
-    $client->setDebug($debug);
+    $client->setOption( 'debug', $debug );
 
     switch ($requestcompression) {
       case 0:
-        $client->request_compression = '';
+        $client->setOption( 'requestCompression', '' );
         break;
       case 1:
-        $client->request_compression = 'gzip';
+        $client->setOption( 'requestCompression', 'gzip' );
         break;
       case 2:
-        $client->request_compression = 'deflate';
+        $client->setOption( 'requestCompression', 'deflate' );
         break;
     }
 
     switch ($responsecompression) {
       case 0:
-        $client->accepted_compression = '';
+        $client->setOption( 'acceptedCompression', '' );
         break;
       case 1:
-        $client->accepted_compression = array('gzip');
+        $client->setOption( 'acceptedCompression', 'gzip' );
         break;
       case 2:
-        $client->accepted_compression = array('deflate');
+        $client->setOption( 'acceptedCompression', 'deflate' );
         break;
       case 3:
-        $client->accepted_compression = array('gzip', 'deflate');
+        $client->setOption( 'acceptedCompression', 'gzip, deflate' );
         break;
     }
 
@@ -175,70 +197,48 @@ td form {margin: 0;}
     $msg = array();
     switch ($action) {
 
-      // 'wrap' not supported in this version of the debugger
-      /* case 'wrap':
-        @include('xmlrpc_wrappers.inc');
-        if (!function_exists('build_remote_method_wrapper_code'))
-        {
-          die('Error: to enable creation of method stubs the xmlrpc_wrappers.inc file is needed');
-        }
-        // fall thru intentionally */
       case 'describe':
-        if ($wstype != 2)
+        if ($wstype == 3)
         {
-          $msg[0] = new $msgclass('system'.$methodseparator.'methodHelp', null, $id);
-          $msg[0]->addparam(new xmlrpcval($method));
-          $msg[1] = new $msgclass('system'.$methodseparator.'methodSignature', null, $id+1);
-          $msg[1]->addparam(new xmlrpcval($method));
+          $msg[0] = new $requestClass('system'.$methodseparator.'methodSignature', array( $method ), $id + 1 );
         }
-        else
+        else if ($wstype == 2)
         {
-          $msg[0] = new $msgclass('system'.$methodseparator.'methodHelp'.$methodseparator.$method, null);
+///@todo
+          // no methodsig for ezjscore (to be verified: is methodhelp ok?)
+          $msg[0] = new $requestClass('system'.$methodseparator.'methodHelp'.$methodseparator.$method, null);
+        }
+      	else
+		{
+	      $msg[0] = new $requestClass('system'.$methodseparator.'methodHelp', array( $method ), $id );
+	      $msg[1] = new $requestClass('system'.$methodseparator.'methodSignature', array( $method ), $id + 1 );
         }
         $actionname = 'Description of method "'.$method.'"';
         break;
+
       case 'list':
-        $msg[0] = new $msgclass('system'.$methodseparator.'listMethods', null, $id);
+      	$msg[0] = new $requestClass( 'system'.$methodseparator.'listMethods', array(), $id );
         $actionname = 'List of available methods';
         break;
+
       case 'execute':
-        if (!payload_is_safe($payload))
-          die("Tsk tsk tsk, please stop it or I will have to call in the cops!");
-        $msg[0] = new $msgclass($method, null, $id);
-        // hack! build payload by hand
-        if ($wstype == 2)
-        {
-          $msg[0]->payload = "ezjscServer_function_arguments=" . urlencode($method) . '&' . $payload;
-        }
-        else if ($wstype == 1)
-        {
-          $msg[0]->payload = "{\n".
-            '"method": "' . $method . "\",\n\"params\": [" .
-            $payload .
-            "\n],\n\"id\": ";
-            // fix: if user gave an empty string, use NULL, or we'll break json syntax
-            if ($id == "")
-            {
-                $msg[0]->payload .= "null\n}";
-            }
-            else
-            {
-              if (is_numeric($id) || $id == 'false' || $id == 'true' || $id == 'null')
-              {
-                $msg[0]->payload .= "$id\n}";
-              }
-              else
-              {
-                $msg[0]->payload .= "\"$id\"\n}";
-              }
-            }
-        }
-        else
-          $msg[0]->payload = $msg[0]->xml_header() .
-            '<methodName>' . $method . "</methodName>\n<params>" .
-            $payload .
-            "</params>\n" . $msg[0]->xml_footer();
-        $actionname = 'Execution of method '.$method;
+
+      	$msg[0] = new $requestClass($method, array(), $id);
+      	$actionname = 'Execution of method '.$method;
+      	if ( $payload != '' )
+      	{
+      		$php_payload = json_decode( $payload, true );
+      		if ( json_last_error() != JSON_ERROR_NONE || !is_array( $php_payload ) )
+      		{
+      			$actionname = '[ERROR: invalid payload (must be in json format)]';
+      			$msg = array();
+      		}
+      		else
+      		{
+      			$msg[0]->addParameters( $php_payload );
+      		}
+      	}
+
         break;
       default: // give a warning
         $actionname = '[ERROR: unknown action] "'.$action.'"';
@@ -249,30 +249,39 @@ td form {margin: 0;}
     echo '<h2>'.htmlspecialchars($actionname).' on server '.htmlspecialchars($server)." ...</h2>\n";
     flush();
 
-    $response = null;
     // execute method(s)
-    if ($debug)
-      echo '<div class="dbginfo"><h2>Debug info:</h2>';  /// @todo use ob_start instead
+	$response = null;
     $resp = array();
     $mtime = explode(' ',microtime());
     $time = (float)$mtime[0] + (float)$mtime[1];
-    foreach ($msg as $message)
+    foreach ( $msg as $message )
     {
-      // catch errors: for older xmlrpc libs, send does not return by ref
-      @$response =& $client->send($message, $timeout, $httpprotocol);
+      $response = $client->send( $message );
       $resp[] = $response;
-      if (!$response || $response->faultCode())
+      if ( !is_object( $response ) || $response->isFault() )
         break;
     }
     $mtime = explode(' ',microtime());
     $time = (float)$mtime[0] + (float)$mtime[1] - $time;
+
     if ($debug)
-      echo "</div>\n";
-
-    if ($response)
     {
+    	echo '<div class="dbginfo"><h2>Debug info:</h2>';
+    	if ( $debug > 1 ) echo '<span class="evidence">Sent: </span>' . htmlspecialchars( $client->requestPayload() ) . "\n";
+    	echo '<span class="evidence">Received: </span>' . htmlspecialchars( $client->responsePayload() );
+    	echo "</div>\n";
+    }
 
-    if ($response->faultCode())
+    if ( !is_object( $response ) )
+    {
+      // call failed! echo out error msg!
+      //echo '<h2>'.htmlspecialchars($actionname).' on server '.htmlspecialchars($server).'</h2>';
+      echo "<h3>$protoname call FAILED!</h3>\n";
+      echo "<p>Fault code: [" . htmlspecialchars($client->errorNumber()) .
+        "] Reason: '" . htmlspecialchars($client->errorString()) . "'</p>\n";
+      echo (strftime("%d/%b/%Y:%H:%M:%S\n"));
+    }
+    else if ($response->isFault())
     {
       // call failed! echo out error msg!
       //echo '<h2>'.htmlspecialchars($actionname).' on server '.htmlspecialchars($server).'</h2>';
@@ -293,22 +302,16 @@ td form {margin: 0;}
         case 'list':
 
         $v = $response->value();
-        // dirty hack coz we're lazy: encode + redecode just afterwards
-        // if we get a php array (as we get from ezjscore client)
-        if (!is_object($v))
+        if ( is_array( $v ) && array_keys( $v ) == range( 0, count( $v ) -1 ) )
         {
-          $v = php_xmlrpc_encode($v);
-        }
-        if ($v->kindOf()=="array")
-        {
-          $max = $v->arraysize();
+          $max = count( $v );
           echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
           echo "<thead>\n<tr><th>Method</th><th>Description</th></tr>\n</thead>\n<tbody>\n";
           for($i=0; $i < $max; $i++)
           {
-            $rec = $v->arraymem($i);
+            $rec = $v[$i];
             if ($i%2) $class=' class="oddrow"'; else $class = ' class="evenrow"';
-            echo "<tr><td$class>".htmlspecialchars($rec->scalarval())."</td><td$class>";
+            echo "<tr><td$class>".htmlspecialchars( $rec )."</td><td$class>";
             echo "<form action=\"../controller/\" method=\"get\" target=\"frmcontroller\">".
               "<input type=\"hidden\" name=\"host\" value=\"".htmlspecialchars($host)."\" />".
               "<input type=\"hidden\" name=\"port\" value=\"".htmlspecialchars($port)."\" />".
@@ -328,101 +331,120 @@ td form {margin: 0;}
               "<input type=\"hidden\" name=\"requestcompression\" value=\"$requestcompression\" />".
               "<input type=\"hidden\" name=\"clientcookies\" value=\"".htmlspecialchars($clientcookies)."\" />".
               "<input type=\"hidden\" name=\"protocol\" value=\"$protocol\" />".
-              "<input type=\"hidden\" name=\"timeout\" value=\"".htmlspecialchars($timeout)."\" />".
-              "<input type=\"hidden\" name=\"method\" value=\"".$rec->scalarval()."\" />".
+              "<input type=\"hidden\" name=\"timeout\" value=\"$timeout\" />".
+              "<input type=\"hidden\" name=\"method\" value=\"".htmlspecialchars( $rec )."\" />".
               "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
+              "<input type=\"hidden\" name=\"wsdl\" value=\"$wsdl\" />".
               "<input type=\"hidden\" name=\"action\" value=\"describe\" />".
               "<input type=\"hidden\" name=\"run\" value=\"now\" />".
               "<input type=\"submit\" value=\"Describe\" /></form>";
             echo "</td>";
-            //echo("</tr>\n");
 
-            // generate lo scheletro per il method payload per eventuali test
-            //$methodpayload="<methodCall>\n<methodName>".$rec->scalarval()."</methodName>\n<params>\n<param><value></value></param>\n</params>\n</methodCall>";
-
-            /*echo ("<form action=\"{$_SERVER['PHP_SELF']}\" method=\"get\"><td>".
-              "<input type=\"hidden\" name=\"host\" value=\"$host\" />".
-              "<input type=\"hidden\" name=\"port\" value=\"$port\" />".
-              "<input type=\"hidden\" name=\"path\" value=\"$path\" />".
-              "<input type=\"hidden\" name=\"method\" value=\"".$rec->scalarval()."\" />".
-              "<input type=\"hidden\" name=\"methodpayload\" value=\"$payload\" />".
-              "<input type=\"hidden\" name=\"action\" value=\"execute\" />".
-              "<input type=\"submit\" value=\"Test\" /></td></form>");*/
             echo("</tr>\n");
           }
           echo "</tbody>\n</table>";
+        }
+        else
+        {
+        	echo "<p>Unexpected response: " . htmlspecialchars( print_r( $v, true ) ) ."</p>";
         }
         break;
 
         case 'describe':
 
         $r1 = $resp[0]->value();
-        if (!is_object($r1))
-        {
-          $r1 = php_xmlrpc_encode($r1);
-        }
-        if ( count($resp) > 1)
+        if ( count($resp) > 1 )
         {
           $r2 = $resp[1]->value();
         }
         else
         {
-          $r2 = null;
+          if ( $wstype == 3 )
+          {
+	        $r2 = $r1;
+          	$r1 = '';
+          }
+          else
+          {
+            $r2 = null;
+          }
         }
-        if (!is_object($r2))
-        {
-          $r2 = php_xmlrpc_encode($r2);
-        }
-
 
         echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
         echo "<thead>\n<tr><th>Method</th><th>".htmlspecialchars($method)."</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n</thead>\n<tbody>\n";
-        $desc = htmlspecialchars($r1->scalarval());
+        $desc = htmlspecialchars($r1);
         if ($desc == "")
           $desc = "-";
         echo "<tr><td class=\"evenrow\">Description</td><td colspan=\"3\" class=\"evenrow\">$desc</td></tr>\n";
-        $payload="";
-        $alt_payload="";
-        if ($r2->kindOf()!="array")
+
+        if ( !is_array( $r2) )
           echo "<tr><td class=\"oddrow\">Signature</td><td class=\"oddrow\">Unknown</td><td class=\"oddrow\">&nbsp;</td></tr>\n";
         else
         {
-          for($i=0; $i < $r2->arraysize(); $i++)
+          for($i=0; $i < count( $r2 ); $i++)
           {
+          	$p = array();
+          	$payload="";
+          	$alt_payload="";
             if ($i+1%2) $class=' class="oddrow"'; else $class = ' class="evenrow"';
             echo "<tr><td$class>Signature&nbsp;".($i+1)."</td><td$class>";
-            $x = $r2->arraymem($i);
-            if ($x->kindOf()=="array")
+            $x = $r2[$i];
+            if ( is_array( $x ) )
             {
-              $ret = $x->arraymem(0);
-              echo "<code>OUT:&nbsp;" . htmlspecialchars($ret->scalarval()) . "<br />IN: (";
-              if ($x->arraysize() > 1)
+              $ret = $x[0];
+              echo "<code>OUT:&nbsp;" . htmlspecialchars( $ret ) . "<br />IN: (";
+              if ( count( $x ) > 1 )
               {
-                for($k = 1; $k < $x->arraysize(); $k++)
+                for($k = 1; $k < count( $x ); $k++)
                 {
-                  $y = $x->arraymem($k);
-                  echo $y->scalarval();
-                  if ($wstype != 1 && $wstype != 2)
+                  $y = $x[$k];
+                  echo htmlspecialchars( $y );
+                  /*if ($wstype != 1 && $wstype != 2  && $wstype != 3)
                   {
-                    $payload = $payload . '<param><value><'.htmlspecialchars($y->scalarval()).'></'.htmlspecialchars($y->scalarval())."></value></param>\n";
+                    $payload = $payload . '<param><value><'.htmlspecialchars($y).'></'.htmlspecialchars($y)."></value></param>\n";
                   }
-                  $alt_payload .= $y->scalarval();
-                  if ($k < $x->arraysize()-1)
+                  $alt_payload .= $y;
+                  if ($k < count( $x )-1)
                   {
                     $alt_payload .= ';';
                     echo ", ";
-                  }
+                  }*/
+                	switch( strtolower( $y ) )
+                	{
+                		case 'array':
+                			$p[] = '[ ]';
+                			break;
+                		case 'int':
+                		case 'integer':
+                		case 'i4':
+                			$p[] = '1';
+                			break;
+                		case 'bool':
+                		case 'boolean':
+                			$p[] = 'true';
+                			break;
+                		case 'struct':
+                			$p[] = '{ }';
+                			break;
+                		case 'null':
+                			$p[] = 'null';
+                			break;
+                		/// @todo cases: double, base64, datetime.iso8601
+                		default:
+                			$p[] = '"..."';
+                	}
                 }
               }
               echo ")</code>";
+              $payload = '[' . implode( ",\n", $p ) . ']';
+              $alt_payload = implode( ',', $x );
             }
             else
             {
               echo 'Unknown';
             }
             echo '</td>';
-            //bottone per testare questo metodo
-            //$payload="<methodCall>\n<methodName>$method</methodName>\n<params>\n$payload</params>\n</methodCall>";
+
             echo "<td$class><form action=\"../controller/\" target=\"frmcontroller\" method=\"get\">".
             "<input type=\"hidden\" name=\"host\" value=\"".htmlspecialchars($host)."\" />".
             "<input type=\"hidden\" name=\"port\" value=\"".htmlspecialchars($port)."\" />".
@@ -447,102 +469,26 @@ td form {margin: 0;}
             "<input type=\"hidden\" name=\"methodpayload\" value=\"".htmlspecialchars($payload)."\" />".
             "<input type=\"hidden\" name=\"altmethodpayload\" value=\"".htmlspecialchars($alt_payload)."\" />".
             "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
+            "<input type=\"hidden\" name=\"wsdl\" value=\"$wsdl\" />".
             "<input type=\"hidden\" name=\"action\" value=\"execute\" />";
             if ($wstype != 1 && $wstype != 2)
               echo "<input type=\"submit\" value=\"Load method synopsis\" />";
             echo "</form></td>\n";
 
-            echo "<td$class>";/*<form action=\"../controller\" target=\"frmcontroller\" method=\"get\">".
-            "<input type=\"hidden\" name=\"host\" value=\"".htmlspecialchars($host)."\" />".
-            "<input type=\"hidden\" name=\"port\" value=\"".htmlspecialchars($port)."\" />".
-            "<input type=\"hidden\" name=\"path\" value=\"".htmlspecialchars($path)."\" />".
-            "<input type=\"hidden\" name=\"id\" value=\"".htmlspecialchars($id)."\" />".
-            "<input type=\"hidden\" name=\"debug\" value=\"$debug\" />".
-            "<input type=\"hidden\" name=\"username\" value=\"".htmlspecialchars($username)."\" />".
-            "<input type=\"hidden\" name=\"password\" value=\"".htmlspecialchars($password)."\" />".
-            "<input type=\"hidden\" name=\"authtype\" value=\"$authtype\" />".
-            "<input type=\"hidden\" name=\"verifyhost\" value=\"$verifyhost\" />".
-            "<input type=\"hidden\" name=\"verifypeer\" value=\"$verifypeer\" />".
-            "<input type=\"hidden\" name=\"cainfo\" value=\"".htmlspecialchars($cainfo)."\" />".
-            "<input type=\"hidden\" name=\"proxy\" value=\"".htmlspecialchars($proxy)."\" />".
-            "<input type=\"hidden\" name=\"proxyuser\" value=\"".htmlspecialchars($proxyuser)."\" />".
-            "<input type=\"hidden\" name=\"proxypwd\" value=\"".htmlspecialchars($proxypwd)."\" />".
-            "<input type=\"hidden\" name=\"responsecompression\" value=\"$responsecompression\" />".
-            "<input type=\"hidden\" name=\"requestcompression\" value=\"$requestcompression\" />".
-            "<input type=\"hidden\" name=\"clientcookies\" value=\"".htmlspecialchars($clientcookies)."\" />".
-            "<input type=\"hidden\" name=\"protocol\" value=\"$protocol\" />".
-            "<input type=\"hidden\" name=\"timeout\" value=\"".htmlspecialchars($timeout)."\" />".
-            "<input type=\"hidden\" name=\"method\" value=\"".htmlspecialchars($method)."\" />".
-            "<input type=\"hidden\" name=\"methodsig\" value=\"".$i."\" />".
-            "<input type=\"hidden\" name=\"methodpayload\" value=\"".htmlspecialchars($payload)."\" />".
-            "<input type=\"hidden\" name=\"altmethodpayload\" value=\"".htmlspecialchars($alt_payload)."\" />".
-            "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
-            "<input type=\"hidden\" name=\"run\" value=\"now\" />".
-            "<input type=\"hidden\" name=\"action\" value=\"wrap\" />".
-            "<input type=\"submit\" value=\"Generate method call stub code\" />";
-            echo "</form>*/echo "</td></tr>\n";
+            echo "<td$class>";
+          	echo "</td></tr>\n";
 
-          }
-        }
+          } // loop on sigs
+        } // loop on methods
         echo "</tbody>\n</table>";
-
         break;
-
-        /*case 'wrap':
-          $r1 = $resp[0]->value();
-          $r2 = $resp[1]->value();
-          if ($r2->kindOf()!="array" || $r2->arraysize() <= $methodsig)
-            echo "Error: signature unknown\n";
-          else
-          {
-          $mdesc = $r1->scalarval();
-          $msig = php_xmlrpc_decode($r2);
-          $msig = $msig[$methodsig];
-          $proto = $protocol == 2 ? 'https' : $protocol == 1 ? 'http11' : '';
-          if ($proxy  == '' && $username == '' && !$requestcompression && !$responsecompression &&
-            $clientcookies == '')
-          {
-            $opts = 0; // simple client copy in stub code
-          }
-          else
-          {
-            $opts = 1; // complete client copy in stub code
-          }
-          if ($wstype == 2)
-          {
-            $prefix = 'ezjscore';
-          }
-          else if ($wstype == 1)
-          {
-            $prefix = 'jsonrpc';
-          }
-          else
-          {
-            $prefix = 'xmlrpc';
-          }
-          //$code = wrap_xmlrpc_method($client, $method, $methodsig, 0, $proto, '', $opts);
-          $code = build_remote_method_wrapper_code($client, $method, str_replace('.', '_', $prefix.'_'.$method), $msig, $mdesc, $timeout, $proto, $opts, $prefix);
-          //if ($code)
-          //{
-              echo "<div id=\"phpcode\">\n";
-            highlight_string("<?php\n".$code['docstring'].$code['source'].'?>');
-            echo "\n</div>";
-          //}
-          //else
-          //{
-          //  echo 'Error while building php code stub...';
-          }
-
-          break;*/
 
         case 'execute':
-          echo '<div id="response"><h2>Response:</h2>'.htmlspecialchars($response->serialize()).'</div>';
-        break;
-
+          echo '<div id="response"><h2>Response:</h2>'.htmlspecialchars( print_r( $response->value(), true ) ).'</div>';
+          break;
         default: // give a warning
       }
-    } // if !$response->faultCode()
-    } // if $response
+    }
   }
   else
   {
@@ -553,7 +499,7 @@ td form {margin: 0;}
 <ol>
 <li>Run a 'list available methods' action against desired server</li>
 <li>If list of methods appears, click on 'describe method' for desired method</li>
-<li>To run method: click on 'load method synopsis' for desired method. This will load a skeleton for method call parameters in the form above. Complete all xmlrpc values with appropriate data and click 'Execute'</li>
+<li>To run method: click on 'load method synopsis' for desired method. This will load a skeleton for method call parameters in the form above. Complete all values with appropriate data and click 'Execute'</li>
 <li>If you get any "call FAILED" error, use the "Show debug info" parameter to begin debugging</li>
 </ol>
 <?php
@@ -575,6 +521,7 @@ Path: /server.php
 <li>Clicking on the left menu links will preload the address of this server itself for testing in the debugger. In this case the server will send a call to itself</li>
 <li>If you get an error <i>Fault code: [2] Reason: 'Invalid return payload: enable debugging to examine incoming payload Invalid data'</i> when testing the server itself, a probable cause is that you did neither specify a session cookie for your call, nor give rights to the anonymous user to execute webservice calls</li>
 <li>The format for cookies is to separate them using a comma</li>
+<li>The format for the payload is <a href="http://wwww.json.org/">json</a></li>
 </ul>
 
 <?php

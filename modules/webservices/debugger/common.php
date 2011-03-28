@@ -39,7 +39,7 @@
   $params['id'] = '';
   if (isset($_GET['action']))
   {
-    if (isset($_GET['wstype']) && ($_GET['wstype'] == '1' || $_GET['wstype'] == '2'))
+    if (isset($_GET['wstype']) && ($_GET['wstype'] == '1' || $_GET['wstype'] == '2' || $_GET['wstype'] == '3'))
     {
       $params['wstype'] = $_GET['wstype'];
       // this is only unseful for jsonrpc, but anyway
@@ -71,7 +71,7 @@
     else
       $params['verifypeer'] = false;
     $params['cainfo'] = isset($_GET['cainfo']) ? $_GET['cainfo'] : '';
-    $params['proxy'] = isset($_GET['proxy']) ? $_GET['proxy'] : 0;
+    $params['proxy'] = isset($_GET['proxy']) ? $_GET['proxy'] : '';
     if (strpos($params['proxy'], 'http://') === 0)
       $params['proxy'] = substr($proxy, 7);
     $params['proxyuser'] = isset($_GET['proxyuser']) ? $_GET['proxyuser'] : '';
@@ -104,6 +104,7 @@
       $params['responsecompression'] = 0;
 
     $params['clientcookies'] = isset($_GET['clientcookies']) ? $_GET['clientcookies'] : '';
+  	$params['wsdl'] = isset($_GET['wsdl']) ? (int)$_GET['wsdl'] : 0;
   }
   else
   {
@@ -128,6 +129,7 @@
     $params['requestcompression'] = 0;
     $params['responsecompression'] = 0;
     $params['clientcookies'] = '';
+  	$params['wsdl'] = 0;
   }
 
   // check input for known XMLRPC attacks against this or other libs

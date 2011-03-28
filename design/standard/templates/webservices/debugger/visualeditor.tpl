@@ -4,12 +4,14 @@
  * @copyright (C) 2006-2010 G. Giunta
  * @author Gaetano Giunta
  *
+ * @todo support nested structs / arrays when opening
+ * @todo support soap convention (top level can be a struct, not an array)
+ *
  * @todo do not set to "null" new nodes
- * @todo find a better way to preview large trees of values (at least make all panel draggable)
  * @todo improve display: do not show up/down arrows, 'angle line' for parameters, move up list numbers in ff
  *}
 <head>
-<title>XMLRPC Debugger Visual Editor</title>
+<title>WS Debugger Visual Editor</title>
 {def $preferred_packing = '-min'}
 {if eq('enabled', ezini('TemplateSettings', 'DevelopmentMode'))}
     {set $preferred_packing = ''}
@@ -57,7 +59,6 @@ elementType = '{$type}val';
 
 var trees = [];
 var nodes = [];
-var previewDlg = null;
 
 function treeInit()
 
@@ -67,10 +68,13 @@ function treeInit()
   nodes = [];
 
 {def $divs = ''
-     $trees = ''}
-{foreach $params as $i => $ptype}
-	{set $ptype = $ptype|downcase()}
-    {set $trees = $trees|append("  trees[",$i,"] = new YAHOO.widget.TreeView('param",$i,"');\n")}
+     $trees = ''
+     $ptype = ''
+     $pval = ''}
+{foreach $params as $i => $param}
+	{set $ptype = $param.type|downcase()
+	     $pval = $param.value
+         $trees = $trees|append("  trees[",$i,"] = new YAHOO.widget.TreeView('param",$i,"');\n")}
     {if eq($ptype, 'struct')}
         {set $trees = $trees|append("  nodes[",$i,"] = new YAHOO.widget.XMLRPCNode(new ",$type,"val({\}, '",$ptype,"'), trees[",$i,"].getRoot(), true, null, true);\n")}
     {elseif eq($ptype, 'array')}
@@ -78,8 +82,10 @@ function treeInit()
     {elseif $valid_types|contains($ptype)}
 	    {if eq($ptype, 'datetime.iso8601')} {* we need a mixed-case type specifier for dates *}
 	        {set $trees = $trees|append("  nodes[",$i,"] = new YAHOO.widget.XMLRPCNode(new ",$type,"val(null, 'dateTime.iso8601'), trees[",$i,"].getRoot(), true, null, true);\n")}
+	    {elseif eq($ptype, 'string')}
+	        {set $trees = $trees|append("  nodes[",$i,"] = new YAHOO.widget.XMLRPCNode(new ",$type,"val('",$pval|wash(javascript),"', '",$ptype,"'), trees[",$i,"].getRoot(), true, null, true);\n")}
 	    {else}
-            {set $trees = $trees|append("  nodes[",$i,"] = new YAHOO.widget.XMLRPCNode(new ",$type,"val(null, '",$ptype,"'), trees[",$i,"].getRoot(), true, null, true);\n")}
+            {set $trees = $trees|append("  nodes[",$i,"] = new YAHOO.widget.XMLRPCNode(new ",$type,"val(",$pval|wash(javascript),", '",$ptype,"'), trees[",$i,"].getRoot(), true, null, true);\n")}
         {/if}
     {else}
         {set $trees = $trees|append("  nodes[",$i,"] = new YAHOO.widget.XMLRPCNode(new ",$type,"val(), trees[",$i,"].getRoot(), true, null, true);\n")}
@@ -117,7 +123,7 @@ function buildthem()
 
 {ldelim}
 
-  var out = '';
+  var out = '[ ';
   var root;
   for (var i = 0; i < trees.length; i++)
   {ldelim}
@@ -125,68 +131,24 @@ function buildthem()
     root = trees[i].getRoot().children[0];
     root.toggleEditable();
     trees[i].draw();
-{if eq($type,'jsonrpc')}
+{*if eq($type,'jsonrpc')*}
     /// @todo use an array and implode() here? it wouldbe cleaner...
-    out += root.data.serialize()+',\\n';
+    out += root.data.serialize()+', ';
   {rdelim}
 
-  out = out.slice(0, -2)+'\\n';
-{else}
+  out = out.slice(0, -2)+' ]';
+{*else}
 
     out += '<param>\n'+root.data.serialize()+'</param>\n';
   {rdelim}
 
-{/if}
+{/if*}
 
   return out;
 
 {rdelim}
 
 {literal}
-function hidePreviewDlg()
-{
-  for (var i = 0; i < trees.length; i++)
-  {
-    root = trees[i].getRoot().children[0];
-    root.toggleEditable();
-    trees[i].draw();
-  }
-  this.hide();
-}
-
-function preview()
-{
-  if (nodes.length == 0)
-    alert('No parameters to be serialized');
-  else
-  {
-    //alert(buildthem());
-    document.getElementById(editElementDiv).innerHTML = '<div class="hd">Serialized parameters</div>'+
-      '<div class="bd"><pre>' + htmlentities(buildthem()) + '</pre></div>';
-    previewDlg = new YAHOO.widget.Dialog(editElementDiv, {
-      width : "400px",
-      x: 240,
-      y: 75,
-      fixedcenter : false,
-      visible : true,
-      modal: true,
-      draggable: true,
-      constraintoviewport : false,
-      buttons : [ { text:"OK", handler:hidePreviewDlg, isDefault:true } ]
-      //            { text:"Cancel", handler:editElementCancel } ]
-    } );
-    var kl1 = new YAHOO.util.KeyListener(document, { keys:27 },
-      { fn:hidePreviewDlg,
-        scope:previewDlg,
-        correctScope:true }, "keyup" );
-        // keyup is used here because Safari won't recognize the ESC
-        // keydown event, which would normally be used by default
-    previewDlg.cfg.queueProperty("keylisteners", [kl1]);
-    previewDlg.render();
-    previewDlg.show();
-  }
-}
-
 function done()
 {
   out = base64_encode(buildthem());
@@ -203,13 +165,12 @@ function done()
 
 </head>
 <body onload="treeInit();">
-<h2>Editing <span id="numparams"></span>&nbsp;{$type} parameters</h2>
+<h2>Editing <span id="numparams"></span>&nbsp; parameters</h2>
 <h3>
 {if $noadd|not()}
 <a href="#" onclick="addParam(); return false;">Add parameter</a> |
 {/if}
 <a href="#" onclick="treeInit(); return false;">Reset all</a> |
-<a href="#" onclick="preview(); return false;">Preview</a> |
 <a href="#" onclick="window.close();">Cancel</a> |
 <a href="#" onclick="done(); return false;">Submit</a>
 </h3>

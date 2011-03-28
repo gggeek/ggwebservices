@@ -570,12 +570,13 @@ function showEditDlg(name, value, allowTypeChange, allowNameChange, handlerFunc)
 		allowNameChange = false;
 	if (value == undefined || value == null) {
 		// adding a value
-		if (elementType == 'jsonrpcval') {
+		/*if (elementType == 'jsonrpcval') {
 			var tit = 'new JSONRPC Value';
 		}
-		else  {
+		else {
 			var tit = 'new XMLRPC Value';
-		}
+		}*/
+		var tit = 'new value';
 		var val = '<input id="elVal" type="textbox" name="elementvalue" />';
 		var hnd = addElementOk;
 		var valtyp = 1;

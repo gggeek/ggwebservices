@@ -16,12 +16,17 @@ require_once( "kernel/common/template.php" );
 $wsINI = eZINI::instance( 'wsproviders.ini' );
 
 // calculate params for local server, for consistency with what we do below
-foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore' ) as  $i => $protocol )
+foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap' ) as  $i => $protocol )
 {
     if ( $protocol == 'ezjscore' )
     {
         $uri = "ezjscore/call";
     }
+	elseif ( $protocol == 'soap' )
+	{
+		$wsINI = eZINI::instance( 'soap.ini' );
+		$uri = "webservices/execute/$protocol";
+	}
     else
     {
         $uri = "webservices/execute/$protocol";
