@@ -36,6 +36,8 @@ class ggXMLRPCResponse extends ggWebservicesResponse
 
     /**
     * Decodes the XMLRPC response stream.
+    *
+    * @bug apparently xmlrpc_decode happily parses many xml ansers, wuch as eg. a soap response...
     */
     function decodeStream( $request, $stream, $headers=false )
     {
