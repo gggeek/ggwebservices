@@ -85,10 +85,10 @@ class ggWebservicesClient
             $this->Protocol = $protocol;
         }
 
-    	if ( $this->Protocol == 'https' && !in_array( 'ssl', stream_get_transports() ) )
-    	{
-    		$this->ForceCURL = true;
-    	}
+        if ( $this->Protocol == 'https' && !in_array( 'ssl', stream_get_transports() ) )
+        {
+            $this->ForceCURL = true;
+        }
 
         // if ZLIB is enabled, let the client by default accept compressed responses
         if( function_exists( 'gzinflate' ) || (
@@ -293,16 +293,16 @@ class ggWebservicesClient
                 curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
 
                 if ( $this->Protocol == 'https' )
-            	{
-            		// whether to verify cert's common name (CN); 0 for no, 1 to verify that it exists, and 2 to verify that it matches the hostname used
-            		curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, $this->SSLVerifyHost );
-                	// whether to verify remote host's cert
-                	curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, $this->SSLVerifyPeer );
-                	if( $this->SSLCAInfo )
-                	{
-                		curl_setopt( $ch, CURLOPT_CAINFO, $this->SSLCAInfo );
-                	}
-            	}
+                {
+                    // whether to verify cert's common name (CN); 0 for no, 1 to verify that it exists, and 2 to verify that it matches the hostname used
+                    curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, $this->SSLVerifyHost );
+                    // whether to verify remote host's cert
+                    curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, $this->SSLVerifyPeer );
+                    if( $this->SSLCAInfo )
+                    {
+                        curl_setopt( $ch, CURLOPT_CAINFO, $this->SSLCAInfo );
+                    }
+                }
 
                 $rawResponse = curl_exec( $ch );
 
@@ -837,14 +837,14 @@ class ggWebservicesClient
                 $this->Debug = (int)$value;
                 break;
             case 'SSLVerifyHost':
-	        	$this->SSLVerifyHost = (int)$value;
-            	break;
+                $this->SSLVerifyHost = (int)$value;
+                break;
             case 'SSLVerifyPeer':
-	        	$this->SSLVerifyPeer = (bool)$value;
-            	break;
+                $this->SSLVerifyPeer = (bool)$value;
+                break;
             case 'SSLCAInfo':
-	        	$this->SSLCAInfo = $value;
-            	break;
+                $this->SSLCAInfo = $value;
+                break;
         }
 
     }
@@ -1004,9 +1004,9 @@ class ggWebservicesClient
     protected $ProxyPassword = '';
     protected $ProxyAuthType = 1;
     protected $AcceptedCompression = '';
-	protected $SSLVerifyPeer = true;
-	protected $SSLVerifyHost = 1;
-	protected $SSLCAInfo = '';
+    protected $SSLVerifyPeer = true;
+    protected $SSLVerifyHost = 1;
+    protected $SSLCAInfo = '';
 
     // below here: yet to be used...
     protected $CertPass = '';
