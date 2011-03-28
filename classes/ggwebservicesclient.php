@@ -206,14 +206,14 @@ class ggWebservicesClient
         }
         else
         {
-        	if ( ( $this->Protocol == 'http' && $this->Port == 80 ) || ( $this->Protocol == 'https' && $this->Port == 8443 ) )
-        	{
-        		$port = '';
-        	}
-        	else
-        	{
-        		$port = ':' . $this->Port;
-        	}
+            if ( ( $this->Protocol == 'http' && $this->Port == 80 ) || ( $this->Protocol == 'https' && $this->Port == 443 ) )
+            {
+                $port = '';
+            }
+            else
+            {
+                $port = ':' . $this->Port;
+            }
             $URL = $this->Protocol . "://" . $this->Server . $port . $request->requestURI( $this->Path );
             $ch = curl_init ( $URL );
             if ( $ch != 0 )
@@ -292,9 +292,17 @@ class ggWebservicesClient
                 }
                 curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
 
-                /// @todo only set this in ssl mode, plus set user decide
-                curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
-                curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 1 );
+                if ( $this->Protocol == 'https' )
+            	{
+            		// whether to verify cert's common name (CN); 0 for no, 1 to verify that it exists, and 2 to verify that it matches the hostname used
+            		curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, $this->SSLVerifyHost );
+                	// whether to verify remote host's cert
+                	curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, $this->SSLVerifyPeer );
+                	if( $this->SSLCAInfo )
+                	{
+                		curl_setopt( $ch, CURLOPT_CAINFO, $this->SSLCAInfo );
+                	}
+            	}
 
                 $rawResponse = curl_exec( $ch );
 
@@ -386,15 +394,15 @@ class ggWebservicesClient
             // if no proxy in use, URLS in request are not absolute but relative
             $uri = $request->requestURI( $this->Path );
 
-        	// omit port if standard one is used
-        	if ( ( $this->Protocol == 'http' && $this->Port == 80 ) || ( $this->Protocol == 'https' && $this->Port == 8443 ) )
-        	{
-        		$port = '';
-        	}
-        	else
-        	{
-        		$port = ':' . $this->Port;
-        	}
+            // omit port if standard one is used
+            if ( ( $this->Protocol == 'http' && $this->Port == 80 ) || ( $this->Protocol == 'https' && $this->Port == 8443 ) )
+            {
+                $port = '';
+            }
+            else
+            {
+                $port = ':' . $this->Port;
+            }
 
             if( $this->Proxy != '' )
             {
@@ -828,6 +836,15 @@ class ggWebservicesClient
             case 'debug':
                 $this->Debug = (int)$value;
                 break;
+            case 'SSLVerifyHost':
+	        	$this->SSLVerifyHost = (int)$value;
+            	break;
+            case 'SSLVerifyPeer':
+	        	$this->SSLVerifyPeer = (bool)$value;
+            	break;
+            case 'SSLCAInfo':
+	        	$this->SSLCAInfo = $value;
+            	break;
         }
 
     }
@@ -987,16 +1004,16 @@ class ggWebservicesClient
     protected $ProxyPassword = '';
     protected $ProxyAuthType = 1;
     protected $AcceptedCompression = '';
+	protected $SSLVerifyPeer = true;
+	protected $SSLVerifyHost = 1;
+	protected $SSLCAInfo = '';
 
     // below here: yet to be used...
-    protected $Cert = '';
     protected $CertPass = '';
     protected $CACert = '';
     protected $CACertDir = '';
     protected $Key = '';
     protected $KeyPass = '';
-    protected $VerifyPeer = true;
-    protected $VerifyHost = 1;
     protected $KeepAlive = true;
 
     protected $errorString = '';

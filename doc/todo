@@ -1,9 +1,13 @@
+- add support for system.listmethods / et similar in soap mode
+  . use the wsdl module? => then should be able to parse it
+  . use system.listMethods instead? => not quite standard
+
 - test: using CURL and proxy / complex auths works?
   + prevent curl from adding useless "accept: */*" header
   + test: bug using curl+compress request+soap call to ms servers
 
 - add to the base client:
-  + cookie support (simplify parsing: nobody uses version 1 cookies)
+  + automatic cookie support (simplify parsing: nobody uses version 1 cookies)
   + send($array) with keepalive (both curl & by hand)
   + rebuilding of $_POST for compressed requests containing form data
 
@@ -15,8 +19,7 @@
 
 - in debugger:
   + add siteaccess choice for local server on the left-hand col (nb: looks like getting correct urls for other sa is quite hard... langswitcher does it for nodes only?)
-  + move away from usage of phpxmlrpc (as soon as we have feature parity)
-  + add soap, rest support
+  + add rest support
   + allow to hide/show client's options
   + add nr. of total ws methods found when asking for list of methods
   + improve formatting (eg. 1st line, visualeditor space on top, add admin2 tpl for left menu with resizing handle, etc...)
