@@ -121,7 +121,8 @@ class ggWebservicesClient
         $this->ResponsePayload = '';
 
         // we default to NOT using cURL if not asked to (or if it is not there)
-        if ( !$this->ForceCURL || !in_array( "curl", get_loaded_extensions() ) )
+        $useCURL = $this->ForceCURL && in_array( "curl", get_loaded_extensions() );
+        if ( !$useCURL )
         {
             if ( $this->ForceCURL )
             {
@@ -326,7 +327,7 @@ class ggWebservicesClient
             $this->ResponsePayload = $rawResponse;
         }
 
-        $respArray = $this->parseHTTPResponse( $rawResponse );
+        $respArray = $this->parseHTTPResponse( $rawResponse, $useCURL );
         // in case an HTTP error is encountered, error number and string will have been set
         if ( $respArray === false )
         {
