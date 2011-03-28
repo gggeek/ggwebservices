@@ -37,6 +37,7 @@ class ggWebservicesClient
     const ERROR_CANNOT_WRITE = -103;
     const ERROR_NO_DATA = -104;
     const ERROR_BAD_RESPONSE = -105;
+    const ERROR_TIMEOUT = -106;
 
     /**
      * Creates a new client.
@@ -185,9 +186,17 @@ class ggWebservicesClient
 			{
                 /// could we rely on getting false as a sure sign of error and return an ERROR_CANNOT_READ here ?
                 $rawResponse .= fread( $fp, 32768 );
-            } while( $fp && !feof( $fp ) );
+            	$info = stream_get_meta_data( $fp );
+            } while( $fp && !feof( $fp ) && !$info['timed_out'] );
             // close the socket
             fclose( $fp );
+
+        	if ( $info['timed_out'] )
+        	{
+        		$this->errorNumber = self::ERROR_TIMEOUT;
+        		$this->errorString = "Error: could not receive the response. Timeout while reading from socket.";
+        		return 0;
+        	}
         }
         else
         {
@@ -229,11 +238,20 @@ class ggWebservicesClient
                     curl_setopt( $ch, CURLOPT_USERAGENT, $this->UserAgent );
                 }
 
-                if( $this->AcceptedCompression != '' )
+                if ( $this->AcceptedCompression != '' )
                 {
                     /// @todo check curl version: need 7.10 for CURLOPT_ENCODING
                     curl_setopt( $ch, CURLOPT_ENCODING, $this->AcceptedCompression );
                 }
+
+            	if ( count( $this->Cookies ) )
+            	{
+            		foreach ( $this->Cookies as $cname => $cval )
+            		{
+            			$cookies[] = "$cname=$cval";
+            		}
+            		curl_setopt( $ch, CURLOPT_COOKIE, implode( '; ', $cookies ) );
+            	}
 
                 list( $verb, $headers, $payload ) = $this->payload( $request, true );
 
@@ -315,7 +333,7 @@ class ggWebservicesClient
         {
             return 0;
         }
-        $this->Cookies = $respArray['cookies'];
+//        $this->Cookies = $respArray['cookies'];
 
         $ResponseClass = $this->ResponseClass;
         if ( $ResponseClass == 'ggWebservicesResponse' )
@@ -398,6 +416,14 @@ class ggWebservicesClient
         {
             $RequestHeaders['Accept-Encoding'] = $this->AcceptedCompression;
         }
+    	if ( count( $this->Cookies ) )
+    	{
+    		foreach ( $this->Cookies as $cname => $cval )
+    		{
+    			$cookies[] = "$cname=$cval";
+    		}
+    		$RequestHeaders['Cookie'] = implode( '; ', $cookies );
+    	}
 
         $payload = $request->payload();
         if ( $payload !== '' )
@@ -879,6 +905,16 @@ class ggWebservicesClient
     {
         $this->Verb = strtoupper( $verb );
     }
+
+	function setCookie( $name, $value )
+	{
+		$this->Cookies[$name] = $value;
+	}
+
+	function resetCookies()
+	{
+		$this->Cookies = array();
+	}
 
     function errorString()
     {

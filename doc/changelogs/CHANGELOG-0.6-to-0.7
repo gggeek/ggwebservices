@@ -5,7 +5,9 @@ Changes from 0.6 to 0.7 - released 2011/xx/yy
 *General:
 
 - Add support for limiting access to webservices by client's IP address
+- Add support for setting cookies in the client
 
 *Bugfixes:
 
 - Make sure debug info is reset in phpsoapclients when a call fails at the wsdl retrieval stage
+- Make sure that client respects timeout when not in CURL mode (added a new error code for that case)
