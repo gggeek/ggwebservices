@@ -206,7 +206,15 @@ class ggWebservicesClient
         }
         else
         {
-            $URL = $this->Protocol . "://" . $this->Server . ":" . $this->Port . $request->requestURI( $this->Path );
+        	if ( ( $this->Protocol == 'http' && $this->Port == 80 ) || ( $this->Protocol == 'https' && $this->Port == 8443 ) )
+        	{
+        		$port = '';
+        	}
+        	else
+        	{
+        		$port = ':' . $this->Port;
+        	}
+            $URL = $this->Protocol . "://" . $this->Server . $port . $request->requestURI( $this->Path );
             $ch = curl_init ( $URL );
             if ( $ch != 0 )
             {
@@ -378,10 +386,21 @@ class ggWebservicesClient
             // if no proxy in use, URLS in request are not absolute but relative
             $uri = $request->requestURI( $this->Path );
 
+        	// omit port if standard one is used
+        	if ( ( $this->Protocol == 'http' && $this->Port == 80 ) || ( $this->Protocol == 'https' && $this->Port == 8443 ) )
+        	{
+        		$port = '';
+        	}
+        	else
+        	{
+        		$port = ':' . $this->Port;
+        	}
+
             if( $this->Proxy != '' )
             {
+
                 // if proxy in use, URLS in request are absolute
-                $uri = $this->Protocol . '://' . $this->Server . ':' . $this->Port . $uri;
+                $uri = $this->Protocol . '://' . $this->Server . $port . $uri;
                 if( $this->ProxyLogin != '' )
                 {
                     if ( $this->ProxyAuthType != 1 )
@@ -394,7 +413,7 @@ class ggWebservicesClient
 
             $HTTPRequest = $verb . " " . $uri . " HTTP/1.0\r\n" .
                 /// @todo do not add PORT info if on port 80
-                "Host: " . $this->Server . ":" . $this->Port . "\r\n";
+                "Host: " . $this->Server . $port . "\r\n";
         }
 
         // added extra request headers for eg SOAP clients
