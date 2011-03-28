@@ -32,7 +32,7 @@ abstract class ggWebservicesRequest
     * @param string $rawRequest
     * @return bool false if received data cannot be parsed into a valid request
     * @todo this call is too naive, as it discards both http headers and URL,
-    *       which might be needed for eg. REST protocols
+    *       which might be needed for eg. REST protocolsrequire_once('../../../../../svn/projects.ez.no/ggwebservices/trunk/extension/ggwebservices/classes/ggxmlrpcrequest.php');
     *       We keep it like this for now for backward compat, but it might change later on...
     */
     abstract function decodeStream( $rawRequest );
@@ -69,7 +69,7 @@ abstract class ggWebservicesRequest
 
     function addParameters( $params )
     {
-        foreach( $params as $name => $val )
+        foreach( $params as $name => $value )
         {
             $this->addParameter( $name, $value );
         }
