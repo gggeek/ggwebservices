@@ -412,8 +412,9 @@ class ggWebservicesClient
                 $RequestHeaders['User-Agent'] = $this->UserAgent;
             }
         }
-        if ( $this->AcceptedCompression != '' );
+        if ( $this->AcceptedCompression != '' )
         {
+var_dump($this->AcceptedCompression);
             $RequestHeaders['Accept-Encoding'] = $this->AcceptedCompression;
         }
     	if ( count( $this->Cookies ) )
