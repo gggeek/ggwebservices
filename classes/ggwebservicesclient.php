@@ -85,6 +85,11 @@ class ggWebservicesClient
             $this->Protocol = $protocol;
         }
 
+    	if ( $this->Protocol == 'https' && !in_array( 'ssl', stream_get_transports() ) )
+    	{
+    		$this->ForceCURL = true;
+    	}
+
         // if ZLIB is enabled, let the client by default accept compressed responses
         if( function_exists( 'gzinflate' ) || (
             function_exists( 'curl_init' ) && ( ( $info = curl_version() ) &&
