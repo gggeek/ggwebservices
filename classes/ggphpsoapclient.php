@@ -43,7 +43,6 @@ class ggPhpSOAPClient extends ggWebservicesClient
     ///       from $options['login'] and $options['proxy_host'] ? ...
     function send( $request )
     {
-
         $this->RequestPayload = '';
         $this->ResponsePayload = '';
 
@@ -93,12 +92,32 @@ class ggPhpSOAPClient extends ggWebservicesClient
         try
         {
             $response = new $this->ResponseClass();
+
             $client = new ggPhpSOAPClientTransport( $this->Wsdl, $options, $this, $request );
             if ( isset( $deftimeout ) )
             {
                 ini_set( 'default_socket_timeout', $deftimeout );
             }
-            $results = $client->__soapCall( $request->name(), $request->parameters(), array(), array(), $output_headers );
+
+            // a hackish way to emulate listMethods calls
+            $rname = $request->name();
+            if ( $rname == 'system.listMethods' || $rname == 'system.methodSignature' )
+            {
+
+                $results = $client->__getFunctions();
+                if ( !is_array( $results ) )
+                {
+                    throw new Exception( 'Could not parse wsdl into array of functions' );
+                }
+                else
+                {
+                    $results = ggWSDLParser::transformGetFunctionsResults( $results, $rname );
+                }
+            }
+            else
+            {
+                $results = $client->__soapCall( $rname, $request->parameters(), array(), array(), $output_headers );
+            }
 
             // phpSoapResponse responses do not parse anything anyway - no need to call this
             //$rawResponse = $client->__getLastResponse();
@@ -129,7 +148,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
             }
             else
             {
-                $response->setValue( new ggWebservicesFault( $e->code, $e->message ) );
+                $response->setValue( new ggWebservicesFault( $e->getCode(), $e->getMessage() ) );
             }
             return $response;
         }
