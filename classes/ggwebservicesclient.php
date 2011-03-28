@@ -183,26 +183,25 @@ class ggWebservicesClient
             $rawResponse = "";
             // fetch the response
             do
-			{
+            {
                 /// could we rely on getting false as a sure sign of error and return an ERROR_CANNOT_READ here ?
                 $rawResponse .= fread( $fp, 32768 );
-            	$info = stream_get_meta_data( $fp );
+                $info = stream_get_meta_data( $fp );
             } while( $fp && !feof( $fp ) && !$info['timed_out'] );
             // close the socket
             fclose( $fp );
 
-        	if ( $info['timed_out'] )
-        	{
-        		$this->errorNumber = self::ERROR_TIMEOUT;
-        		$this->errorString = "Error: could not receive the response. Timeout while reading from socket.";
-        		return 0;
-        	}
+            if ( $info['timed_out'] )
+            {
+                $this->errorNumber = self::ERROR_TIMEOUT;
+                $this->errorString = "Error: could not receive the response. Timeout while reading from socket.";
+                return 0;
+            }
         }
         else
         {
             $URL = $this->Protocol . "://" . $this->Server . ":" . $this->Port . $request->requestURI( $this->Path );
             $ch = curl_init ( $URL );
-
             if ( $ch != 0 )
             {
                 curl_setopt( $ch, CURLOPT_HEADER, 1 );
@@ -210,7 +209,7 @@ class ggWebservicesClient
 
                 if ( $this->Timeout != 0 )
                 {
-                    curl_setopt( $ch, CURLOPT_TIMEOUT, $this->TimeOut );
+                    curl_setopt( $ch, CURLOPT_TIMEOUT, $this->Timeout );
                 }
 
                 //curl_setopt( $ch, CURLOPT_URL, $URL );
@@ -244,14 +243,14 @@ class ggWebservicesClient
                     curl_setopt( $ch, CURLOPT_ENCODING, $this->AcceptedCompression );
                 }
 
-            	if ( count( $this->Cookies ) )
-            	{
-            		foreach ( $this->Cookies as $cname => $cval )
-            		{
-            			$cookies[] = "$cname=$cval";
-            		}
-            		curl_setopt( $ch, CURLOPT_COOKIE, implode( '; ', $cookies ) );
-            	}
+                if ( count( $this->Cookies ) )
+                {
+                    foreach ( $this->Cookies as $cname => $cval )
+                    {
+                        $cookies[] = "$cname=$cval";
+                    }
+                    curl_setopt( $ch, CURLOPT_COOKIE, implode( '; ', $cookies ) );
+                }
 
                 list( $verb, $headers, $payload ) = $this->payload( $request, true );
 
@@ -414,17 +413,16 @@ class ggWebservicesClient
         }
         if ( $this->AcceptedCompression != '' )
         {
-var_dump($this->AcceptedCompression);
             $RequestHeaders['Accept-Encoding'] = $this->AcceptedCompression;
         }
-    	if ( count( $this->Cookies ) )
-    	{
-    		foreach ( $this->Cookies as $cname => $cval )
-    		{
-    			$cookies[] = "$cname=$cval";
-    		}
-    		$RequestHeaders['Cookie'] = implode( '; ', $cookies );
-    	}
+        if ( count( $this->Cookies ) )
+        {
+            foreach ( $this->Cookies as $cname => $cval )
+            {
+                $cookies[] = "$cname=$cval";
+            }
+            $RequestHeaders['Cookie'] = implode( '; ', $cookies );
+        }
 
         $payload = $request->payload();
         if ( $payload !== '' )
@@ -631,7 +629,7 @@ var_dump($this->AcceptedCompression);
             }
             elseif( isset( $header_name ) )
             {
-                ///	@todo version1 cookies might span multiple lines, thus breaking the parsing above
+                /// @todo version1 cookies might span multiple lines, thus breaking the parsing above
                 $headers[$header_name] .= ' ' . trim( $line );
             }
         }
@@ -907,15 +905,15 @@ var_dump($this->AcceptedCompression);
         $this->Verb = strtoupper( $verb );
     }
 
-	function setCookie( $name, $value )
-	{
-		$this->Cookies[$name] = $value;
-	}
+    function setCookie( $name, $value )
+    {
+        $this->Cookies[$name] = $value;
+    }
 
-	function resetCookies()
-	{
-		$this->Cookies = array();
-	}
+    function resetCookies()
+    {
+        $this->Cookies = array();
+    }
 
     function errorString()
     {
