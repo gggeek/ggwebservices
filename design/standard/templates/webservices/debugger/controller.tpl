@@ -78,7 +78,7 @@
         document.frmaction.method.disabled = false;
         document.frmaction.wsdl.checked = true;
       }
-      else // list
+      else // list || inspect
       {
         document.frmaction.methodpayload.disabled = true;
         displaydialogeditorbtn(false); //if (document.getElementById('methodpayloadbtn') != undefined) document.getElementById('methodpayloadbtn').disabled = false;
@@ -142,6 +142,7 @@
       document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
       document.frmaction.wsdl.disabled = true;
+      document.frmaction.inspectwsdl.disabled = true;
     }
     else if (wstype == 1)
     {
@@ -154,6 +155,7 @@
       document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
       document.frmaction.wsdl.disabled = true;
+      document.frmaction.inspectwsdl.disabled = true;
     }
     else if (wstype == 2)
     {
@@ -166,6 +168,7 @@
       document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
       document.frmaction.wsdl.disabled = true;
+      document.frmaction.inspectwsdl.disabled = true;
     }
     else if (wstype == 3)
     {
@@ -181,6 +184,7 @@
       //document.frmaction.describemethod.checked = false;
       document.frmaction.describemethod.disabled = false;
       document.frmaction.wsdl.disabled = false;
+      document.frmaction.inspectwsdl.disabled = false;
     }
     // used to make sure the 'edit' link to the visual editor gets reset properly
     switchaction();
@@ -261,12 +265,13 @@ Debugger</h1>
 <td>List available methods<input type="radio" id="listmethods" name="action" value="list"{if eq($params.action,'list')} checked="checked"{/if} onclick="switchaction();" /></td>
 <td>Describe method<input type="radio" id="describemethod" name="action" value="describe"{if eq($params.action, 'describe')} checked="checked"{/if} onclick="switchaction();" /></td>
 <td>Execute method<input type="radio" id="executemethod" name="action" value="execute"{if eq($params.action, 'execute')} checked="checked"{/if} onclick="switchaction();" /></td>
+<td>Inspect wsdl<input type="radio" id="inspectwsdl" name="action" value="inspect"{if eq($params.action, 'inspect')} checked="checked"{/if} onclick="switchaction();" /></td>
 <!--<td>Generate stub for method call<input type="radio" name="action" value="wrap"{if eq($params.action, 'wrap')} checked="checked"{/if} onclick="switchaction();" /></td>-->
 <td><input type="hidden" name="wstype" value="{$params.wstype}" />
 <input type="submit" value="Execute" onclick="return verifyserver();"/></td>
 </tr>
 </table>
-<input type="hidden" name="methodsig" value="{$params.methodsig|wash()}" />
+{*<input type="hidden" name="methodsig" value="{$params.methodsig|wash()}" />*}
 
 <table id="methodblock">
 <tr>

@@ -1,6 +1,6 @@
 - add ezjscore client, request, response classes
 
-- flesh out soap server w. wsdl support (use ezpo2xsd method from ezpo_insepctor)
+- flesh out soap server w. wsdl support (+ use ezpo2xsd method from ezpo_insepctor)
 
 - test: using CURL and proxy / complex auths works?
   + prevent curl from adding useless "accept: */*" header
@@ -9,7 +9,7 @@
 - test https support with and without curl, with and without proxy too
 
 - add to the base client:
-  + automatic cookie support (simplify parsing: nobody uses version 1 cookies)
+  + automatic cookie support (+ simplify parsing: nobody uses version 1 cookies)
   + send($array) with keepalive (both curl & by hand)
   + rebuilding of $_POST for compressed requests containing form data
   + more ssl options (and in debugger too)
@@ -19,6 +19,7 @@
 - add more samples, eg. to call webservices on flickr/facebook/twitter
 
 - in debugger:
+  + use templates for output of action.php
   + improve management of visual payload editing (top-level can be named params for soap, nested arrays/structs support)
   + add siteaccess choice for local server on the left-hand col (nb: looks like getting correct urls for other sa is quite hard... langswitcher does it for nodes only?)
   + add rest support
@@ -26,6 +27,8 @@
   + add nr. of total ws methods found when asking for list of methods
   + improve formatting (eg. 1st line, visualeditor space on top, add admin2 tpl for left menu with resizing handle, etc...)
   + allow picking preferred content-type for responses when using ezjscore
+  + investigate fatal errors in soap client, wsdl mode, when parsing a non-wsdl page (they should be caught as exceptions except they're not)
+  + disable wsdl cache in debugger
 
 - test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
 

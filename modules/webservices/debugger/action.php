@@ -17,6 +17,17 @@
 // this line added at the top for extra safety when no rewrite rules are in place
 require_once( "kernel/common/template.php" );
 
+include( dirname(__FILE__) . '/common.php' );
+
+
+// Play it quick & dirty here: we are not going to rename all vars used in this
+// php file until we have readied the version based on template usage.
+// So we stick to the old convention of having many variables in scope
+extract( $params );
+
+if ( $action != 'inspect' || $debug )
+{
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -44,266 +55,301 @@ td form {margin: 0;}
 <body>
 <?php
 
-  include(dirname(__FILE__).'/common.php');
-  // Play it quick & dirty here: we are not going to rename all vars used in this
-  // php file until we have readied the version based on template usage.
-  // So we stick to the old convention of having many variables in scope
-  extract( $params );
+}
 
-  if ($action)
-  {
+if ( $action )
+{
 
-    // make sure the script waits long enough for the call to complete...
-    if ($timeout)
-      set_time_limit($timeout+10);
+    // make sure the script waits long enough for the call to complete
+    if ( $timeout )
+        set_time_limit( $timeout + 10 );
 
-    //include('xmlrpc.inc');
-  	switch( $wstype )
-  	{
-  	  case 3:
-  	    $protoname = 'PhpSOAP';
-  	    $methodseparator = '.';
-  	    break;
-      case 2:
-        $protoname = 'EZJSCORE';
-        $methodseparator = '::';
-        break;
-      case 1:
-        $protoname = 'JSONRPC';
-        $methodseparator = '.';
-        break;
-      default:
-        $protoname = 'XMLRPC';
-        $methodseparator = '.';
-    }
+    // set up the ws client
 
-  	$clientClass = 'gg' . $protoname . 'Client';
-  	$requestClass = 'gg' . $protoname . 'Request';
-
-  	if ($path == "")
-  	{
-  	  $path = '/';
-  	}
-    if ($port == "")
+    $methodseparator = '.';
+    switch( $wstype )
     {
-      if ($protocol == 2)
-	  {
-		$port = 443;
-      }
-      else
-      {
-    	$port = 80;
-      }
+        case 3:
+            $wsprotocol = 'PhpSOAP';
+            break;
+        case 2:
+            $wsprotocol = 'EZJSCORE';
+            $methodseparator = '::';
+            break;
+        case 1:
+            $wsprotocol = 'JSONRPC';
+            break;
+        default:
+            $wsprotocol = 'XMLRPC';
     }
-  	$sport = ':' . $port;
-    if ($protocol == 2)
+    if ( $action == 'inspect' )
     {
-      $sprotocol = 'https';
-    	if ( $port == 443 )
-    	{
-    		$sport = '';
-    	}
+        $wsprotocol = 'HTTP'; // override ws type: used to GET wsdl file
+    }
+    $clientClass = 'gg' . $wsprotocol . 'Client';
+    $requestClass = 'gg' . $wsprotocol . 'Request';
+
+    if ( $path == '' )
+    {
+        $path = '/';
+    }
+    if ( $port == '' )
+    {
+        if ( $protocol == 2 )
+        {
+            $port = 443;
+        }
+        else
+        {
+            $port = 80;
+        }
+    }
+    $sport = ':' . $port;
+    if ( $protocol == 2 ) // https
+    {
+        $sprotocol = 'https';
+        if ( $port == 443 )
+        {
+            $sport = '';
+        }
+    }
+    else // http
+    {
+        $sprotocol = 'http';
+        if ( $port == 80 )
+        {
+            $sport = '';
+        }
+    }
+    $server = $sprotocol . '://' . $host . $sport . $path;
+
+    if ( $wsdl && $action != 'inspect' )
+    {
+        $client = new $clientClass( '', '', 0, '', $server );
+        $server .= ' (for wsdl)';
     }
     else
     {
-      $sprotocol = 'http';
-    	if ( $port == 80 )
-    	{
-    		$sport = '';
-    	}
+        $client = new $clientClass( $host, $path, $port, $sprotocol );
     }
-    $server = $sprotocol . '://' . $host . $sport . $path;
-  	if ( $wsdl )
-  	{
-	  	$client = new $clientClass( '', '', 0, '', $server );
-  		$server .= ' (for wsdl)';
-  	}
-  	else
-  	{
-  		$client = new $clientClass( $host, $path, $port, $sprotocol );
-  	}
 
-    if ($proxy != '')
+    if ( $proxy != '' )
     {
-      $pproxy = explode(':', $proxy);
-      if (count($pproxy) > 1)
-        $pport = $pproxy[1];
-      else
-        $pport = 8080;
-      $client->setOptions( array( 'proxyHost' => $pproxy[0], 'proxyPort' => $pport, 'proxyUser' => $proxyuser, 'proxyPassword' => $proxypwd ) );
+        $pproxy = explode( ':', $proxy );
+        if ( count( $pproxy ) > 1 )
+            $pport = $pproxy[1];
+        else
+            $pport = 8080;
+        $client->setOptions( array( 'proxyHost' => $pproxy[0], 'proxyPort' => $pport, 'proxyUser' => $proxyuser, 'proxyPassword' => $proxypwd ) );
     }
 
-  	if ( $timeout > 0 )
-  	{
-  		$client->setOption( 'timeout', $timeout );
-  	}
-
-    if ($protocol == 2)
+    if ( $timeout > 0 )
     {
-      $client->setOption( 'SSLVerifyPeer', $verifypeer );
-      $client->setOption( 'SSLVerifyHost', $verifyhost );
-      if ( $cainfo )
-      {
-        $client->setOption( 'SSLCAInfo', $cainfo );
-      }
-    }
-    else if ( $protocol == 1 )
-    {
-      $client->setOption( 'forceCURL', true );
+        $client->setOption( 'timeout', $timeout );
     }
 
-    if ($username)
-      $client->setOptions( array( 'login' => $username, 'password' => $password, 'authType' => $authtype ) );
+    if ( $protocol == 2 ) // https
+    {
+        $client->setOption( 'SSLVerifyPeer', $verifypeer );
+        $client->setOption( 'SSLVerifyHost', $verifyhost );
+        if ( $cainfo )
+        {
+            $client->setOption( 'SSLCAInfo', $cainfo );
+        }
+    }
+    else if ( $protocol == 1 ) // http 1.1
+    {
+        $client->setOption( 'forceCURL', true );
+    }
+
+    if ( $username )
+    {
+        $client->setOptions( array( 'login' => $username, 'password' => $password, 'authType' => $authtype ) );
+    }
 
     $client->setOption( 'debug', $debug );
 
-    switch ($requestcompression) {
-      case 0:
-        $client->setOption( 'requestCompression', '' );
-        break;
-      case 1:
-        $client->setOption( 'requestCompression', 'gzip' );
-        break;
-      case 2:
-        $client->setOption( 'requestCompression', 'deflate' );
-        break;
-    }
-
-    switch ($responsecompression) {
-      case 0:
-        $client->setOption( 'acceptedCompression', '' );
-        break;
-      case 1:
-        $client->setOption( 'acceptedCompression', 'gzip' );
-        break;
-      case 2:
-        $client->setOption( 'acceptedCompression', 'deflate' );
-        break;
-      case 3:
-        $client->setOption( 'acceptedCompression', 'gzip, deflate' );
-        break;
-    }
-
-    $cookies = explode(',', $clientcookies);
-    foreach ($cookies as $cookie)
+    switch ( $requestcompression )
     {
-      if (strpos($cookie, '='))
-      {
-        $cookie = explode('=', $cookie);
-        $client->setCookie(trim($cookie[0]), trim(@$cookie[1]));
-      }
+        case 0:
+            $client->setOption( 'requestCompression', '' );
+            break;
+        case 1:
+            $client->setOption( 'requestCompression', 'gzip' );
+            break;
+        case 2:
+            $client->setOption( 'requestCompression', 'deflate' );
+            break;
     }
+
+    switch ( $responsecompression )
+    {
+        case 0:
+            $client->setOption( 'acceptedCompression', '' );
+            break;
+        case 1:
+            $client->setOption( 'acceptedCompression', 'gzip' );
+            break;
+        case 2:
+            $client->setOption( 'acceptedCompression', 'deflate' );
+            break;
+        case 3:
+            $client->setOption( 'acceptedCompression', 'gzip, deflate' );
+            break;
+    }
+
+    $cookies = explode( ',', $clientcookies );
+    foreach ( $cookies as $cookie )
+    {
+        if (strpos($cookie, '=') )
+        {
+            $cookie = explode( '=', $cookie );
+            $client->setCookie( trim( $cookie[0] ), trim( @$cookie[1] ) );
+        }
+    }
+
+    // prepare an array of ws calls to execute (can be one or two)
 
     $msg = array();
-    switch ($action) {
+    switch ( $action )
+    {
+        case 'inspect':
+            $msg[0] = new $requestClass( 'GET', array() );
+            $actionname = 'WSDL inspection';
+            break;
 
-      case 'describe':
-        if ($wstype == 3)
-        {
-          $msg[0] = new $requestClass('system'.$methodseparator.'methodSignature', array( $method ), $id + 1 );
-        }
-        else if ($wstype == 2)
-        {
-///@todo
-          // no methodsig for ezjscore (to be verified: is methodhelp ok?)
-          $msg[0] = new $requestClass('system'.$methodseparator.'methodHelp'.$methodseparator.$method, null);
-        }
-      	else
-		{
-	      $msg[0] = new $requestClass('system'.$methodseparator.'methodHelp', array( $method ), $id );
-	      $msg[1] = new $requestClass('system'.$methodseparator.'methodSignature', array( $method ), $id + 1 );
-        }
-        $actionname = 'Description of method "'.$method.'"';
-        break;
+        case 'describe':
+            if ( $wstype == 3 )
+            {
+                // for SOAP servers, the client only supports methodSignature
+                $msg[0] = new $requestClass( 'system'.$methodseparator.'methodSignature', array( $method ), $id + 1 );
+            }
+            else if ($wstype == 2)
+            {
+                // no methodsig for ezjscore. methodHelp supported when ggws is installed on the server
+                /// @todo to be verified: is methodhelp ok?
+                $msg[0] = new $requestClass( 'system'.$methodseparator.'methodHelp'.$methodseparator.$method, null);
+            }
+            else
+            {
+                // for jsonrpc, methodHelp and methodSignature are not standard methods:  ggws needs to be installed on the server
+                $msg[0] = new $requestClass( 'system'.$methodseparator.'methodHelp', array( $method ), $id );
+                $msg[1] = new $requestClass( 'system'.$methodseparator.'methodSignature', array( $method ), $id + 1 );
+            }
+            $actionname = 'Description of method "'.$method.'"';
+            break;
 
-      case 'list':
-      	$msg[0] = new $requestClass( 'system'.$methodseparator.'listMethods', array(), $id );
-        $actionname = 'List of available methods';
-        break;
+        case 'list':
+          	$msg[0] = new $requestClass( 'system'.$methodseparator.'listMethods', array(), $id );
+            $actionname = 'List of available methods';
+            break;
 
-      case 'execute':
+        case 'execute':
 
-      	$msg[0] = new $requestClass($method, array(), $id);
-      	$actionname = 'Execution of method '.$method;
-      	if ( $payload != '' )
-      	{
-      		$php_payload = json_decode( $payload, true );
-      		if ( json_last_error() != JSON_ERROR_NONE || !is_array( $php_payload ) )
-      		{
-      			$actionname = '[ERROR: invalid payload (must be in json format)]';
-      			$msg = array();
-      		}
-      		else
-      		{
-      			$msg[0]->addParameters( $php_payload );
-      		}
-      	}
+            $msg[0] = new $requestClass( $method, array(), $id );
+            $actionname = 'Execution of method '.$method;
+            if ( $payload != '' )
+            {
+                $php_payload = json_decode( $payload, true );
+                if ( json_last_error() != JSON_ERROR_NONE || !is_array( $php_payload ) )
+                {
+                    $actionname = '[ERROR: invalid payload (must be in json format)]';
+                    $msg = array();
+                }
+                else
+                {
+                    $msg[0]->addParameters( $php_payload );
+                }
+            }
+            break;
 
-        break;
-      default: // give a warning
-        $actionname = '[ERROR: unknown action] "'.$action.'"';
+        default: // give a warning
+            $actionname = '[ERROR: unknown action] "'.$action.'"';
     }
 
     // Before calling execute, echo out brief description of action taken + date and time ???
     // this gives good user feedback for long-running methods...
-    echo '<h2>'.htmlspecialchars($actionname).' on server '.htmlspecialchars($server)." ...</h2>\n";
-    flush();
+    /// @todo use a template for html layout
+    if ( $action != 'inspect' || $debug )
+    {
+        echo '<h2>'.htmlspecialchars($actionname).' on server '.htmlspecialchars($server)." ...</h2>\n";
+        flush();
+    }
 
     // execute method(s)
 	$response = null;
-    $resp = array();
-    $mtime = explode(' ',microtime());
-    $time = (float)$mtime[0] + (float)$mtime[1];
+    $responses = array();
+    $time = microtime( true );
     foreach ( $msg as $message )
     {
-      $response = $client->send( $message );
-      $resp[] = $response;
-      if ( !is_object( $response ) || $response->isFault() )
-        break;
+        $response = $client->send( $message );
+        $responses[] = $response;
+        if ( !is_object( $response ) || $response->isFault() )
+            break;
     }
-    $mtime = explode(' ',microtime());
-    $time = (float)$mtime[0] + (float)$mtime[1] - $time;
+    $time = microtime( true ) - $time;
 
-    if ($debug)
+    if ( $debug )
     {
-    	echo '<div class="dbginfo"><h2>Debug info:</h2>';
-    	if ( $debug > 1 ) echo '<span class="evidence">Sent: </span>' . htmlspecialchars( $client->requestPayload() ) . "\n";
-    	echo '<span class="evidence">Received: </span>' . htmlspecialchars( $client->responsePayload() );
-    	echo "</div>\n";
+        /// @todo should echo the request+response of all requests, when sending more than 1
+        echo '<div class="dbginfo"><h2>Debug info:</h2>';
+        if ( $debug > 1 ) echo '<span class="evidence">Sent: </span>' . htmlspecialchars( $client->requestPayload() ) . "\n";
+        echo '<span class="evidence">Received: </span>' . htmlspecialchars( $client->responsePayload() );
+        echo "</div>\n";
     }
 
     if ( !is_object( $response ) )
     {
-      // call failed! echo out error msg!
-      //echo '<h2>'.htmlspecialchars($actionname).' on server '.htmlspecialchars($server).'</h2>';
-      echo "<h3>$protoname call FAILED!</h3>\n";
-      echo "<p>Fault code: [" . htmlspecialchars($client->errorNumber()) .
-        "] Reason: '" . htmlspecialchars($client->errorString()) . "'</p>\n";
-      echo (strftime("%d/%b/%Y:%H:%M:%S\n"));
+        // call failed! echo out error msg!
+        echo "<h3>$wsprotocol call FAILED!</h3>\n";
+        echo "<p>Fault code: [" . htmlspecialchars( $client->errorNumber() ) .
+            "] Reason: '" . htmlspecialchars( $client->errorString() ) . "'</p>\n";
+        echo ( strftime( "%d/%b/%Y:%H:%M:%S\n" ) );
     }
-    else if ($response->isFault())
+    else if ( $response->isFault() )
     {
-      // call failed! echo out error msg!
-      //echo '<h2>'.htmlspecialchars($actionname).' on server '.htmlspecialchars($server).'</h2>';
-      echo "<h3>$protoname call FAILED!</h3>\n";
-      echo "<p>Fault code: [" . htmlspecialchars($response->faultCode()) .
-        "] Reason: '" . htmlspecialchars($response->faultString()) . "'</p>\n";
-      echo (strftime("%d/%b/%Y:%H:%M:%S\n"));
+        // call failed! echo out error msg!
+        //echo '<h2>'.htmlspecialchars($actionname).' on server '.htmlspecialchars($server).'</h2>';
+        echo "<h3>$wsprotocol call FAILED!</h3>\n";
+        echo "<p>Fault code: [" . htmlspecialchars( $response->faultCode() ) .
+            "] Reason: '" . htmlspecialchars( $response->faultString() ) . "'</p>\n";
+        echo ( strftime( "%d/%b/%Y:%H:%M:%S\n" ) );
     }
     else
     {
-      // call succeeded: parse results
-      //echo '<h2>'.htmlspecialchars($actionname).' on server '.htmlspecialchars($server).'</h2>';
-      printf ("<h3>%s call(s) OK (%.2f secs.)</h3>\n", $protoname, $time);
-      echo (strftime("%d/%b/%Y:%H:%M:%S\n"));
+        // call(s) succeeded: parse and display results
 
-      switch ($action)
-      {
-        case 'list':
-
-        $v = $response->value();
-        if ( is_array( $v ) && array_keys( $v ) == range( 0, count( $v ) -1 ) )
+        //echo '<h2>'.htmlspecialchars($actionname).' on server '.htmlspecialchars($server).'</h2>';
+        if ( $action != 'inspect' || $debug )
         {
+            printf ( "<h3>%s call(s) OK (%.2f secs.)</h3>\n", $wsprotocol, $time );
+            echo ( strftime( "%d/%b/%Y:%H:%M:%S\n" ) );
+        }
+
+        switch ( $action )
+        {
+            case 'inspect':
+                if ( !$debug ) // in debug mode, we do not transform the wsdl, but only show debug info
+                {
+                    $xmlDoc = new DOMDocument();
+                    $xmlDoc->loadXML( $response->value() );
+
+                    $xslDoc = new DOMDocument();
+                    $xslDoc->load( './extension/ggwebservices/design/standard/stylesheets/debugger/wsdl-viewer.xsl' );
+
+                    $proc = new XSLTProcessor();
+                    $proc->importStylesheet( $xslDoc );
+                    $result = $proc->transformToXML( $xmlDoc );
+
+                    echo $result;
+                }
+                break;
+
+            case 'list':
+
+                $v = $response->value();
+                if ( is_array( $v ) && array_keys( $v ) == range( 0, count( $v ) -1 ) )
+                {
           $max = count( $v );
           echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
           echo "<thead>\n<tr><th>Method</th><th>Description</th></tr>\n</thead>\n<tbody>\n";
@@ -350,25 +396,24 @@ td form {margin: 0;}
         }
         break;
 
-        case 'describe':
-
-        $r1 = $resp[0]->value();
-        if ( count($resp) > 1 )
-        {
-          $r2 = $resp[1]->value();
-        }
-        else
-        {
-          if ( $wstype == 3 )
-          {
-	        $r2 = $r1;
-          	$r1 = '';
-          }
-          else
-          {
-            $r2 = null;
-          }
-        }
+            case 'describe':
+                $r1 = $responses[0]->value();
+                if ( count( $responses ) > 1 )
+                {
+                    $r2 = $responses[1]->value();
+                }
+                else
+                {
+                    if ( $wstype == 3 )
+                    {
+        	            $r2 = $r1;
+                      	$r1 = '';
+                    }
+                    else
+                    {
+                        $r2 = null;
+                    }
+                }
 
         echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
         echo "<thead>\n<tr><th>Method</th><th>".htmlspecialchars($method)."</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n</thead>\n<tbody>\n";
@@ -483,52 +528,58 @@ td form {margin: 0;}
         echo "</tbody>\n</table>";
         break;
 
-        case 'execute':
-          echo '<div id="response"><h2>Response:</h2>'.htmlspecialchars( print_r( $response->value(), true ) ).'</div>';
-          break;
-        default: // give a warning
-      }
+            case 'execute':
+                echo '<div id="response"><h2>Response:</h2>'.htmlspecialchars( print_r( $response->value(), true ) ).'</div>';
+                break;
+
+            default: // give a warning
+        }
     }
-  }
-  else
-  {
+}
+else
+{
     // no action taken yet: give some instructions on debugger usage
 ?>
 
 <h3>Instructions on usage of the debugger:</h3>
 <ol>
-<li>Run a 'list available methods' action against desired server</li>
+<li>Run a 'list available methods' action against desired server (for SOAP servers this needs a wsdl file)</li>
 <li>If list of methods appears, click on 'describe method' for desired method</li>
 <li>To run method: click on 'load method synopsis' for desired method. This will load a skeleton for method call parameters in the form above. Complete all values with appropriate data and click 'Execute'</li>
 <li>If you get any "call FAILED" error, use the "Show debug info" parameter to begin debugging</li>
 </ol>
 <?php
-  if (!extension_loaded('curl'))
-  {
-      echo "<p class=\"evidence\">You will need to enable the CURL extension to use the HTTPS and HTTP 1.1 transports</p>\n";
-  }
+    if ( !extension_loaded( 'curl' ) )
+    {
+        echo "<p class=\"evidence\">You will need to enable the CURL extension to use the HTTPS and HTTP 1.1 transports</p>\n";
+    }
 ?>
 
-<h3>Example:</h3>
+<h3>Examples:</h3>
 <p>
-Server Address: phpxmlrpc.sourceforge.net<br/>
-Path: /server.php
+Server Address: phpxmlrpc.sourceforge.net, Path: /server.php (for xmlrpc)<br/>
+Server Address: soap.amazon.com, Path: /schemas3/AmazonWebServices.wsdl (for soap with wsdl)
 </p>
 
 <h3>Notes:</h3>
 <ul>
 <li>The method calls are executed from the server (php code), not from the browser (javascript)</li>
 <li>Clicking on the left menu links will preload the address of this server itself for testing in the debugger. In this case the server will send a call to itself</li>
-<li>If you get an error <i>Fault code: [2] Reason: 'Invalid return payload: enable debugging to examine incoming payload Invalid data'</i> when testing the server itself, a probable cause is that you did neither specify a session cookie for your call, nor give rights to the anonymous user to execute webservice calls</li>
+<li>If you get an error <i>Fault code: [-301] Reason: 'Response received from server is not valid json/xmlrpc'</i> when testing the server itself, a probable cause is that you did neither specify a session cookie for your call, nor give rights to the anonymous user to execute webservice calls</li>
 <li>The format for cookies is to separate them using a comma</li>
-<li>The format for the payload is <a href="http://wwww.json.org/">json</a></li>
+<li><b>The format for the payload is <a href="http://wwww.json.org/">json</a>, regardless of the webservice protocol in use</b></li>
 </ul>
 
 <?php
-  }
+}
+
+if ( $action != 'inspect' || $debug )
+{
 ?>
 </body>
 </html>
 <?php
+}
+
 eZExecution::cleanExit();
 ?>
