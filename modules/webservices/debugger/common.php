@@ -105,6 +105,7 @@
 
     $params['clientcookies'] = isset($_GET['clientcookies']) ? $_GET['clientcookies'] : '';
   	$params['wsdl'] = isset($_GET['wsdl']) ? (int)$_GET['wsdl'] : 0;
+    $params['soapversion'] = isset($_GET['soapversion']) ? (int)$_GET['soapversion'] : 0;
   }
   else
   {
@@ -130,6 +131,7 @@
     $params['responsecompression'] = 0;
     $params['clientcookies'] = '';
   	$params['wsdl'] = 0;
+    $params['soapversion'] = 0;
   }
 
   // check input for known XMLRPC attacks against this or other libs

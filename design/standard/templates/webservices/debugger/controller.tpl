@@ -143,6 +143,7 @@
       document.frmaction.describemethod.disabled = false;
       document.frmaction.wsdl.disabled = true;
       document.frmaction.inspectwsdl.disabled = true;
+      document.frmaction.soapversion.disabled = true;
     }
     else if (wstype == 1)
     {
@@ -156,6 +157,7 @@
       document.frmaction.describemethod.disabled = false;
       document.frmaction.wsdl.disabled = true;
       document.frmaction.inspectwsdl.disabled = true;
+      document.frmaction.soapversion.disabled = true;
     }
     else if (wstype == 2)
     {
@@ -169,6 +171,7 @@
       document.frmaction.describemethod.disabled = false;
       document.frmaction.wsdl.disabled = true;
       document.frmaction.inspectwsdl.disabled = true;
+      document.frmaction.soapversion.disabled = true;
     }
     else if (wstype == 3)
     {
@@ -185,6 +188,7 @@
       document.frmaction.describemethod.disabled = false;
       document.frmaction.wsdl.disabled = false;
       document.frmaction.inspectwsdl.disabled = false;
+      document.frmaction.soapversion.disabled = false;
     }
     // used to make sure the 'edit' link to the visual editor gets reset properly
     switchaction();
@@ -344,8 +348,11 @@ Debugger</h1>
 <option value="2"{if eq($params.responsecompression, 2)} selected="selected"{/if}>Deflate</option>
 <option value="3"{if eq($params.responsecompression, 3)} selected="selected"{/if}>Any</option>
 </select></td>
-<td></td>
-<td></td>
+<td class="labelcell">Soap version:</td><td>
+<select name="soapversion">
+<option value="0"{if eq($params.soapversion, 0)} selected="selected"{/if}>1.1</option>
+<option value="1"{if eq($params.soapversion, 1)} selected="selected"{/if}>1.2</option>
+</select></td>
 </tr>
 </table>
 

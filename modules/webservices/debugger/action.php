@@ -208,6 +208,11 @@ if ( $action )
         }
     }
 
+    if ( $soapversion == 1 )
+    {
+        $client->setOption( 'soapVersion', SOAP_1_2 );
+    }
+
     // prepare an array of ws calls to execute (can be one or two)
 
     $msg = array();
