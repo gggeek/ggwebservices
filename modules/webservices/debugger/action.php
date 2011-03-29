@@ -386,6 +386,7 @@ if ( $action )
               "<input type=\"hidden\" name=\"method\" value=\"".htmlspecialchars( $rec )."\" />".
               "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
               "<input type=\"hidden\" name=\"wsdl\" value=\"$wsdl\" />".
+              "<input type=\"hidden\" name=\"soapversion\" value=\"$soapversion\" />".
               "<input type=\"hidden\" name=\"action\" value=\"describe\" />".
               "<input type=\"hidden\" name=\"run\" value=\"now\" />".
               "<input type=\"submit\" value=\"Describe\" /></form>";
@@ -520,6 +521,7 @@ if ( $action )
             "<input type=\"hidden\" name=\"altmethodpayload\" value=\"".htmlspecialchars($alt_payload)."\" />".
             "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
             "<input type=\"hidden\" name=\"wsdl\" value=\"$wsdl\" />".
+            "<input type=\"hidden\" name=\"soapversion\" value=\"$soapversion\" />".
             "<input type=\"hidden\" name=\"action\" value=\"execute\" />";
             if ($wstype != 1 && $wstype != 2)
               echo "<input type=\"submit\" value=\"Load method synopsis\" />";
