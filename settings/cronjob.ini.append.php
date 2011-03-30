@@ -1,4 +1,4 @@
-<?php /* #?ini charset="utf-8"?
+<?php /*
 
 [CronjobSettings]
 ExtensionDirectories[]=ggwebservices
