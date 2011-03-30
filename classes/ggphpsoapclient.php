@@ -37,7 +37,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
     }
 
     /// @todo what if instead of doing send -> __soapCall -> __doRequest -> _send -> parent::send
-    ///       we just overloaded the request's payload() and the response's decodestream
+    ///       we just overloaded the request's payload() and the response's decodestream()
     ///       methods? Is it doable at all?
     /// @todo test: proxy and auth usage of client for getting the wsdl are taken
     ///       from $options['login'] and $options['proxy_host'] ? ...
@@ -47,7 +47,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
         $this->ResponsePayload = '';
 
         /// @todo add a check that request is a soap / phpsoap one, or it will have no namespace method...
-        $options = array( 'exceptions' => true, 'soap_version' => $this->SoapVersion );
+        $options = array( 'exceptions' => true, 'soap_version' => $this->SoapVersion, 'cache_wsdl' => $this->CacheWSDL );
         /*
         if ( $this->Login != '' )
         {
@@ -212,6 +212,10 @@ class ggPhpSOAPClient extends ggWebservicesClient
         {
             $this->SoapVersion = $value;
         }
+        else if ( $option == 'cacheWSDL' )
+        {
+            $this->CacheWSDL = $value;
+        }
         else
         {
             return parent::setOption( $option, $value );
@@ -222,6 +226,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
 
     protected $Wsdl;
     protected $SoapVersion = SOAP_1_1;
+    protected $CacheWSDL = WSDL_CACHE_BOTH;
 
     protected $ResponseClass = 'ggPhpSOAPResponse';
     protected $UserAgent = 'gg eZ PHPSOAP client';

@@ -73,7 +73,7 @@ if ( $action )
             $wsprotocol = 'PhpSOAP';
             break;
         case 2:
-            $wsprotocol = 'EZJSCORE';
+            $wsprotocol = 'eZJSCore';
             $methodseparator = '::';
             break;
         case 1:
@@ -213,6 +213,11 @@ if ( $action )
         $client->setOption( 'soapVersion', SOAP_1_2 );
     }
 
+    if ( $wsprotocol == 'phpSOAP' )
+    {
+        $client->setOption( 'cacheWSDL', WSDL_CACHE_NONE );
+    }
+
     // prepare an array of ws calls to execute (can be one or two)
 
     $msg = array();
@@ -233,7 +238,7 @@ if ( $action )
             {
                 // no methodsig for ezjscore. methodHelp supported when ggws is installed on the server
                 /// @todo to be verified: is methodhelp ok?
-                $msg[0] = new $requestClass( 'system'.$methodseparator.'methodHelp'.$methodseparator.$method, null);
+                $msg[0] = new $requestClass( 'system'.$methodseparator.'methodHelp'.$methodseparator.$method, array() );
             }
             else
             {
@@ -327,7 +332,7 @@ if ( $action )
         //echo '<h2>'.htmlspecialchars($actionname).' on server '.htmlspecialchars($server).'</h2>';
         if ( $action != 'inspect' || $debug )
         {
-            printf ( "<h3>%s call(s) OK (%.2f secs.)</h3>\n", $wsprotocol, $time );
+            printf ( "<h3>%s call". ( count( $responses ) > 1 ? 's' : '' ) ." OK (%.2f secs.)</h3>\n", $wsprotocol, $time );
             echo ( strftime( "%d/%b/%Y:%H:%M:%S\n" ) );
         }
 
@@ -422,11 +427,11 @@ if ( $action )
                 }
 
         echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
-        echo "<thead>\n<tr><th>Method</th><th>".htmlspecialchars($method)."</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n</thead>\n<tbody>\n";
+        echo "<thead>\n<tr><th>Method</th><th colspan=\"2\">".htmlspecialchars($method)."</th></tr>\n</thead>\n<tbody>\n";
         $desc = htmlspecialchars($r1);
         if ($desc == "")
           $desc = "-";
-        echo "<tr><td class=\"evenrow\">Description</td><td colspan=\"3\" class=\"evenrow\">$desc</td></tr>\n";
+        echo "<tr><td class=\"evenrow\">Description</td><td colspan=\"2\" class=\"evenrow\">$desc</td></tr>\n";
 
         if ( !is_array( $r2) )
           echo "<tr><td class=\"oddrow\">Signature</td><td class=\"oddrow\">Unknown</td><td class=\"oddrow\">&nbsp;</td></tr>\n";
