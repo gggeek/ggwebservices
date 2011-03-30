@@ -580,6 +580,7 @@ Server Address: soap.amazon.com, Path: /schemas3/AmazonWebServices.wsdl (for soa
 <li>If you get an error <i>Fault code: [-301] Reason: 'Response received from server is not valid json/xmlrpc'</i> when testing the server itself, a probable cause is that you did neither specify a session cookie for your call, nor give rights to the anonymous user to execute webservice calls</li>
 <li>The format for cookies is to separate them using a comma</li>
 <li><b>The format for the payload is <a href="http://wwww.json.org/">json</a>, regardless of the webservice protocol in use</b></li>
+<li>For ezjscore calls, the GET parameters have to be specified after method name (eg: ezstarrating::rate::55::1::5). Parameters specified as part of Payload will be sent via POST</li>
 </ul>
 
 <?php
