@@ -66,7 +66,7 @@ class ggeZWebservicesClient
 
         // 'new style' server config: make it easier to define any desired client setting,
         // even ones added in future releases, without having to perse it by hand in this class
-        $providerOptions = $ini->hasVariable( $server, 'Options' ) ? $ini->variable( $server, 'Options' ) : false;
+        $providerOptions = $ini->hasVariable( $server, 'Options' ) ? $ini->variable( $server, 'Options' ) : array();
 
         // add the user-set options on top of the options set in ini file
         $providerOptions = array_merge( $providerOptions, $options );
