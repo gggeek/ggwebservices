@@ -1,14 +1,13 @@
 {**
  * Dialog for visually editing trees of json/xmlrpc values
  * @version $Id$
- * @copyright (C) 2006-2010 G. Giunta
+ * @copyright (C) 2006-2011 G. Giunta
  * @author Gaetano Giunta
  *
- * @todo support nested structs / arrays when opening
- * @todo support soap convention (top level can be a struct, not an array)
- *
  * @todo do not set to "null" new nodes
- * @todo improve display: do not show up/down arrows, 'angle line' for parameters, move up list numbers in ff
+ * @todo improve display: do not show up/down arrows, 'angle line' for top level parameter
+ * @todo improve display: update the number of parameters when adding a new one
+ * @todo improve display: hide top-level node
  *}
 <head>
 <title>WS Debugger Visual Editor</title>
@@ -49,102 +48,35 @@
 
 <script type="text/javascript">
 <!--
-/* set up xmlrpc lib display options */
+{* set up xmlrpc lib options *}
 askDeleteConfirmation = true;
 editElementDiv = 'dlgpanel';
+allowTopLevelElementTypeChange = false;
+elementType = 'jsonrpcval';
 
-{if $noadd|not()}allowTopLevelElementTypeChange = true;{/if}
-
-elementType = '{$type}val';
-
-var trees = [];
-var nodes = [];
+var roottree = null;
+var rootnode = null;
+var source = {$paramsjson};
 
 function treeInit()
 
 {ldelim}
 
-  trees = [];
-  nodes = [];
-
-{def $divs = ''
-     $trees = ''
-     $ptype = ''
-     $pval = ''}
-{foreach $params as $i => $param}
-	{set $ptype = $param.type|downcase()
-	     $pval = $param.value
-         $trees = $trees|append("  trees[",$i,"] = new YAHOO.widget.TreeView('param",$i,"');\n")}
-    {if eq($ptype, 'struct')}
-        {set $trees = $trees|append("  nodes[",$i,"] = new YAHOO.widget.XMLRPCNode(new ",$type,"val({\}, '",$ptype,"'), trees[",$i,"].getRoot(), true, null, true);\n")}
-    {elseif eq($ptype, 'array')}
-        {set $trees = $trees|append("  nodes[",$i,"] = new YAHOO.widget.XMLRPCNode(new ",$type,"val([], '",$ptype,"'), trees[",$i,"].getRoot(), true, null, true);\n")}
-    {elseif $valid_types|contains($ptype)}
-	    {if eq($ptype, 'datetime.iso8601')} {* we need a mixed-case type specifier for dates *}
-	        {set $trees = $trees|append("  nodes[",$i,"] = new YAHOO.widget.XMLRPCNode(new ",$type,"val(null, 'dateTime.iso8601'), trees[",$i,"].getRoot(), true, null, true);\n")}
-	    {elseif eq($ptype, 'string')}
-	        {set $trees = $trees|append("  nodes[",$i,"] = new YAHOO.widget.XMLRPCNode(new ",$type,"val('",$pval|wash(javascript),"', '",$ptype,"'), trees[",$i,"].getRoot(), true, null, true);\n")}
-	    {else}
-            {set $trees = $trees|append("  nodes[",$i,"] = new YAHOO.widget.XMLRPCNode(new ",$type,"val(",$pval|wash(javascript),", '",$ptype,"'), trees[",$i,"].getRoot(), true, null, true);\n")}
-        {/if}
-    {else}
-        {set $trees = $trees|append("  nodes[",$i,"] = new YAHOO.widget.XMLRPCNode(new ",$type,"val(), trees[",$i,"].getRoot(), true, null, true);\n")}
-    {/if}
-    {set $trees = $trees|append("  trees[",$i,"].draw()\n")}
-    {*echo "<h3>Parameter $i: $ptype</h3>\n";*}
-    {set $divs = $divs|append("<li id=\"param",$i,"\" class=\"paramdiv\"></li>\\n")}
-{/foreach}
-  document.getElementById('valuepanel').innerHTML = '{$divs}';
-{$trees}
-  document.getElementById('numparams').innerHTML = '{$params|count()}';
+  roottree = new YAHOO.widget.TreeView('valuepanel');
+  rootnode = new YAHOO.widget.XMLRPCNode(jsonrpc_encode(source), roottree.getRoot(), true, null, true);
+  roottree.draw()
+  document.getElementById('numparams').innerHTML = '{$paramscount}';
 
 {rdelim}
 
-{literal}
-function addParam()
-{
-  showEditDlg(false, null, true, false, function(name, type, value) {
-
-    // add a div for the tree to the document
-    // add a tree
-    var next = trees.length;
-    var newTree = document.createElement("li");
-    newTree.className = 'paramdiv';
-    document.getElementById('valuepanel').appendChild(newTree);
-    trees[next] = new YAHOO.widget.TreeView(newTree);
-    nodes[next] = new YAHOO.widget.XMLRPCNode(buildVal(type, value), trees[next].getRoot(), true, null, true);
-    trees[next].draw();
-    document.getElementById('numparams').innerHTML = (next+1);
-
-  });
-}
-{/literal}
 function buildthem()
 
 {ldelim}
 
-  var out = '[ ';
-  var root;
-  for (var i = 0; i < trees.length; i++)
-  {ldelim}
-
-    root = trees[i].getRoot().children[0];
-    root.toggleEditable();
-    trees[i].draw();
-{*if eq($type,'jsonrpc')*}
-    /// @todo use an array and implode() here? it wouldbe cleaner...
-    out += root.data.serialize()+', ';
-  {rdelim}
-
-  out = out.slice(0, -2)+' ]';
-{*else}
-
-    out += '<param>\n'+root.data.serialize()+'</param>\n';
-  {rdelim}
-
-{/if*}
-
-  return out;
+  var root = roottree.getRoot().children[0];
+  root.toggleEditable();
+  roottree.draw();
+  return root.data.serialize();
 
 {rdelim}
 
@@ -167,9 +99,9 @@ function done()
 <body onload="treeInit();">
 <h2>Editing <span id="numparams"></span>&nbsp; parameters</h2>
 <h3>
-{if $noadd|not()}
-<a href="#" onclick="addParam(); return false;">Add parameter</a> |
-{/if}
+{*{if $noadd|not()}*}
+<a href="#" onclick="roottree.getRoot().children[0].onAddClick(roottree.getRoot().children[0]); return false;">Add parameter</a> |
+{*{/if}*}
 <a href="#" onclick="treeInit(); return false;">Reset all</a> |
 <a href="#" onclick="window.close();">Cancel</a> |
 <a href="#" onclick="done(); return false;">Submit</a>
@@ -178,6 +110,6 @@ function done()
 WARNING: this page is completely useless without javascript support.<br />Please use a javascript-enabled browser
 </noscript>
 <div id="dlgpanel"></div>
-<ol id="valuepanel"></ol>
+<div id="valuepanel"></div>
 <!--DEBUG_REPORT-->
 </body>
