@@ -83,8 +83,10 @@ class ggRESTResponse extends ggWebservicesResponse
     * Request is not used, kept for compat with sibling classes
     * Name is not set to response from request - a bit weird...
     */
-    function decodeStream( $request, $stream, $headers=false )
+    function decodeStream( $request, $stream, $headers=false, $cookies=array() )
     {
+        $this->Cookies = $cookies;
+
         $contentType = isset( $headers['content-type'] ) ? $headers['content-type'] : '';
         if ( ( $pos = strpos( $contentType, ';' ) ) !== false )
         {

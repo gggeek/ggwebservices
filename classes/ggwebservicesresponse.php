@@ -39,7 +39,7 @@ abstract class ggWebservicesResponse
     * @param array $headers the http headers received along with the response
     * @return void (if parsing of stream fails, set isFault to true plus error code and description)
     */
-    abstract function decodeStream( $request, $stream, $headers=false );
+    abstract function decodeStream( $request, $stream, $headers=false, $cookies=array() );
 
     /**
     * This function imported from php-xmlrpc lib: it is more correct than eZ SOAP client one
@@ -146,6 +146,11 @@ abstract class ggWebservicesResponse
         return array();
     }
 
+    function cookies()
+    {
+        return $this->Cookies;
+    }
+
     /// Contains the response value
     protected $Value = false;
     /// Contains fault string
@@ -159,6 +164,8 @@ abstract class ggWebservicesResponse
 
     protected $ContentType = '';
     protected $Charset = 'UTF-8';
+
+    protected $Cookies = array();
 }
 
 ?>

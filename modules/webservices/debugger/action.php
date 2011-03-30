@@ -305,6 +305,7 @@ if ( $action )
         echo '<div class="dbginfo"><h2>Debug info:</h2>';
         if ( $debug > 1 ) echo '<span class="evidence">Sent: </span>' . htmlspecialchars( $client->requestPayload() ) . "\n";
         echo '<span class="evidence">Received: </span>' . htmlspecialchars( $client->responsePayload() );
+        if ( $debug > 1 ) echo "\n" . '<span class="evidence">Cookies: </span>' . htmlspecialchars( var_export( $response->cookies(), true) ) ;
         echo "</div>\n";
     }
 

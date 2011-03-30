@@ -11,10 +11,10 @@
  *
  * @todo test DIGEST, NTML auth if curl is enabled (for proxy auth too)
  * @todo add a version nr in user-agent string
- * @todo let user decide ssl options, set server and client certs too
+ * @todo let user decide more ssl options, set server and client certs too
  * @todo let client use keepalives for multiple subsequent calls (both curl and plain mode)
  * @todo allow ssl connections without curl (via stream properties)
- * @todo finish cookie support, so that client can be used for multiple calls with sessions
+ * @todo automatic cookie management support, so that client can be easily used for multiple calls with sessions
  * @todo implement following redirects (with a max predefined)
  * @todo add a 'mode 3 debug' where client stores also dezipped data if zipping is enabled
  *
@@ -354,7 +354,6 @@ class ggWebservicesClient
         {
             return 0;
         }
-//        $this->Cookies = $respArray['cookies'];
 
         $ResponseClass = $this->ResponseClass;
         if ( $ResponseClass == 'ggWebservicesResponse' )
@@ -367,7 +366,7 @@ class ggWebservicesClient
             }
         }
         $response = new $ResponseClass( $request->name() );
-        $response->decodeStream( $request, $rawResponse, $respArray['headers'] );
+        $response->decodeStream( $request, $rawResponse, $respArray['headers'], $respArray['cookies'] );
         return $response;
     }
 
@@ -420,7 +419,6 @@ class ggWebservicesClient
             }
 
             $HTTPRequest = $verb . " " . $uri . " HTTP/1.0\r\n" .
-                /// @todo do not add PORT info if on port 80
                 "Host: " . $this->Server . $port . "\r\n";
         }
 
@@ -596,73 +594,59 @@ class ggWebservicesClient
                 $bd = 0;
             }
         }
+        // headers that can be present many times
+        /// @todo doublecheck: is any of these only for requests?
+        $mvh = array( 'accept-ranges', 'allow', 'cache-control', 'content-Language', 'pragma', 'proxy-authenticate', 'trailer', 'transfer-encoding', 'vary', 'via', 'warning', 'www-authenticate', );
         // be tolerant to line endings, and extra empty lines
         $ar = preg_split( "/\r?\n/", trim( substr( $data, 0, $pos ) ) );
         foreach( $ar as $line )
         {
-            // take care of multi-line headers and cookies
+            // we take care of multi-line headers, multi-valued headers and cookies
             $arr = explode( ':', $line, 2 );
             if( count( $arr ) > 1 )
             {
                 $header_name = strtolower( trim( $arr[0] ) );
-                /// @todo some other headers (the ones that allow a CSV list of values)
-                /// do allow many values to be passed using multiple header lines.
-                /// We should add content to $headers[$header_name]
-                /// instead of replacing it for those...
-                if ( $header_name == 'set-cookie' || $header_name == 'set-cookie2' )
+                /// @see http://en.wikipedia.org/wiki/HTTP_cookie
+                /// @see http://datatracker.ietf.org/wg/httpstate/
+                if ( $header_name == 'set-cookie' )
                 {
-                    if ( $header_name == 'set-cookie2' )
+                    // parse cookie attributes, in case user wants to correctly honour them
+                    // feature creep: only allow rfc-compliant cookie attributes?
+                    // @todo support for server sending multiple time cookie with same name, but using different PATHs?
+                    $cookieelements = explode( ';', $arr[1] );
+                    $cookie = explode( '=', array_shift( $cookieelements ), 2 );
+                    if ( $cookie[0] != '' && count( $cookie ) > 1 )
                     {
-                        // version 2 cookies:
-                        // there could be many cookies on one line, comma separated
-                        $lcookies = explode( ',', $arr[1] );
-                    }
-                    else
-                    {
-                        $lcookies = array( $arr[1] );
-                    }
-                    foreach ( $lcookies as $cookie )
-                    {
-                        // glue together all received cookies, using a comma to separate them
-                        // (same as php does with getallheaders())
-                        if ( isset( $headers[$header_name] ) )
-                            $headers[$header_name] .= ', ' . trim( $cookie );
-                        else
-                            $headers[$header_name] = trim( $cookie );
-                        // parse cookie attributes, in case user wants to correctly honour them
-                        // feature creep: only allow rfc-compliant cookie attributes?
-                        // @todo support for server sending multiple time cookie with same name, but using different PATHs
-                        $cookie = explode( ';', $cookie );
-                        foreach ( $cookie as $pos => $val )
+                        $cookiename = trim( $cookie[0] );
+                        $cookies[$cookiename] = array( 'value' => urldecode( trim( $cookie[1] ) ) );
+                        foreach ( $cookieelements as $val )
                         {
-                            $val = explode( '=', $val, 2 );
-                            $tag = trim( $val[0] );
-                            $val = trim( @$val[1] );
-                            /// @todo with version 1 cookies, we should strip leading and trailing " chars
-                            if ( $pos == 0 )
-                            {
-                                $cookiename = $tag;
-                                $cookies[$tag] = array();
-                                $cookies[$cookiename]['value'] = urldecode($val);
-                            }
-                            else
-                            {
-                                if ($tag != 'value')
-                                {
-                                    $cookies[$cookiename][$tag] = $val;
-                                }
-                            }
+                            $vals = explode( '=', $val, 2 );
+                            $cookies[$cookiename][trim( $vals[0] )] = trim( @$vals[1] );
                         }
                     }
                 }
                 else
                 {
-                    $headers[$header_name] = trim( $arr[1] );
+                    // Some headers (the ones that allow a CSV list of values)
+                    // do allow many values to be passed using multiple header lines.
+                    // We add content to $headers[$header_name]
+                    // instead of replacing it for those...
+                    if ( isset( $headers[$header_name] ) && in_array( $header_name, $mvh ) )
+                    {
+                        $headers[$header_name] .= ', ' . trim( $arr[1] );
+                    }
+                    else
+                    {
+                        $headers[$header_name] = trim( $arr[1] );
+                    }
                 }
             }
             elseif( isset( $header_name ) )
             {
-                /// @todo version1 cookies might span multiple lines, thus breaking the parsing above
+                /// @todo we should test that 1st char of line is either a space or tab
+                ///       ('folding of header lines' in rfc 1945)
+                ///       and possibly collapse leading whitspace
                 $headers[$header_name] .= ' ' . trim( $line );
             }
         }

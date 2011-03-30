@@ -39,8 +39,10 @@ class ggXMLRPCResponse extends ggWebservicesResponse
     *
     * @bug apparently xmlrpc_decode happily parses many xml ansers, wuch as eg. a soap response...
     */
-    function decodeStream( $request, $stream, $headers=false )
+    function decodeStream( $request, $stream, $headers=false, $cookies=array() )
     {
+        $this->Cookies = $cookies;
+
         /// @todo test if this automatically groks encoding from xml or not...
         $results = xmlrpc_decode( $stream );
 
