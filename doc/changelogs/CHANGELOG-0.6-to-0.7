@@ -3,8 +3,12 @@ Changes from 0.6 to 0.7 - released 2011/xx/yy
 *General:
 
 - Server: Add support for limiting access to webservices by client's IP address
+
+- Client: Add support for calling ezjscore servers
 - Client: Add support for setting cookies in the client
 - Client: Add support for setting ssl options in the client
+- Client: Allow soap client not to cache wsdl
+
 - Debugger: The debugger now can debug SOAP services
 - Debugger: The debugger uses now the same php classes as the rest of the code, instead of using the phpxmlrpc library
 
@@ -23,3 +27,4 @@ Changes from 0.6 to 0.7 - released 2011/xx/yy
 - the protected variable $Cookies is not populated in the client automatically with cookies received by the server
 - the debugger does not allow anymore to enter plaintext for the webservice payload (request body)
 - the client defaults to checking SSL peer certificate (but this can be disabled via a setOpt call)
+- the phpxmlrpc library inclusion is considered DEPRECATED; the lib will be removed in some future release

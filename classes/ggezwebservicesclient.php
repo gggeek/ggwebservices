@@ -71,6 +71,8 @@ class ggeZWebservicesClient
         // add the user-set options on top of the options set in ini file
         $providerOptions = array_merge( $providerOptions, $options );
 
+        /// @todo add support for proxy config in either $providerOptions or $options
+
         // Proxy: if not specified per-target server, use global one
         $providerProxy = '';
         if ( !$ini->hasVariable( $server, 'ProxyServer' ) )
@@ -119,6 +121,7 @@ class ggeZWebservicesClient
         case 'JSONRPC':
         case 'SOAP':
         case 'PhpSOAP':
+        case 'eZJSCore':
         case 'XMLRPC':
         case 'HTTP':
             $proxylog = '';

@@ -1,12 +1,10 @@
-- add ezjscore client, request, response classes
+- server: flesh out soap server w. wsdl support (+ use ezpo2xsd method from ezpo_insepctor)
 
-- flesh out soap server w. wsdl support (+ use ezpo2xsd method from ezpo_insepctor)
-
-- test: using CURL and proxy / complex auths works?
+- client: test: using CURL and proxy / complex auths works?
   + prevent curl from adding useless "accept: */*" header
   + test: bug using curl+compress request+soap call to ms servers
 
-- test https support with and without curl, with and without proxy too
+- client: test https support with and without curl, with and without proxy too
 
 - add to the base client:
   + automatic cookie support (+ simplify parsing: nobody uses version 1 cookies)
@@ -14,9 +12,9 @@
   + rebuilding of $_POST for compressed requests containing form data
   + more ssl options (and in debugger too)
 
-- add to ezwsclient support for proxy auth type, proxy conf via options[] (and in debugger too)
+- client: add to ezwsclient support for proxy auth type, proxy conf via options[] (and in debugger too)
 
-- add more samples, eg. to call webservices on flickr/facebook/twitter
+- add more client samples, eg. to call webservices on flickr/facebook/twitter
 
 - in debugger:
   + use templates for output of action.php
@@ -28,23 +26,24 @@
   + improve formatting (eg. 1st line, visualeditor space on top, add admin2 tpl for left menu with resizing handle, etc...)
   + allow picking preferred content-type for responses when using ezjscore
   + investigate fatal errors in soap client, wsdl mode, when parsing a non-wsdl page (they should be caught as exceptions except they're not)
-  + disable wsdl cache in debugger
+  + allow to create sample ini block for current server
+  + ezjscore methods: improve parsing of phpdoc comments to get signature
 
-- test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
+- debugger: test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
 
 - add jsonrpc 2.0 support (both client and server)
 
-- add support for xmlrpc datatypes base64 and datetime
+- add support for xmlrpc datatypes base64 and datetime (check if it works when using plain php classes)
 
-- test objects vs. array return by default with ezsoap (in tpl code especially)
+- server: test objects vs. array return by default with ezsoap (in tpl code especially)
 
-- add 'plain' xml format to REST server output. see eg http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
+- server: add 'plain' xml format to REST server output. see eg http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
   or http://svn.php.net/viewvc/pear/packages/XML_Serializer/trunk/XML/Serializer.php?revision=294967&view=markup
   Also finish support for php/phps (parsing of Accept header)
 
 - add some doc showing the client/request/response and server/request/response interaction to make it easier to remember that requests are also used server-side (and responses client-side)
 
-- test support for calling ezjscore and plain-registered methods with index_ajax controller; test again custom controller too
+- server: test support for calling ezjscore and plain-registered methods with index_ajax controller; test again custom controller too
 
 - add siteaccess limitation to proxy view
 
@@ -53,35 +52,33 @@
 - verify js changes in Y.io.ez from 1.0.0 to 1.0.2 and 1.1.0 and merge in Y.io.jsonrpc
   + test loading Y.io.ez from Yui 3.1.0 in eZP 4.4 and later
 
-- use ezjscore to load yui 3 in debugger <= upgrade debugger to yui2in3
+- debugger: use ezjscore to load yui 3 in debugger <= upgrade debugger to yui2in3
 
-- test module view that does ws execution (memory, time) vs. using jsonrpc.php vs. index_ajax.php
+- server: test module view that does ws execution (memory, time) vs. using jsonrpc.php vs. index_ajax.php
 
-- add a soap controller based on ggphpsoap instead of ezsoap (needs a server class first)
+- server: add a soap controller based on ggphpsoap instead of ezsoap (needs a server class first)
 
 - finish proxy module
   => add soap support. Need to create a new soap server class, too?
   => add POST/GET (rest) support. Need to create a new server class, too? nb: could do with basically json/php serialized/ encoding of results (see solr-supported formats too)
   => add fine-grained policy control with per_server_per_method limitations (this one needs server to support listMethods() call), possibly per_siteaccess?
 
-- allow ws controllers to operate in no-session mode (useful? since 4.4 whole of eZ can be sessionless)
+- server: allow ws controllers to operate in no-session mode (useful? since 4.4 whole of eZ can be sessionless)
 
-- add a new controller file capable to do multi-protocol requests
+- server: add a new controller file capable to do multi-protocol requests
   + make it also compatible with ezsjcore
 
-- add optional extended logging of received ws calls and outgoing responses (use ezdebugsettings or a custom log file?)
+- server: add optional extended logging of received ws calls and outgoing responses (use ezdebugsettings or a custom log file?)
 
 - lobby ezjscore to provide list of exposed methods, api docs
 
 - add phpdoc-generated api docs to the distribution
 
-- improve input parameter type validation
+- server: improve input parameter type validation
 
-- add a compatibility layer to import webservices designed for ezrest too
+- server: add a compatibility layer to import webservices designed for ezrest too
 
-- move debugger to ez (yui?) classes and remove the phpxmlrpc lib
-
-- add js-based debugger for calls to local server
+- debugger: add js-based debugger for calls to local server
 
 - add a testsuite (eg. to test all the error codes after shuffling them around)
 
