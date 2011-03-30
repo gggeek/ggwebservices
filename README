@@ -1,17 +1,25 @@
-GG Webservices extension for eZ publish
+GG Webservices extension for eZ Publish
 ========================================
+
+An extension that adds/improves the native capabilities of eZ Publish to work as
+- webservices server
+- webservices client
+with a visual webservices debugger thrown in for good measure
+
 
 Goals:
 
 Allow to easily execute calls to remote servers using JSONRPC, XMLRPC and SOAP protocols or REST schemes (both from within php code and templates)
-Allow to expose existing functionality as JSONRPC or XMLRPC, REST (and eventually better SOAP) webservices, much as it can already be done with SOAP in any eZ Publish installation
-Allow to expose functionality as webservice regardless of the protocol used by the client
+Allow to expose existing functionality as JSONRPC or XMLRPC, REST (and eventually better SOAP) webservices, much as it can already be done with SOAP and eZJSCore in any eZ Publish installation
+Allow to expose functionality as webservice regardless of the protocol used by the client - without having to duplicate code
 Provide a proxy module allowing javascript code served by an eZ Publish server to execute cross-domain webservice calls (without resorting to html tricks) and even cross-protocol calls
-Keep the same API as the existing eZ SOAP classes for maximum interoperability
-Improve the existing http client adding features such as support for more authentication schemes, compressed requests etc...
-Long term, the existing SOAP client and server could be replaced with a new one, based either on PHP::SOAP or NuSOAP
 Allow easy debugging of webservice calls via inclusion of a complete debugging interface
-Allow usage of JSONRPC or XMLRPC (and eventually SOAP) to calls functions exposed via the ezjscore extension API
+Improve support for WSDL in soap calls (both server-side and client-side)
+Improve the existing http client adding features such as support for more authentication schemes, compressed requests etc...
+Allow usage of JSONRPC or XMLRPC (and eventually SOAP) to call functions exposed via the ezjscore extension API
+Keep the same API as the existing eZP SOAP classes for maximum interoperability
+Long term, the existing SOAP client and server could be replaced with a new one, based either on PHP::SOAP or NuSOAP
+
 
 Prerequisites:
 
@@ -22,15 +30,21 @@ to execute/receive xmlrpc calls, the php XMLRPC extension is needed
 to call remote services using wsdl descriptions the php SOAP extension is needed
 to integrate with the ezjscore extension, eZP 4.2 is needed (and the ezjscore extension too, of course)
 
+
 Basics:
 
-- every remote webservice server that has to be accessed from the eZ Publish server itself has to be defined in wsproviders.ini
+Server side:
 - to receive xmlrpc, jsonrpc or 'rest' calls, you need to:
   1 - modify the configuration in wsproviders.ini and possibly in site.ini.append.php
   2 - create a file extension/xxx/<jsonrpc|xmlrpc|rest>/initialize.php with the php code to be exposed as webservice
+
+Client side:
+- every remote webservice server that has to be accessed from the eZ Publish server itself has to be defined in wsproviders.ini
 - to call remote webservices from within templates use the fetch( 'webservices', 'call', hash( ... ) ) template fetch function.
   Please remember to desactivate the view cache where needed for node templates that execute webservice calls
 - to call remote webservices from php code use ggeZWebServicesClient::send( $server, $metod, $params=array() );
+
+For more details, read the INSTALL file.
 
 
 Modules and Views:

@@ -1,8 +1,9 @@
 1 - activate the extension following the standard eZ Publish procedures
     (remember to regenerate the ezp_extension.php autoload file)
 
-    To avoid the webservice logs to grow indefinitely and potentially fill up
-    your hard disk, add the rotatewslogs.php cronjob script to a cronjob part
+    If you will be using the webservices client part of the extension, to avoid
+    the webservice logs to grow indefinitely and potentially fill up your
+    hard disk, add the rotatewslogs.php cronjob script to a cronjob part
     you run periodically, such as 'infrequent', or schedule execution of the
     'rotatewslogs' part (see the documentation aboyt cronjobs for more details
     on how to set it up)
@@ -14,17 +15,19 @@
 3 - there is no fight club!
 
 
-4 - to receive jsonrpc or xmlrpc webservice calls:
+### SERVER-SIDE: exposing your webservices ###
+
+4 - to receive jsonrpc or xmlrpc or rest webservice calls:
 
   + define the php functions you want to expose as webservices in a file
-    "initialize.php" in either a "phpxmlrpc" or "jsonrpc" folder in the
-    eZ Publish installation root folder (or in a "phpxmlrpc" or "jsonrpc"
+    "initialize.php" in either a "phpxmlrpc", "jsonrpc" or "rest" folder in the
+    eZ Publish installation root folder (or in a "phpxmlrpc", "jsonrpc" or "rest"
     folder inside an extension that is listed in the JSONRPCExtensions/
-    XMLRPCExtensions array setting of ini file wsproviders.ini).
-    Look up code in the existing initiliaze.php files as examples of valid syntax
+    XMLRPCExtensions:XMLRPCExtensions array setting of ini file wsproviders.ini).
+    Look up code in the existing initialize.php files as examples of valid syntax
 
-  + make sure the EnableJSONRPC or EnableXMLRPC setting (or both) in config
-    file wsproviders.ini has a value of "true" (without the quotes)
+  + make sure the EnableJSONRPC or EnableXMLRPC or EnableREST setting (or any combination)
+    in config file wsproviders.ini has a value of "true" (without the quotes)
 
   + the url used to access the webservices will be like this:
     http://your.server/webservices/execute/jsonrpc
@@ -52,8 +55,19 @@
     on the encapsulated webservices
 
   + if your webservice client is remote (non-ajax) and it does not support
-    session cookies, you can still use the eZ Publish auth mechanism to allow
-	it to log-in and execute calls:
+    session cookies, you can still use auth mechanisms to allow	it to log-in and
+    execute calls:
+
+    I) using fixed-IPs
+
+    If the client makes calls from a known (list of) fixed IP address
+	a. edit the value of the settings ValidateClientIPs and ValidClientIPs in
+	   wsproviders.ini. This way no other client IP will be allowed
+    b. in the 'roles and policies' panel in the administration interface, give
+	   full access to 'webservices/execute' to the Anonymous role
+
+    II) adding an eZP username/password in every webservice request
+
 	a. give to the Anonymous role access to the ezp.authandexec webservice
 	b. create a user account for your ws client, assign it to a new role
 	c. assign to this new role access to the desired webservices
@@ -89,10 +103,43 @@
   + the difference with point 3 above is a slightly more complex install vs. a
     smaller execution time and memory usage. In this configuration it is also
     not possible to assign execution permissions to callers - all webservices
-    will be available to everybody TAKE CARE!
+    will be available to everybody. TAKE CARE!
 
 
-5 - to make webservice calls to external servers via templates
+5 - to enable js code in the browser to call webservices on the local server
+
+  + create the desired webservices, as per point 3 or 3b above
+
+  + use either
+
+    . the Y.io.jsonrpc( string method, array params, object config )
+      javascript function, available in the io-jsonropc yui module
+      (supports only jsonrpc, not xmlrpc)
+
+    . the set of javascript classes defined in the JS-XMLRPC library
+      (docs for it are available at http://phpxmlrpc.sourceforge.net/jsxmlrpc/javadoc/)
+
+
+6 - to enable usage of xmlrpc/jsonrpc protocols to call functions that have
+    already been made available via the jscore extension:
+
+  + make sure the JscoreIntegration parameter is set to "enabled" in wsproviders.ini.append.php
+
+  + make sure the current eZ Publish user has access rights to invoke the needed
+    ezjscore functions
+
+  + the ezjscore functions will be automatically made available to jsonrpc and/or
+    xmlrpc clients depending on the value of the EnableJSONRPC or EnableXMLRPC setting
+
+  + it is even possible to use the jsonrpc protocol from the browser to access
+    jscore functions instead of the native javascript serialization by usage of
+    the Y.io.jsonrpc( string method, array params, object config ) javascript function,
+    available in the io-jsonrpc yui module
+
+
+### CLIENT-SIDE: calling webservices on remote servers ###
+
+7 - to make webservice calls to external servers via templates
 
   + define the remote servers that will be made accessible in the
     wsproviders.ini.append.php file
@@ -106,22 +153,8 @@
     complete traces of webservice communication in var/nameofsiteaccess/log
 
 
-6 - to enable js code in the browser to call webservices on the local server
-
-  + create the desired webservices, as per point 3 or 3b above
-
-  + use either
-
-    . the Y.io.jsonrpc( string method, array params, object config)
-      javascript function, available in the io-jsonropc yui module
-      (supports only jsonrpc, not xmlrpc)
-
-    . the set of javascript classes defined in the JS-XMLRPC library
-      (docs for it are available at http://phpxmlrpc.sourceforge.net/jsxmlrpc/javadoc/)
-
-
-7 - to enable js code in the browser to call webservices on remote servers
-    (cross domain requests) without the need for flash:
+8 - to enable js code in the browser to call webservices on remote servers
+    (cross domain requests) without the need for flash or other advanced techniques:
 
   + define the remote servers that will be made accessible in the
     wsproviders.ini.append.php file
@@ -135,23 +168,5 @@
     the name of a server defined in wsproviders.ini.append.php file (the remote
     server can use a different protocol, such as soap, from the one used by the
     browser)
-
-
-8 - to enable usage of xmlrpc/jsonrpc protocols to call functions that have
-    already been made available via the jscore extension:
-
-  + make sure the JscoreIntegration parameter is set to "enabled" in wsproviders.ini.append.php
-
-  + make sure the current eZ Publish user has access rights to invoke the needed
-    ezjscore functions
-
-  + the ezjscore functions will be automatically made available to jsonrpc and/or
-    xmlrpc clients depending on the value of the EnableJSONRPC or EnableXMLRPC setting
-
-  + it is even possible to use the jsonrpc protocol from the browser to access
-    jscore functions instead of the native javascript serialization by usage of
-    the Y.io.jsonrpc( string method, array params, object config) javascript function,
-    available in the io-jsonropc yui module
-
 
 9 - more detailed info in the README file
