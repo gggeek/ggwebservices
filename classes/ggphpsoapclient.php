@@ -47,7 +47,12 @@ class ggPhpSOAPClient extends ggWebservicesClient
         $this->ResponsePayload = '';
 
         /// @todo add a check that request is a soap / phpsoap one, or it will have no namespace method...
-        $options = array( 'exceptions' => true, 'soap_version' => $this->SoapVersion, 'cache_wsdl' => $this->CacheWSDL );
+        $options = array( 'exceptions' => true, 'soap_version' => $this->SoapVersion );
+        if ( $this->CacheWSDL >= 0 )
+        {
+            $options['cache_wsdl'] = $this->CacheWSDL;
+        }
+
         /*
         if ( $this->Login != '' )
         {
@@ -226,7 +231,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
 
     protected $Wsdl;
     protected $SoapVersion = SOAP_1_1;
-    protected $CacheWSDL = WSDL_CACHE_BOTH;
+    protected $CacheWSDL = -1; // defaults to values set in php.ini
 
     protected $ResponseClass = 'ggPhpSOAPResponse';
     protected $UserAgent = 'gg eZ PHPSOAP client';
