@@ -31,7 +31,7 @@ class ggRESTRequest extends ggWebservicesRequest
 
     /**
     * Final part of url that is built REST style: /methodName?p1=val1&p2=val2
-    * unless request is POST (or other non-GET), then they are snt as part
+    * unless request is POST (or other non-GET), then they are sent as part
     * of body.
     * Note: Flickr uses calls like this: ?method=methodName&p1=val1&p2=val2
     *       Google varies a lot
@@ -227,7 +227,6 @@ class ggRESTRequest extends ggWebservicesRequest
         return 'application/x-www-form-urlencoded';
     }
 
-    /// New method in this subclass
     function requestHeaders()
     {
         /// shall we declare support for insecure stuff such as php and serialized php?
