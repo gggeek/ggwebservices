@@ -16,7 +16,7 @@ require_once( "kernel/common/template.php" );
 $wsINI = eZINI::instance( 'wsproviders.ini' );
 
 // calculate params for local server, for consistency with what we do below
-foreach ( array( 'soap', 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap' ) as  $i => $protocol ) // soap has to be last!
+foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap' ) as  $i => $protocol ) // soap has to be last!
 {
     if ( $protocol == 'ezjscore' )
     {
