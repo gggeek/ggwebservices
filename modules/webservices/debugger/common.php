@@ -56,7 +56,7 @@
       $params['host'] = substr($host, 8);
       $params['protocol'] = 2;
     }
-    $params['port'] = isset($_GET['port']) ? (int)$_GET['port'] : '';
+    $params['port'] = ( isset($_GET['port']) && $_GET['port'] != '' ) ? (int)$_GET['port'] : '';
     $params['path'] = isset($_GET['path']) ? $_GET['path'] : '';
     // in case user forgot initial '/' in xmlrpc server path, add it back
     if ($params['path'] && ($params['path'][0]) != '/')

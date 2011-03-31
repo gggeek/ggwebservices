@@ -16,7 +16,7 @@ require_once( "kernel/common/template.php" );
 $wsINI = eZINI::instance( 'wsproviders.ini' );
 
 // calculate params for local server, for consistency with what we do below
-foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap' ) as  $i => $protocol )
+foreach ( array( 'soap', 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap' ) as  $i => $protocol ) // soap has to be last!
 {
     if ( $protocol == 'ezjscore' )
     {
@@ -60,7 +60,10 @@ foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap' ) as  $i => $protocol )
     }
 }
 
+$wsINI = eZINI::instance( 'wsproviders.ini' );
+
 // calculate list of target ws servers as it is hard to do that in tpl code
+/// @todo parse also all 'Options' that can be set per server
 $target_list = array();
 foreach ( $wsINI->groups() as $groupname => $groupdef )
 {
@@ -69,7 +72,14 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
         if ( $wsINI->hasVariable( $groupname, 'providerType' ) )
         {
             $target_list[$groupname] = $groupdef;
-            $url = parse_url( $groupdef['providerUri'] );
+            if ( $groupdef['providerUri'] == '' && @$groupdef['WSDL'] != '' )
+            {
+                $url = parse_url( $groupdef['WSDL'] );
+            }
+            else
+            {
+                $url = parse_url( $groupdef['providerUri'] );
+            }
             if ( !isset( $url['scheme'] ) || !isset( $url['host'] ) )
             {
                 $target_list[$groupname]['providerType'] = 'FAULT';
@@ -92,11 +102,26 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
                 {
                     $params .= '&timeout=' . $target_list[$groupname]['timeout'];
                 }
-                if ( $target_list[$groupname]['providerType'] == 'JSONRPC' )
+                if ( isset( $target_list[$groupname]['WSDL'] ) )
                 {
-                    // nb: we leave REST, SOAP as wstype 1, which is wrong
-                    // currently the left menu tpl does not show a link for other types than jsronrpc and xmlrcp anyway
-                    $params .= '&wstype=1';
+                    $params .= '&wsdl=1';
+                }
+                else
+                {
+                    $params .= '&wsdl=0';
+                }
+                switch( $target_list[$groupname]['providerType'] )
+                {
+                    case 'JSONRPC':
+                        $params .= '&wstype=1';
+                        break;
+                    case 'eZJSCore':
+                        $params .= '&wstype=2';
+                        break;
+                    case 'PhpSOAP':
+                        $params .= '&wstype=3';
+                        break;
+                    // nb: we leave REST as wstype 0, which is wrong
                 }
                 $target_list[$groupname]['urlparams'] = $params;
             }

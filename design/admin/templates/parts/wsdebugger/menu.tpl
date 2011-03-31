@@ -30,7 +30,7 @@
 
 <ul>
 {foreach $target_list as $targetname => $targetspec}
-    {if or( eq( $targetspec.providerType, 'JSONRPC' ), eq( $targetspec.providerType, 'XMLRPC' ), eq( $targetspec.providerType, 'EZJSCORE' ) )}
+    {if or( eq( $targetspec.providerType, 'JSONRPC' ), eq( $targetspec.providerType, 'XMLRPC' ), eq( $targetspec.providerType, 'eZJSCore' ), eq( $targetspec.providerType, 'PhpSOAP' ) )}
         <li><div><a href={concat( 'webservices/debugger/controller/', $targetspec.urlparams )|ezurl} target="frmcontroller">{$targetname|wash}</a></div></li>
     {else}
         {if  eq( $targetspec.providerType, 'FAULT' )}
