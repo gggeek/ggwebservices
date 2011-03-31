@@ -9,12 +9,14 @@
 - client: test https support with and without curl, with and without proxy too
 
 - add to the base client:
-  + automatic cookie support (+ simplify parsing: nobody uses version 1 cookies)
+  + automatic cookie support
   + send($array) with keepalive (both curl & by hand)
   + rebuilding of $_POST for compressed requests containing form data
   + more ssl options (and in debugger too)
 
 - client: add to ezwsclient support for proxy auth type, proxy conf via options[] (and in debugger too)
+
+- client: support the new ez rest protocol
 
 - add more client samples, eg. to call webservices on flickr/facebook/twitter
 
@@ -32,6 +34,7 @@
   + allow to create sample ini block for current server
   + ezjscore methods: improve parsing of phpdoc comments to get signature
   + test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
+  + parse all Options from wsproviders.ini for loading remote server config from left col
 
 - add jsonrpc 2.0 support (both client and server)
 
