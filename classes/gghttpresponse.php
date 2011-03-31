@@ -21,7 +21,7 @@ class ggHTTPResponse extends ggWebservicesResponse
     /**
     * Decodes the HTTP response stream.
     */
-    function decodeStream( $request, $stream, $headers = false )
+    function decodeStream( $request, $stream, $headers=false, $cookies=array() )
     {
 	    $this->Value = $stream;
     }
