@@ -35,6 +35,7 @@
   + ezjscore methods: improve parsing of phpdoc comments to get signature
   + test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
   + parse all Options from wsproviders.ini for loading remote server config from left col
+  + fix: why using the same session cookie of admin session to send a ws call stalls the debugger?
 
 - add jsonrpc 2.0 support (both client and server)
 
