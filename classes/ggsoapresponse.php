@@ -24,7 +24,7 @@ class ggSOAPResponse extends ggWebservicesResponse
     }
 
     /**
-      Returns the json payload for the response.
+      Returns the payload for the response.
     */
     function payload( )
     {
