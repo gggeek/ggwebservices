@@ -5,6 +5,8 @@
  * @author G. Giunta
  * @copyright 2009-2011
  *
+ * @todo add support for WSDL 2.0
+ *
  * @todo support showing a single wsdl file for many methods, when the user
  *       created different wsdl files on its own (merge them somehow)
  */
@@ -138,8 +140,11 @@ if ( $wsINI->variable( 'GeneralSettings', 'EnableSOAP' ) == 'true' )
         else
         {
             /// @todo !important we could build directly html output using an html template, to reduce resource usage
+            $tpl->setVariable( 'wsname', $ws );
+            /// @todo we should suse different service names if, depending on permissions, user cannot see all methods...
+            $tpl->setVariable( 'servicename', $ws == '' ? 'SOAPWeb' : ucfirst( $ws ) );
             $tpl->setVariable( 'functions', $wsdl_functions );
-            $wsdl = $tpl->fetch( "design:webservices/wsdl.tpl" );
+            $wsdl = $tpl->fetch( "design:webservices/wsdl1.tpl" );
         }
 
         if ( $output_type == 'html' )
@@ -155,12 +160,16 @@ if ( $wsINI->variable( 'GeneralSettings', 'EnableSOAP' ) == 'true' )
             $wsdl = $proc->transformToXML( $xmlDoc );
         }
 
-        $cachefile->storeContents( $wsdl );
+        if ( strlen( $wsdl ) )
+        {
+            $cachefile->storeContents( $wsdl );
+        }
+
     }
 
     if ( $output_type != 'html' )
     {
-        header( 'Content-type: application/wsdl+xml' );
+        //header( 'Content-type: application/wsdl+xml' );
     }
 
     echo $wsdl;

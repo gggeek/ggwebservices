@@ -8,9 +8,9 @@
  *}
 <definitions
 
-  name="TOBEDONEWSNAME"
-  targetNamespace="urn:WSNAME..."
-  xmlns:typens="urn:WSNAME..."
+  name="{$servicename}"
+  targetNamespace="{concat('webservices/wsdl/',$wsname|urlencode())|ezurl(no, full)}"
+  xmlns:tns="{concat('webservices/wsdl/',$wsname|urlencode())|ezurl(no, full)}"
 
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
@@ -22,34 +22,47 @@
 
 <!-- types -->
 
+<!-- messages -->
+
 {foreach $functions as $fname => $function}
     {set $fname = $fname|washxml()}
 
-<!-- messages -->
 <message name="{$fname}Request">
-    {foreach $function.params as $name => $type}
-        <part name="{$name}" type="{$type|xsdtype()}"/>
-    {/foreach}
+{foreach $function.params as $name => $type}
+
+    <part name="{$name}" type="{$type|xsdtype()|washxml()}"/>
+{/foreach}
+
 </message>
 
 <message name="{$fname}Response">
-    <part name="{$fname}Return" type="{$function.returntype|xsdtype()}"/>
+    <part name="{$fname}Return" type="{$function.returntype|xsdtype()|washxml()}"/>
 </message>
 
-<!-- bindings and port names -->
+{/foreach}
 
-<portType name="{$fname}PortType">
+<!-- port name and binding  -->
+
+<portType name="{$servicename}PortType">
+{foreach $functions as $fname => $function}
+    {set $fname = $fname|washxml()}
+
     <operation name="{$fname}">
         <documentation>{$function.documentation|washxml()}</documentation>
-        <input message="typens:{$fname}Request"/>
-        <output message="typens:{$fname}Response"/>
+        <input message="tns:{$fname}Request"/>
+        <output message="tns:{$fname}Response"/>
     </operation>
+{/foreach}
+
 </portType>
 
-<binding name="{$fname}Binding" type="typens:{$fname}PortType">
+<binding name="{$servicename}SOAPBinding" type="tns:{$servicename}PortType">
     <soap:binding
       style="rpc"
       transport="http://schemas.xmlsoap.org/soap/http"/>
+{foreach $functions as $fname => $function}
+    {set $fname = $fname|washxml()}
+
     <operation name="{$fname}">
         <soap:operation soapAction="urn:{$fname}Action"/>
         <input>
@@ -65,15 +78,14 @@
               encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
         </output>
     </operation>
+{/foreach}
 </binding>
 
 <!-- services -->
-<service name="{$fname}Service">
-    <port name="{$fname}Port" binding="typens:{$fname}Binding">
-            <soap:address location="{'webservices/execute/phpsoap'|ezurl(no, full)}" />
+<service name="{$servicename}Service">
+    <port name="{$servicename}Port" binding="tns:{$servicename}SOAPBinding">
+        <soap:address location="{'webservices/execute/phpsoap'|ezurl(no, full)}" />
     </port>
 </service>
-
-{/foreach}
 
 </definitions>
