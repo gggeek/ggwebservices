@@ -184,6 +184,11 @@ class ggSOAPRequest extends ggWebservicesRequest
         }
     }
 
+    public function getSoapVersion()
+    {
+        return $this->SoapVersion;
+    }
+
     public function ContentType()
     {
         if ( $this->SoapVersion == 2 )
