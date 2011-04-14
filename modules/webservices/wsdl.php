@@ -158,11 +158,10 @@ if ( $wsINI->variable( 'GeneralSettings', 'EnableSOAP' ) == 'true' )
         $cachefile->storeContents( $wsdl );
     }
 
-    /// @todo content-type headers
-    //if ( $output_type != 'html' )
-    //{
-    //header( 'Content-type: application/wsdl+xml' );
-    //}
+    if ( $output_type != 'html' )
+    {
+        header( 'Content-type: application/wsdl+xml' );
+    }
 
     echo $wsdl;
 
