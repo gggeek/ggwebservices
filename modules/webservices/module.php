@@ -31,11 +31,12 @@ $ViewList = array(
         'functions' => array( 'execute' ),
     ),
 
-    /*'wsdl' => array(
+    'wsdl' => array(
         'script' => 'wsdl.php',
         'params' => array( 'webservice' ),
+        'unordered_params' => array( 'view' => 'ViewMode' ),
         'functions' => array( 'execute' ),
-    ),*/
+    ),
 
     'debugger' => array(
         'script' => 'debugger.php',

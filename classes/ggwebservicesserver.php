@@ -381,6 +381,18 @@ abstract class ggWebservicesServer
         return array_keys( $this->FunctionList );
     }
 
+    /// @todo throw an error if method is not registered
+    public function methodDescription( $method )
+    {
+        return array_key_exists( $method, $this->FunctionList ) ? ( array_key_exists( $method, $this->FunctionDescription ) ? $this->FunctionDescription[$method] : '' ) : false;
+    }
+
+    /// @todo throw an error if method is not registered
+    public function methodSignatures( $method )
+    {
+        return array_key_exists( $method, $this->FunctionList ) ? $this->FunctionList[$method] : false;
+    }
+
     /// Contains a list over registered functions, and their dscriptions
     protected $FunctionList = array();
     protected $FunctionDescription = array();

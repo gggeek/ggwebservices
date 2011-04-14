@@ -11,7 +11,7 @@ class ggWebservicesOperators {
      Constructor
     */
     function ggWebservicesOperators() {
-        $this->Operators = array ( 'washxml', 'washxmlcomment', 'washxmlcdata' );
+        $this->Operators = array ( 'washxml', 'washxmlcomment', 'washxmlcdata', 'xsdtype' );
     }
 
     /**
@@ -51,8 +51,9 @@ class ggWebservicesOperators {
                     'type' => 'array',
                     'required' => true,
                     'default' => array() )
-                )
-            );
+                ),
+            'xsdtype' => array(),
+        );
     }
 
     /**
@@ -67,18 +68,33 @@ class ggWebservicesOperators {
                 $operatorValue = $this->get_topics_of_subcat_xml();
             } break;*/
             case 'washxml':
-            {
                 $operatorValue = str_replace( array( '&', '"', "'", '<', '>' ), array( '&amp;', '&quot;', '&apos;', '&lt;', '&gt;' ), $operatorValue );
-            } break;
+                break;
             case 'washxmlcomment':
-            {
                 // in xml comments the -- string is not permitted
                 $operatorValue = str_replace( '--', '_-', $operatorValue );
-            } break;
+                break;
             case 'washxmlcdata':
-            {
                 /// @todo
-            } break;
+                break;
+            case 'xsdtype':
+                switch( $operatorValue )
+                {
+                    case 'string':
+                        $operatorValue = 'xsd:string';
+                        break;
+                    case 'int':
+                    case 'integer':
+                        ;
+                        break;
+                    case 'bool':
+                    case 'boolean':
+                        ;
+                        break;
+                    default:
+                        $operatorValue = 'xsd:anyType';
+                }
+                break;
         }
     }
 
