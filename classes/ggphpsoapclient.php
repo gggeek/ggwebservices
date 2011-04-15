@@ -116,7 +116,13 @@ class ggPhpSOAPClient extends ggWebservicesClient
                 }
                 else
                 {
-                    $results = ggWSDLParser::transformGetFunctionsResults( $results, $rname );
+                    $mname = '';
+                    if ( $rname == 'system.methodSignature' )
+                    {
+                        $mname = $request->parameters();
+                        $mname = $mname[0];
+                    }
+                    $results = ggWSDLParser::transformGetFunctionsResults( $results, $rname, $mname );
                 }
             }
             else

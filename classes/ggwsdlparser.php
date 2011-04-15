@@ -30,18 +30,22 @@ class ggWSDLParser
             case 'system.methodSignature':
                 foreach ( $results as $key => $value )
                 {
-                    if ( preg_match( '/^([^ ]+) [^\(]+\((.+)\)$/', $value, $matches ) )
+                    if ( preg_match( '/^([^ ]+) ([^\(]+)\((.+)\)$/', $value, $matches ) )
                     {
-                        $params = array( $matches[1] );
-                        foreach( explode( ', ', $matches[2] ) as $param )
+                        if ( $method == $matches[2] )
                         {
-                            $param = explode( ' ', $param, 2 );
-                            $params[] = $param[0];
+                            $params = array( $matches[1] );
+                            foreach( explode( ', ', $matches[3] ) as $param )
+                            {
+                                $param = explode( ' ', $param, 2 );
+                                $name = substr( $param[1], 1); // php likes dollars in var names
+                                $params[$name] = $param[0];
+                            }
+                            return array( $params );
                         }
-                        return array( $params );
                     }
-                    return array(); /// @todo return error 'method not found'
                 }
+                return array(); /// @todo return error 'method not found'
                 break;
         } // switch
     }
