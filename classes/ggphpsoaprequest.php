@@ -20,7 +20,7 @@ class ggPhpSOAPRequest extends ggSOAPRequest
     }
 
     /**
-    * This function is called for once on the client, not on the server:
+    * This function is called once on the client, not on the server:
     * we leave it up to the php soap lib to generate the payload, then inject it
     * into the request, and route it through another send() call
     */
