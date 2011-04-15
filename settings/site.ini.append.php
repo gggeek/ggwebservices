@@ -7,8 +7,9 @@ ExtensionAutoloadPath[]=ggwebservices
 TranslationExtensions[]=ggwebservices
 
 [RoleSettings]
-# The following view does permissions checking on its own, based on the executed webservice
+# The following views do permissions checking on their own, based on the executed webservice
 PolicyOmitList[]=webservices/execute
+PolicyOmitList[]=webservices/wsdl
 
 [Cache_webservices]
 name=ggWebservices server-side wsdl cache

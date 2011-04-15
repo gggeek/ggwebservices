@@ -6,7 +6,7 @@
  * @version $Id$
  * @copyright 2011 G. Giunta
  *
- * @todo add support for WSDL 2.0
+ * @todo add support for letting user choose WSDL 2.0
  */
 
 // decode input params
@@ -30,36 +30,44 @@ if ( $wsINI->variable( 'GeneralSettings', 'EnableSOAP' ) == 'true' )
     /// @todo register ezjscore methods (hard to do...)
 
     // check perms: only show wsdl for methods user has access to
-    $user = eZUser::currentUser();
-    $accessResult = $user->hasAccessTo( 'webservices' , 'execute' );
-    $accessWord = $accessResult['accessWord'];
     $methods = false;
+    $user = eZUser::currentUser();
+    $accessResult = $user->hasAccessTo( 'webservices' , 'wsdl' );
+    $accessWord = $accessResult['accessWord'];
     if ( $accessWord == 'yes' )
     {
         $methods = $ws;
     }
-    else if ( $accessWord != 'no' ) // with limitation
+    else
     {
-        foreach ( $accessResult['policies'] as $key => $policy )
+        $accessResult = $user->hasAccessTo( 'webservices' , 'execute' );
+        $accessWord = $accessResult['accessWord'];
+        if ( $accessWord == 'yes' )
         {
-            if ( isset( $policy['Webservices'] ) )
+            $methods = $ws;
+        }
+        else if ( $accessWord != 'no' ) // with limitation
+        {
+            foreach ( $accessResult['policies'] as $key => $policy )
             {
-                if ( $ws != false && in_array( $ws, $policy['Webservices'] ) )
+                if ( isset( $policy['Webservices'] ) )
                 {
-                    // if user wants the wsdl for a single ws, check if it can be executed
-                    $methods = $policy['Webservices'];
-                    break;
-                }
-                else
-                {
-                    // if user wants global wsdl, only show him methods he can access
-                    $methods[] = $policy['Webservices'];
-                }
+                    if ( $ws != false && in_array( $ws, $policy['Webservices'] ) )
+                    {
+                        // if user wants the wsdl for a single ws, check if it can be executed
+                        $methods = $policy['Webservices'];
+                        break;
+                    }
+                    else
+                    {
+                        // if user wants global wsdl, only show him methods he can access
+                        $methods[] = $policy['Webservices'];
+                    }
 
+                }
             }
         }
     }
-
     if ( $methods === false )
     {
         // Error access denied - shall we show an error response in protocol format instead of html?

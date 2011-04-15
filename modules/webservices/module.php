@@ -23,7 +23,7 @@ $ViewList = array(
 
     /*
     * View used to invoke webservices witout usage of the custom index files jsonrpc.php and phpxmlrpc.php
-    * Execution will be slower, but access control can be managaed via standard user policies
+    * Execution will be slower, but access control can be managed via standard user policies
     */
     'execute' => array(
         'script' => 'execute.php',
@@ -31,6 +31,11 @@ $ViewList = array(
         'functions' => array( 'execute' ),
     ),
 
+    /*
+    * By default every user can see the wsdl corresponding to the services he can execute.
+    * As an alternative, giving to user access to the webservices/wsdl policy will allow him
+    * to see the wsdl for all existing operations
+    */
     'wsdl' => array(
         'script' => 'wsdl.php',
         'params' => array( 'webservice' ),
@@ -76,7 +81,8 @@ $FunctionList = array(
             'function' => 'getServersList',
             'parameter' => array() )
     ),
-	'debugger' => array()
+	'debugger' => array(),
+	'wsdl' => array(),
 );
 
 ?>
