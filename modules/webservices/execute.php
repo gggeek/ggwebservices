@@ -11,12 +11,16 @@
 
 $module = $Params['Module'];
 $protocol = strtoupper( $Params['protocol'] );
+$wsclass = $protocol;
 
 switch( $protocol )
 {
+    case 'PHPSOAP':
+        $protocol = 'SOAP';
+        $wsclass = 'PhpSOAP';
+        // continue voluntarily
     case 'REST':
     case 'JSONRPC':
-    //case 'SOAP':
     case 'XMLRPC':
         $data = file_get_contents( 'php://input' );
         break;
@@ -31,7 +35,7 @@ $wsINI = eZINI::instance( ggeZWebservices::configFileByProtocol( strtolower( $pr
 if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
 {
     $namespaceURI = '';
-    $serverClass = 'gg' . $protocol . 'Server';
+    $serverClass = 'gg' . $wsclass . 'Server';
     $server = new $serverClass();
 
     // nb: this will register methods declared only for $protocol or for all
