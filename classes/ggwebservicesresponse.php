@@ -119,7 +119,7 @@ abstract class ggWebservicesResponse
     function setValue( $value )
     {
         $this->Value = $value;
-        if ( $value instanceof ggWebservicesFault )
+        if ( $value instanceof ggWebservicesFault || $value instanceof eZSOAPFault )
         {
             $this->IsFault = true;
             $this->FaultCode = $value->faultCode();
