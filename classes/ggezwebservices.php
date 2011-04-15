@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id: ggezwebservicesclient.php 102 2009-09-02 09:03:34Z gg $
- * @copyright (C) G. Giunta 2009-2011
+ * @copyright (C) 2009-2011 G. Giunta
  */
 
 class ggeZWebservices
@@ -174,6 +174,109 @@ class ggeZWebservices
                 }
             }
         }
+    }
+
+    /**
+    * Returns the wsdl file corresponding to a list of server's methods.
+    * This is implemented here because
+    * . it relies on the templating system
+    * . it does its own caching
+    * but it should really be a function of the server class itself.
+    * Since we do not want to pollute server classes with eZ specifics, we chose
+    * to avoid the reverse depenency by putting the code here.
+    *
+    * @todo support showing a single wsdl file for many methods, when the user
+    *       created different wsdl files on its own (merge them somehow)
+    * @todo allow user to set a specific url for the wsdl endpoint (in case he
+    *       wants to use the custom soap controller)
+    */
+    static function methodsWSDL( $server, $methods, $version=1, $output_type='wsdl', $service_name='' )
+    {
+        $cachedir = eZSys::cacheDirectory() . '/webservices';
+        $cachefile = eZClusterFileHandler::instance( $cachedir . '/' . md5( "$output_type,$version," . implode( ',', $methods ) ) );
+        if ( $cachefile->exists() )
+        {
+            $wsdl = $cachefile->fetchContents();
+        }
+        else
+        {
+            $wsdl_strings = array();
+            $wsdl_functions = array();
+            foreach ( $methods as $method )
+            {
+                $wsdl = $server->userWsdl( $method );
+                if ( $wsdl != null )
+                {
+                    $wsdl_strings[$method] = $wsdl;
+                }
+                else
+                {
+                    $sigs = $server->methodSignatures( $method );
+                    $wsdl_functions[$method] = array(
+                        //'name' => $function,
+                        'params' => $sigs[0]['in'],
+                        'returntype' => $sigs[0]['out'],
+                        'documentation' => $server->methodDescription( $method )
+                    );
+                }
+            }
+
+            // wsdl building is done via template
+            include_once( 'kernel/common/template.php' );
+            $tpl = templateInit();
+
+            // allow end user to register wsdl as filesystem files (or just complete wsdl)
+            foreach( $wsdl_strings as $method => $wsdl )
+            {
+                if ( strpos( $wsdl, 'design:' ) === 0 || strpos( $wsdl, 'file:' ) === 0 )
+                {
+                    $wsdl_strings[$method] = $tpl->fetch( $wsdl );
+                }
+            }
+
+            if ( count( $wsdl_strings ) )
+            {
+                if ( count( $methods ) == 1 )
+                {
+                    $wsdl = reset( $wsdl_strings );
+                }
+                else
+                {
+                    /// @todo: multiple wsdl files created by user (and maybe some by introspection) - merge them
+                    $wsdl = 'NOT SUPPORTED YET...';
+                }
+            }
+            else
+            {
+                /// @todo !important we could build directly html output using an html template, to reduce resource usage
+                $namespace = 'webservices/wsdl/' . $service_name;
+                eZURI::transformURI( $namespace , false, 'full' );
+                $tpl->setVariable( 'namespace', $namespace );
+                /// @todo we should use different service names if, depending on permissions, user cannot see all methods...
+                $tpl->setVariable( 'servicename', $service_name == '' ? 'SOAP' : ucfirst( $service_name ) );
+                $tpl->setVariable( 'functions', $wsdl_functions );
+                $wsdl = $tpl->fetch( "design:webservices/wsdl{$version}.tpl" );
+            }
+
+            if ( $output_type == 'html' )
+            {
+                $xmlDoc = new DOMDocument();
+                $xmlDoc->loadXML( $wsdl );
+
+                $xslDoc = new DOMDocument();
+                $xslDoc->load( './extension/ggwebservices/design/standard/stylesheets/debugger/wsdl-viewer.xsl' );
+
+                $proc = new XSLTProcessor();
+                $proc->importStylesheet( $xslDoc );
+                $wsdl = $proc->transformToXML( $xmlDoc );
+            }
+
+            if ( strlen( $wsdl ) )
+            {
+                $cachefile->storeContents( $wsdl );
+            }
+        }
+        return $wsdl;
     }
 
     /**

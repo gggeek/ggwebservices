@@ -1,16 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 {**
- * WSDL template
+ * WSDL 1 template
  *
- * @todo import or merge $extras
- * @todo add definition of types for complex types
- * @todo fix namespaces
+ * @todo allow user to specify 'location', via eg. an ini value
  *}
 <definitions
 
-  name="{$servicename}"
-  targetNamespace="{concat('webservices/wsdl/',$wsname|urlencode())|ezurl(no, full)}"
-  xmlns:tns="{concat('webservices/wsdl/',$wsname|urlencode())|ezurl(no, full)}"
+  name="{$servicename|washxml()}"
+  targetNamespace="{$namespace|washxml()}"
+  xmlns:tns="{$namespace|washxml()}"
 
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
@@ -43,7 +41,7 @@
 
 <!-- port name and binding  -->
 
-<portType name="{$servicename}PortType">
+<portType name="{$servicename|washxml()}PortType">
 {foreach $functions as $fname => $function}
     {set $fname = $fname|washxml()}
 
@@ -56,7 +54,7 @@
 
 </portType>
 
-<binding name="{$servicename}SOAPBinding" type="tns:{$servicename}PortType">
+<binding name="{$servicename|washxml()}SOAPBinding" type="tns:{$servicename|washxml()}PortType">
     <soap:binding
       style="rpc"
       transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -82,8 +80,8 @@
 </binding>
 
 <!-- services -->
-<service name="{$servicename}Service">
-    <port name="{$servicename}Port" binding="tns:{$servicename}SOAPBinding">
+<service name="{$servicename|washxml()}Service">
+    <port name="{$servicename|washxml()}Port" binding="tns:{$servicename|washxml()}SOAPBinding">
         <soap:address location="{'webservices/execute/phpsoap'|ezurl(no, full)}" />
     </port>
 </service>

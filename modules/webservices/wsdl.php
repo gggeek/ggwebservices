@@ -3,12 +3,10 @@
  * View that shows the wsdl used for receiving soap calls
  *
  * @author G. Giunta
- * @copyright 2009-2011
+ * @version $Id$
+ * @copyright 2011 G. Giunta
  *
  * @todo add support for WSDL 2.0
- *
- * @todo support showing a single wsdl file for many methods, when the user
- *       created different wsdl files on its own (merge them somehow)
  */
 
 // decode input params
@@ -16,6 +14,7 @@
 $module = $Params['Module'];
 $ws = $Params['webservice'];
 $output_type = ( $Params['ViewMode'] == 'html' ? 'html' : 'wsdl' );
+$wsdl_version = 1;
 
 // check if soap is enabled
 $wsINI = eZINI::instance( ggeZWebservices::configFileByProtocol( 'soap' ) );
@@ -83,93 +82,11 @@ if ( $wsINI->variable( 'GeneralSettings', 'EnableSOAP' ) == 'true' )
         $methods = array( $methods );
     }
 
-    $cachedir = eZSys::cacheDirectory() . '/webservices';
-    $cachefile = eZClusterFileHandler::instance( $cachedir . '/' . md5( "$output_type," . implode( ',', $methods ) ) );
-    if ( $cachefile->exists() )
-    {
-        $wsdl = $cachefile->fetchContents();
-    }
-    else
-    {
-        $wsdl_strings = array();
-        $wsdl_functions = array();
-        foreach ( $methods as $method )
-        {
-            $wsdl = $server->methodWsdl( $method );
-            if ( $wsdl != null )
-            {
-                $wsdl_strings[$method] = $wsdl;
-            }
-            else
-            {
-                $sigs = $server->methodSignatures( $method );
-                $wsdl_functions[$method] = array(
-                    //'name' => $function,
-                    'params' => $sigs[0]['in'],
-                    'returntype' => $sigs[0]['out'],
-                    'documentation' => $server->methodDescription( $method )
-                );
-            }
-        }
-
-        // wsdl building is done via template
-        include_once( 'kernel/common/template.php' );
-        $tpl = templateInit();
-
-        // allow end user to register wsdl as filesystem files (or just complete wsdl)
-        foreach( $wsdl_strings as $method => $wsdl )
-        {
-            if ( strpos( $wsdl, 'design:' ) === 0 || strpos( $wsdl, 'file:' ) === 0 )
-            {
-                $wsdl_strings[$method] = $tpl->fetch( $wsdl );
-            }
-        }
-
-        if ( count( $wsdl_strings ) )
-        {
-            if ( count( $methods ) == 1 )
-            {
-                $wsdl = reset( $wsdl_strings );
-            }
-            else
-            {
-                /// @todo: multiple wsdl files created by user
-                $wsdl = 'NOT SUPPORTED YET...';
-            }
-        }
-        else
-        {
-            /// @todo !important we could build directly html output using an html template, to reduce resource usage
-            $tpl->setVariable( 'wsname', $ws );
-            /// @todo we should suse different service names if, depending on permissions, user cannot see all methods...
-            $tpl->setVariable( 'servicename', $ws == '' ? 'SOAPWeb' : ucfirst( $ws ) );
-            $tpl->setVariable( 'functions', $wsdl_functions );
-            $wsdl = $tpl->fetch( "design:webservices/wsdl1.tpl" );
-        }
-
-        if ( $output_type == 'html' )
-        {
-            $xmlDoc = new DOMDocument();
-            $xmlDoc->loadXML( $wsdl );
-
-            $xslDoc = new DOMDocument();
-            $xslDoc->load( './extension/ggwebservices/design/standard/stylesheets/debugger/wsdl-viewer.xsl' );
-
-            $proc = new XSLTProcessor();
-            $proc->importStylesheet( $xslDoc );
-            $wsdl = $proc->transformToXML( $xmlDoc );
-        }
-
-        if ( strlen( $wsdl ) )
-        {
-            $cachefile->storeContents( $wsdl );
-        }
-
-    }
+    $wsdl= ggeZWebservices::methodsWSDL( $server, $methods, $wsdl_version, $output_type, $ws );
 
     if ( $output_type != 'html' )
     {
-        //header( 'Content-type: application/wsdl+xml' );
+        header( 'Content-type: application/wsdl+xml' );
     }
 
     echo $wsdl;
