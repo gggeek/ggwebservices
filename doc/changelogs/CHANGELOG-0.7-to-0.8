@@ -1,0 +1,23 @@
+Changes from 0.7 to 0.8 - released 2011/x/y
+
+*General:
+
+- Server: Add support for responsing to SOAP calls
+
+  the url to be used is: .../webservices/execute/phpsoap
+
+- Server: Add support for displaying wsdl
+
+  the url to be used are:
+  .../webservices/wsdl (for a complete wsdl, filtered by user permissions)
+  .../webservices/wsdl/$method (for a wsdl describing a single method)
+
+  the human readable information corresponding to the wsdl is available at:
+  .../webservices/wsdl/(view)/html
+  .../webservices/wsdl/$method/(view)/html
+
+*Bugfixes:
+
+- Debugger: fix list of parameters shown for SOAP methods
+
+*Incompatible changes
