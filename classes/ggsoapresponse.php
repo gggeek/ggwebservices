@@ -6,7 +6,7 @@
  * @version $Id$
  * @copyright (C) G. Giunta 2009-2011
  *
- * @todo add nusoap, native based versions
+ * @todo add support for soap 1.2
  */
 
 class ggSOAPResponse extends ggWebservicesResponse
@@ -42,7 +42,7 @@ class ggSOAPResponse extends ggWebservicesResponse
         $root->appendChild( $body );
 
         // Check if it's a fault
-        if ( $this->Value instanceof ggWebservicesFault )
+        if ( $this->Value instanceof ggWebservicesFault || $this->Value instanceof eZSOAPFault )
         {
             $fault = $doc->createElement( ggSOAPRequest::ENV_PREFIX . ':Fault' );
 
