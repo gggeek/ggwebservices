@@ -2,9 +2,14 @@ Changes from 0.7 to 0.8 - released 2011/x/y
 
 *General:
 
-- Server: Add support for responsing to SOAP calls
+- Server: Add support for responding to SOAP calls
 
   the url to be used is: .../webservices/execute/phpsoap
+
+  advantages compared to usage of the custom soap.php controller:
+  . fine-grained access control (roles can be granted access to a specific set of webservices)
+  . access control based on the IP address of the client
+  . better (?) support for wsdl, as the php native soap server class is used
 
 - Server: Add support for displaying wsdl
 
@@ -12,12 +17,17 @@ Changes from 0.7 to 0.8 - released 2011/x/y
   .../webservices/wsdl (for a complete wsdl, filtered by user permissions)
   .../webservices/wsdl/$method (for a wsdl describing a single method)
 
-  the human readable information corresponding to the wsdl is available at:
+  also human readable information corresponding to the wsdl is available at:
   .../webservices/wsdl/(view)/html
   .../webservices/wsdl/$method/(view)/html
 
+  For the moment, only wsdl 1.1 is supported
+
+  More information about soap & wsdl usage in the doc/soap_readme file
+
 *Bugfixes:
 
-- Debugger: fix list of parameters shown for SOAP methods
+- Debugger: fix list of parameters shown when executing 'describe method'
+
 
 *Incompatible changes
