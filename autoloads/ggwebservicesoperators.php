@@ -78,7 +78,7 @@ class ggWebservicesOperators {
                 /// @todo
                 break;
             case 'xsdtype':
-                $operatorValue = ggWSDLParser::php2xsdType( $operatorValue );
+                $operatorValue = ggWSDLParser::phpType2xsdType( $operatorValue );
                 break;
         }
     }

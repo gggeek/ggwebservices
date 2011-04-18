@@ -80,6 +80,7 @@ class ggSOAPResponse extends ggWebservicesResponse
 
     /**
       Decodes a DOM node and returns the PHP datatype instance of it.
+      @todo move the type logic into ggWSDLParser class
     */
     static function decodeDataTypes( $node, $type="" )
     {

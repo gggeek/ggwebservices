@@ -73,6 +73,7 @@ class ggSOAPRequest extends ggWebservicesRequest
 
     /**
       Encodes a PHP variable into a SOAP datatype.
+      @todo move this logic into ggWSDLParser class
     */
     static function encodeValue( $doc, $name, $value )
     {
