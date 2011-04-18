@@ -448,24 +448,29 @@ if ( $action )
             $x = $r2[$i];
             if ( is_array( $x ) )
             {
-              $ret = $x[0];
+              $ret = array_shift( $x );
               echo "<code>OUT:&nbsp;" . htmlspecialchars( $ret ) . "<br />IN: (";
-              if ( count( $x ) > 1 )
+              if ( count( $x ) > 0 )
               {
-                for($k = 1; $k < count( $x ); $k++)
+                $k = 0;
+                foreach( $x as $key => $y )
                 {
-                  $y = $x[$k];
+                  //$y = $x[$k];
+                  if ( $wstype == 3 )
+                  {
+                      echo htmlspecialchars( $key ). ': ';
+                  }
                   echo htmlspecialchars( $y );
                   /*if ($wstype != 1 && $wstype != 2  && $wstype != 3)
                   {
                     $payload = $payload . '<param><value><'.htmlspecialchars($y).'></'.htmlspecialchars($y)."></value></param>\n";
                   }
-                  $alt_payload .= $y;
-                  if ($k < count( $x )-1)
+                  $alt_payload .= $y;*/
+                  if ( $k < count( $x )-1 )
                   {
-                    $alt_payload .= ';';
+                    //$alt_payload .= ';';
                     echo ", ";
-                  }*/
+                  }
                 	switch( strtolower( $y ) )
                 	{
                 		case 'array':
@@ -490,6 +495,7 @@ if ( $action )
                 		default:
                 			$p[] = '"..."';
                 	}
+                    $k++;
                 }
               }
               echo ")</code>";
