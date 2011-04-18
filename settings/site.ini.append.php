@@ -10,6 +10,7 @@ TranslationExtensions[]=ggwebservices
 # The following views do permissions checking on their own, based on the executed webservice
 PolicyOmitList[]=webservices/execute
 PolicyOmitList[]=webservices/wsdl
+PolicyOmitList[]=webservices/xsd
 
 [Cache_webservices]
 name=ggWebservices server-side wsdl cache
