@@ -73,7 +73,7 @@ function echoStringArray( $inputStringArray )
 {
     foreach( $inputStringArray as $i => $s)
     {
-        $inputStringArray = (string)$s;
+        $inputStringArray[$i] = (string)$s;
     }
     return $inputStringArray;
 }
@@ -87,7 +87,7 @@ function echoIntegerArray( $inputIntegerArray )
 {
     foreach( $inputIntegerArray as $i => $s)
     {
-        $inputIntegerArray = (integer)$s;
+        $inputIntegerArray[$i] = (integer)$s;
     }
     return $inputIntegerArray;
 }
@@ -101,7 +101,7 @@ function echoFloatArray( $inputFloatArray )
 {
     foreach( $inputFloatArray as $i => $s)
     {
-        $inputFloatArray = (float)$s;
+        $inputFloatArray[$i] = (float)$s;
     }
     return $inputFloatArray;
 }
