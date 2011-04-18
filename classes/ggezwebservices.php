@@ -190,12 +190,18 @@ class ggeZWebservices
     * @todo allow user to set a specific url for the wsdl endpoint (in case he
     *       wants to use the custom soap controller)
     */
-    static function methodsWSDL( $server, $methods, $version=1, $output_type='wsdl', $service_name='' )
+    static function methodsWSDL( $server, $methods, $version=1, $output_type='wsdl', $service_name='', $return_url=false )
     {
         $cachedir = eZSys::cacheDirectory() . '/webservices';
-        $cachefile = eZClusterFileHandler::instance( $cachedir . '/' . md5( "$output_type,$version," . implode( ',', $methods ) ) );
+        $cachefilename = $cachedir . '/' . md5( "$output_type,$version," . implode( ',', $methods ) );
+        $cachefile = eZClusterFileHandler::instance( $cachefilename );
         if ( $cachefile->exists() )
         {
+            if ( $return_url )
+            {
+                $cachefile->fetch();
+                return $cachefilename;
+            }
             $wsdl = $cachefile->fetchContents();
         }
         else
@@ -251,25 +257,31 @@ class ggeZWebservices
                 $wsdl = $tpl->fetch( "design:webservices/wsdl{$version}.tpl" );
             }
 
-            if ( $output_type == 'html' )
-            {
-                $xmlDoc = new DOMDocument();
-                $xmlDoc->loadXML( $wsdl );
-
-                $xslDoc = new DOMDocument();
-                $xslDoc->load( './extension/ggwebservices/design/standard/stylesheets/debugger/wsdl-viewer.xsl' );
-
-                $proc = new XSLTProcessor();
-                $proc->importStylesheet( $xslDoc );
-                $wsdl = $proc->transformToXML( $xmlDoc );
-            }
-
             if ( strlen( $wsdl ) )
             {
+                if ( $output_type == 'html' )
+                {
+                    $xmlDoc = new DOMDocument();
+                    $xmlDoc->loadXML( $wsdl );
+
+                    $xslDoc = new DOMDocument();
+                    $xslDoc->load( './extension/ggwebservices/design/standard/stylesheets/debugger/wsdl-viewer.xsl' );
+
+                    $proc = new XSLTProcessor();
+                    $proc->importStylesheet( $xslDoc );
+                    $wsdl = $proc->transformToXML( $xmlDoc );
+                }
+
                 $cachefile->storeContents( $wsdl );
             }
+            else
+            {
+                /// @todo if user wants HTML out, give him a en error page...
+
+                $cachefilename = null; // used below as return value
+            }
         }
-        return $wsdl;
+        return $return_url ? $cachefilename : $wsdl;
     }
 
     /**

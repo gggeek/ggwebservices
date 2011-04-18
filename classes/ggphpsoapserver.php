@@ -113,9 +113,9 @@ class ggPhpSOAPServer extends ggWebservicesServer
         $functionName = $request->name();
         if ( array_key_exists( $functionName, $this->FunctionList ) )
         {
-            /// @todo: use a self-generated wsdl (unless user gave no param description), as it is supposedly better than nothing...
-            $wsdl = $this->userdWSDL( $functionName );
-            $server = new SoapServer( $wsdl, array( 'soap_version' => $request->getVersion(), /*'uri' => '...'*/ ) );
+            /// we use a self-generated wsdl (even if user gave no param description), as it is supposedly better than nothing...
+            $wsdlUrl = ggeZWebservices::methodsWSDL( $this, array( $functionName ), 1, 'wsdl', $functionName, true );
+            $server = new SoapServer( $wsdlUrl, array( 'soap_version' => $request->getSoapVersion(), /*'uri' => '...'*/ ) );
             foreach( $this->FunctionList as $function => $desc )
             {
                 $server->addFunction( $function );
