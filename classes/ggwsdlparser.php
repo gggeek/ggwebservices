@@ -53,8 +53,11 @@ class ggWSDLParser
         } // switch
     }
 
-    // transforms type declarations used eg. in server's registerFunction() calls
-    // into xsd type declarations
+    /**
+    * Transforms type declarations used eg. in server's registerFunction() calls
+    * into xsd type declarations.
+    * Simple types will be prefixed with $xmlschemaprefix, complex ones with $targetprefix
+    */
     static function phpType2xsdType( $type, $xmlschemaprefix='xsd:', $targetprefix='tnsxsd:' )
     {
         // end user can give us xsd types directly: allow him to
@@ -82,6 +85,8 @@ class ggWSDLParser
                 case 'mixed':
                     /// @todo
                     break;
+                case 'void':
+                    return '';
                 default:
                     if ( strpos( $type, '|' ) !== false )
                     {

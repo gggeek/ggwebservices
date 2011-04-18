@@ -51,8 +51,8 @@ $server->registerFunction(
 
 $server->registerFunction(
     'echoVoid',
-    array(),
-    '' );
+    array(), // no input parameter
+    'void' );
 
 $server->registerFunction(
     'echoBase64',

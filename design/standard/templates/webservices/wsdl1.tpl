@@ -50,7 +50,10 @@
             {set $types = $types|append($rtype)}
         {/if}
     {/if}
-    <wsdl:part name="{$fname}Return" type="{$rtype|washxml()}"/>
+    {if ne($rtype, '')}
+        <wsdl:part name="{$fname}Return" type="{$rtype|washxml()}"/>
+    {/if}
+
 </wsdl:message>
 
 {/foreach}
