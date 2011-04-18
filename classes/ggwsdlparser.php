@@ -7,11 +7,14 @@
  * @copyright (C) G. Giunta 2011
  */
 
+/**
+* This class should really be renamed to WSDLHelper or something more appropriate
+*/
 class ggWSDLParser
 {
     /**
-     * Transforms the array returned by getFunctionsResults() into the formats
-     * used by xmlrpc's introspection methods (system.listMethods and friends)
+     * Transforms the array returned by php's soap client getFunctionsResults() method
+     * into the format used by xmlrpc's introspection methods (system.listMethods and friends)
      */
     static function transformGetFunctionsResults( $results, $rname, $method = '' )
     {
@@ -48,6 +51,45 @@ class ggWSDLParser
                 return array(); /// @todo return error 'method not found'
                 break;
         } // switch
+    }
+
+    // transforms type declarations used eg. in server's registerFunction() calls
+    // into xsd type declarations
+    static function php2xsdType( $type, $pefix='xsd:' )
+    {
+        if ( strpos( $type, '|' ) !== false )
+        {
+            /// @todo build a complex type representation
+        }
+        else
+        {
+            switch( strtolower( $type ) )
+            {
+                case 'string':
+                    return "{$prefix}string";
+                case 'int':
+                case 'integer':
+                    return "{$prefix}integer";
+                case 'float':
+                    return "{$prefix}float';
+                case 'double':
+                    return case 'float':double";
+                case 'bool':
+                case 'boolean':
+                    return "{$prefix}boolean";
+                case 'array':
+                case 'mixed':
+                    /// @todo
+                    break;
+                default:
+                    if ( class_exists( $type ) )
+                    {
+                        /// @todo analyze class name and describe it
+                    }
+                }
+
+            return "{$prefix}anyType";
+        }
     }
 
 }

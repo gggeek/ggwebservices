@@ -78,45 +78,8 @@ class ggWebservicesOperators {
                 /// @todo
                 break;
             case 'xsdtype':
-                $operatorValue = self::php2xsdType( $operatorValue );
+                $operatorValue = ggWSDLParser::php2xsdType( $operatorValue );
                 break;
-        }
-    }
-
-    static function php2xsdType( $type )
-    {
-        if ( strpos( $type, '|' ) !== false )
-        {
-            /// @todo build a complex type representation
-        }
-        else
-        {
-            switch( strtolower( $type ) )
-            {
-                case 'string':
-                    return 'xsd:string';
-                case 'int':
-                case 'integer':
-                    return 'xsd:integer';
-                case 'float':
-                    return 'xsd:float';
-                case 'double':
-                    return 'xsd:double';
-                case 'bool':
-                case 'boolean':
-                    return 'xsd:boolean';
-                case 'array':
-                case 'mixed':
-                    /// @todo
-                    break;
-                default:
-                    if ( class_exists( $type ) )
-                    {
-                        /// @todo analyze class name and describe it
-                    }
-            }
-
-            return 'xsd:anyType';
         }
     }
 
