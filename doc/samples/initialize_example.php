@@ -5,9 +5,8 @@
  * directory
  */
 
-/*
 $server->registerFunction( 'fetchSyndicationFeedObjectList', // name of exposed webservice AND php function at the same time
-                           array( 'feedID' => 'integer' ), // input params array. Keys are not really used, as param validation is positional. Use null instead of an array to avoid type validation
+                           array( 'feedID' => 'integer' ), // input params array. Keys are only used for soap wsdl generation, as param validation is positional. Use null instead of an array to avoid type validation
                            'array', // type of return value
                            'Returns a list of...' );
 
@@ -23,7 +22,5 @@ function fetchSyndicationFeedObjectList( $feedID )
         return array( 'a', 'b', 'c' );
     }
 }
-*/
-
 
 ?>

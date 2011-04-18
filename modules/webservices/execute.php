@@ -126,15 +126,22 @@ if ( $wsINI->variable( 'GeneralSettings', 'Enable' . $protocol ) == 'true' )
         return $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
     }
 
-    if ( $server->isInternalRequest( $functionName ) )
+    if ( $wsclass == 'PhpSOAP' )
     {
-        $response = $server->handleInternalRequest( $functionName, $params );
+        $server->processRequestObj( $request );
     }
     else
     {
-        $response = $server->handleRequest( $functionName, $params );
+        if ( $server->isInternalRequest( $functionName ) )
+        {
+            $response = $server->handleInternalRequest( $functionName, $params );
+        }
+        else
+        {
+            $response = $server->handleRequest( $functionName, $params );
+        }
+        $server->showResponse( $functionName, $namespaceURI, $response );
     }
-    $server->showResponse( $functionName, $namespaceURI, $response );
 
 }
 eZExecution::cleanExit();

@@ -55,10 +55,10 @@ class ggWSDLParser
 
     // transforms type declarations used eg. in server's registerFunction() calls
     // into xsd type declarations
-    static function phpType2xsdType( $type, $pefix='xsd:' )
+    static function phpType2xsdType( $type, $prefix='xsd:' )
     {
         // end user can give us xsd types directly: allow him to
-        if ( strpos( $type, $pefix ) === 0 )
+        if ( strpos( $type, $prefix ) === 0 )
         {
             return $type;
         }

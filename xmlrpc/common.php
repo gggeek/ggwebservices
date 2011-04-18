@@ -1,6 +1,6 @@
 <?php
 /**
- * Webservices that can be registered for multiple protocols
+ * Webservices that can be registered for multiple protocols (not phpsoap currently)
  *
  * @todo move parts in common with webservices/execute.php to ggezwebservices
  * @todo decide if we need to check user access to current siteaccess
