@@ -17,6 +17,11 @@
   xmlns="http://schemas.xmlsoap.org/wsdl/">
 
 <!-- imports -->
+{foreach $imports as $service}
+    {set $service=concat('webservices/wsdl/', $service)|ezurl(no, full)}
+<import namespace="{$service}" location="{$service}"/>
+
+{/foreach}
 
 <!-- types -->
 

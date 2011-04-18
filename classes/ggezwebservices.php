@@ -225,25 +225,17 @@ class ggeZWebservices
             include_once( 'kernel/common/template.php' );
             $tpl = templateInit();
 
-            // allow end user to register wsdl as filesystem files (or just complete wsdl)
-            foreach( $wsdl_strings as $method => $wsdl )
+            // if the developer used custom wsdl files for his services, we do
+            // not merge the files together, but create a wsdl file that links
+            // to those single wsdl files. So we build the actual user-defined-wsdl
+            // only in case it is the desired wsdl
+            if ( count( $wsdl_strings ) && count( $methods ) == 1 )
             {
+                $wsdl = reset( $wsdl_strings );
+                // allow end user to register wsdl as filesystem files (or just complete wsdl)
                 if ( strpos( $wsdl, 'design:' ) === 0 || strpos( $wsdl, 'file:' ) === 0 )
                 {
-                    $wsdl_strings[$method] = $tpl->fetch( $wsdl );
-                }
-            }
-
-            if ( count( $wsdl_strings ) )
-            {
-                if ( count( $methods ) == 1 )
-                {
-                    $wsdl = reset( $wsdl_strings );
-                }
-                else
-                {
-                    /// @todo: multiple wsdl files created by user (and maybe some by introspection) - merge them
-                    $wsdl = 'NOT SUPPORTED YET...';
+                    $wsdl = $tpl->fetch( $wsdl );
                 }
             }
             else
@@ -255,6 +247,7 @@ class ggeZWebservices
                 /// @todo we should use different service names if, depending on permissions, user cannot see all methods...
                 $tpl->setVariable( 'servicename', $service_name == '' ? 'SOAP' : ucfirst( $service_name ) );
                 $tpl->setVariable( 'functions', $wsdl_functions );
+                $tpl->setVariable( 'imports', array_keys( $wsdl_strings ) );
                 $wsdl = $tpl->fetch( "design:webservices/wsdl{$version}.tpl" );
             }
 
