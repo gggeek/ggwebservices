@@ -25,7 +25,7 @@ foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap' ) as  $i => $protocol )
 	elseif ( $protocol == 'soap' )
 	{
 		$wsINI = eZINI::instance( 'soap.ini' );
-		$uri = "webservices/execute/$protocol";
+		$uri = "webservices/wsdl";
 	}
     else
     {
