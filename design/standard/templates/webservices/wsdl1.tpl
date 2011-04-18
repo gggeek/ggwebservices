@@ -1,15 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 {**
  * WSDL 1 template
- *
- * @todo do not show xsd type definition file import statement if not necessary
  *}
 <wsdl:definitions
 
   name="{$servicename|washxml()}"
   targetNamespace="{$namespace|washxml()}"
   xmlns:tns="{$namespace|washxml()}"
-  {*xmlns:tnsxsd="{$namespace|append('/types')|washxml()}"*}
+  xmlns:tnsxsd="{$namespace|append('/types')|washxml()}"
 
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
@@ -25,9 +23,9 @@
 {/foreach}
 
 <!-- messages -->
-{def $schemaneeded = false()
-     $ptype=''
-     $rtype=''}
+{def $ptype=''
+     $rtype=''
+     $types = array()}
 {foreach $functions as $fname => $function}
     {set $fname = $fname|washxml()}
 
@@ -35,7 +33,9 @@
 {foreach $function.params as $name => $type}
     {set $ptype = $type|xsdtype()}
     {if $ptype|begins_with('tnsxsd:')}
-        {set $schemaneeded = true()}
+        {if $types|contains($ptype)|not()}
+            {set $types = $types|append($ptype)}
+        {/if}
     {/if}
 
     <wsdl:part name="{$name}" type="{$ptype|washxml()}"/>
@@ -46,7 +46,9 @@
 <wsdl:message name="{$fname}Response">
     {set $rtype = $function.returntype|xsdtype()}
     {if $rtype|begins_with('tnsxsd:')}
-        {set $schemaneeded = true()}
+        {if $types|contains($rtype)|not()}
+            {set $types = $types|append($rtype)}
+        {/if}
     {/if}
     <wsdl:part name="{$fname}Return" type="{$rtype|washxml()}"/>
 </wsdl:message>
@@ -54,16 +56,33 @@
 {/foreach}
 {undef $rtype $ptype}
 
-{if $schemaneeded}
+{if $types|count()}
 
 <!-- types -->
 <wsdl:types>
     <xsd:schema
       xmlns="http://www.w3.org/2001/XMLSchema"
-      targetNamespace="{$servicename|append('/types')|washxml()}">
+      targetNamespace="{$$namespace|append('/types')|washxml()}">
+        {if $externalxsd}
         <xsd:import
-          namespace="{$servicename|append('/types')|washxml()}"
+          namespace="{$$namespace|append('/types')|washxml()}"
           schemaLocation="{concat('webservices/xsd/',$service)|ezurl(no, full)}"/>
+        {else}
+            {foreach $types as $type}
+                {set $type = $type|extract(7)}
+                {if $type|begins_with('arrayOf')}
+                    {include uri='design:webservices/xsd/array.tpl' typename=$type basetype=$type|extract(7)}
+                {elseif $type|begins_with('choiceOf')}
+                    {include uri='design:webservices/xsd/array.tpl' typename=$type basetypes=$type|extract(8)|explode('Or')}
+                {elseif $type|begins_with('class')}
+                    {include uri='design:webservices/xsd/class.tpl' typename=$type basetype=$type|extract(5)}
+                {else}
+                    {* @todo ... *}
+                {/if}
+
+            {/foreach}
+        {/if}
+
     </xsd:schema>
 </wsdl:types>
 

@@ -91,7 +91,7 @@ class ggWSDLParser
                         {
                             $subtypes[$i] = str_replace( $xmlschemaprefix, '',  self::phpType2xsdType( $type, $xmlschemaprefix, $targetprefix ) );
                         }
-                        return $targetprefix . implode( 'Or' ) . $subtypes;
+                        return $targetprefix . 'choiceOf' . implode( 'Or' ) . $subtypes;
                     }
                     else if ( strpos( $type, 'array of ' ) === 0 )
                     {
@@ -102,6 +102,7 @@ class ggWSDLParser
                     else if ( class_exists( $type ) )
                     {
                         /// @todo analyze class name and describe it
+                        return $targetprefix . "class" . ucfirst( $type );
                     }
                 }
 
