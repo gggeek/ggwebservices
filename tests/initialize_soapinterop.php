@@ -17,7 +17,7 @@ $server->registerFunction(
 $server->registerFunction(
     'echoStringArray',
     array( 'inputStringArray' => 'array of string' ),
-    '' );
+    'array of string' );
 
 $server->registerFunction(
     'echoInteger',
@@ -27,7 +27,7 @@ $server->registerFunction(
 $server->registerFunction(
     'echoIntegerArray',
     array( 'inputIntegerArray' => 'array of int' ),
-    '' );
+    'array of int' );
 
 $server->registerFunction(
     'echoFloat',
@@ -37,7 +37,7 @@ $server->registerFunction(
 $server->registerFunction(
     'echoFloatArray',
     array( 'inputFloatarray' => 'array of float' ),
-    '' );
+    'array of float' );
 
 $server->registerFunction(
     'echoStruct',
@@ -66,29 +66,44 @@ $server->registerFunction(
 
 function echoString( $inputString )
 {
-    return $inputString;
+    return (string)$inputString;
 }
 
 function echoStringArray( $inputStringArray )
 {
+    foreach( $inputStringArray as $i => $s)
+    {
+        $inputStringArray = (string)$s;
+    }
+    return $inputStringArray;
 }
 
 function echoInteger( $inputInteger )
 {
-    return $inputInteger;
+    return (integer)$inputInteger;
 }
 
 function echoIntegerArray( $inputIntegerArray )
 {
+    foreach( $inputIntegerArray as $i => $s)
+    {
+        $inputIntegerArray = (integer)$s;
+    }
+    return $inputIntegerArray;
 }
 
 function echoFloat( $inputFloat )
 {
-    return $inputFloat;
+    return (float)$inputFloat;
 }
 
 function echoFloatArray( $inputFloatArray )
 {
+    foreach( $inputFloatArray as $i => $s)
+    {
+        $inputFloatArray = (float)$s;
+    }
+    return $inputFloatArray;
 }
 
 function echoStruct( $inputStruct )
