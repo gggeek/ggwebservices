@@ -184,13 +184,8 @@ class ggeZWebservices
     * but it should really be a function of the server class itself.
     * Since we do not want to pollute server classes with eZ specifics, we chose
     * to avoid the reverse depenency by putting the code here.
-    *
-    * @todo support showing a single wsdl file for many methods, when the user
-    *       created different wsdl files on its own (merge them somehow)
-    * @todo allow user to set a specific url for the wsdl endpoint (in case he
-    *       wants to use the custom soap controller)
     */
-    static function methodsWSDL( $server, $methods, $version=1, $output_type='wsdl', $service_name='', $return_url=false )
+    static function methodsWSDL( $server, $methods, $service_name='', $version=1, $output_type='wsdl', $return_url=false )
     {
         $cachedir = eZSys::cacheDirectory() . '/webservices';
         $cachefilename = $cachedir . '/' . md5( "$output_type,$version," . implode( ',', $methods ) );
@@ -278,6 +273,75 @@ class ggeZWebservices
             {
                 /// @todo if user wants HTML out, give him a en error page...
 
+                $cachefilename = null; // used below as return value
+            }
+        }
+        return $return_url ? $cachefilename : $wsdl;
+    }
+
+    /**
+     * Returns the xml schema corresponding to a list of server's method's complex types.
+     * This is implemented here because
+     * . it relies on the templating system
+     * . it does its own caching
+     * but it should really be a function of the server class itself.
+     * Since we do not want to pollute server classes with eZ specifics, we chose
+     * to avoid the reverse depenency by putting the code here.
+     */
+    static function methodsXSD( $server, $methods, $service_name='', $return_url=false )
+    {
+        $cachedir = eZSys::cacheDirectory() . '/webservices';
+        // make sure our cache file names do not collide with wsdl ones (see methodsWSDL)
+        $cachefilename = $cachedir . '/' . md5( "xsd,1," . implode( ',', $methods ) );
+        $cachefile = eZClusterFileHandler::instance( $cachefilename );
+        if ( $cachefile->exists() )
+        {
+            if ( $return_url )
+            {
+                $cachefile->fetch();
+                return $cachefilename;
+            }
+            $wsdl = $cachefile->fetchContents();
+        }
+        else
+        {
+            //$wsdl_strings = array();
+            $wsdl_functions = array();
+            foreach ( $methods as $method )
+            {
+                $wsdl = $server->userWsdl( $method );
+                if ( $wsdl == null )
+                {
+                    $sigs = $server->methodSignatures( $method );
+                    $wsdl_functions[$method] = array(
+                        //'name' => $function,
+                        'params' => $sigs[0]['in'],
+                        'returntype' => $sigs[0]['out'],
+                        //'documentation' => $server->methodDescription( $method )
+                    );
+                }
+            }
+
+            // wsdl building is done via template
+            include_once( 'kernel/common/template.php' );
+            $tpl = templateInit();
+
+
+            /// @todo !important we could build directly html output using an html template, to reduce resource usage
+            $namespace = 'webservices/wsdl/' . $service_name;
+            eZURI::transformURI( $namespace , false, 'full' );
+            $tpl->setVariable( 'namespace', $namespace );
+            /// @todo we should use different service names if, depending on permissions, user cannot see all methods...
+            $tpl->setVariable( 'servicename', $service_name == '' ? 'SOAP' : ucfirst( $service_name ) );
+            $tpl->setVariable( 'functions', $wsdl_functions );
+            $wsdl = $tpl->fetch( "design:webservices/xsd.tpl" );
+
+            if ( strlen( $wsdl ) )
+            {
+                $cachefile->storeContents( $wsdl );
+            }
+            else
+            {
                 $cachefilename = null; // used below as return value
             }
         }

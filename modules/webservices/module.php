@@ -33,13 +33,21 @@ $ViewList = array(
 
     /*
     * By default every user can see the wsdl corresponding to the services he can execute.
-    * As an alternative, giving to user access to the webservices/wsdl policy will allow him
+    * As an alternative, giving to user access to the 'webservices/wsdl' policy will allow him
     * to see the wsdl for all existing operations
     */
     'wsdl' => array(
         'script' => 'wsdl.php',
         'params' => array( 'webservice' ),
         'unordered_params' => array( 'view' => 'ViewMode' ),
+        'functions' => array( 'execute' ),
+    ),
+
+    /// together with wsdl, we generate xsd for complex types
+    'xsd' => array(
+        'script' => 'xsd.php',
+        'params' => array( 'webservice' ),
+        //'unordered_params' => array( 'view' => 'ViewMode' ),
         'functions' => array( 'execute' ),
     ),
 

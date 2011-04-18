@@ -52,7 +52,16 @@ class ggWebservicesOperators {
                     'required' => true,
                     'default' => array() )
                 ),
-            'xsdtype' => array(),
+            'xsdtype' => array(
+                'xsdprefix' => array(
+                    'type' => 'string',
+                    'required' => true,
+                    'default' => 'xsd:' ),
+                'targetprefix' => array(
+                    'type' => 'string',
+                    'required' => true,
+                    'default' => 'tnsxsd:' ),
+            )
         );
     }
 
@@ -78,7 +87,7 @@ class ggWebservicesOperators {
                 /// @todo
                 break;
             case 'xsdtype':
-                $operatorValue = ggWSDLParser::phpType2xsdType( $operatorValue );
+                $operatorValue = ggWSDLParser::phpType2xsdType( $operatorValue, $namedParameters['xsdprefix'], $namedParameters['targetprefix'] );
                 break;
         }
     }

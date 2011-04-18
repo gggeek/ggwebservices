@@ -1,20 +1,17 @@
 <?php
 /**
- * View that shows the wsdl used for receiving soap calls
+ * View that shows the xml schema corresponding to one/all soap webservice(s)
  *
  * @author G. Giunta
  * @version $Id$
  * @copyright 2011 G. Giunta
  *
- * @todo add support for letting user choose WSDL 2.0
  */
 
 // decode input params
 
 $module = $Params['Module'];
 $ws = $Params['webservice'];
-$output_type = ( $Params['ViewMode'] == 'html' ? 'html' : 'wsdl' );
-$wsdl_version = 1;
 
 // check if soap is enabled
 $wsINI = eZINI::instance( ggeZWebservices::configFileByProtocol( 'soap' ) );
@@ -29,7 +26,7 @@ if ( $wsINI->variable( 'GeneralSettings', 'EnableSOAP' ) == 'true' )
 
     /// @todo register ezjscore methods (hard to do...)
 
-    // check perms: only show wsdl for methods user has access to
+    // check perms: only show xsd for methods user has access to
     $methods = false;
     $user = eZUser::currentUser();
     $accessResult = $user->hasAccessTo( 'webservices' , 'wsdl' );
@@ -90,14 +87,11 @@ if ( $wsINI->variable( 'GeneralSettings', 'EnableSOAP' ) == 'true' )
         $methods = array( $methods );
     }
 
-    $wsdl= ggeZWebservices::methodsWSDL( $server, $methods, $ws, $wsdl_version, $output_type );
+    $xsd= ggeZWebservices::methodsXSD( $server, $methods, $ws );
 
-    if ( $output_type != 'html' )
-    {
-        header( 'Content-type: application/wsdl+xml' );
-    }
+    header( 'Content-type: application/xml' );
 
-    echo $wsdl;
+    echo $xsd;
 
 }
 eZExecution::cleanExit();
