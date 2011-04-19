@@ -15,6 +15,7 @@ $module = $Params['Module'];
 $ws = $Params['webservice'];
 $output_type = ( $Params['ViewMode'] == 'html' ? 'html' : 'wsdl' );
 $wsdl_version = 1;
+$external_typedefs = false;
 
 // check if soap is enabled
 $wsINI = eZINI::instance( ggeZWebservices::configFileByProtocol( 'soap' ) );
@@ -90,7 +91,7 @@ if ( $wsINI->variable( 'GeneralSettings', 'EnableSOAP' ) == 'true' )
         $methods = array( $methods );
     }
 
-    $wsdl= ggeZWebservices::methodsWSDL( $server, $methods, $ws, $wsdl_version, $output_type );
+    $wsdl= ggeZWebservices::methodsWSDL( $server, $methods, $ws, false, $wsdl_version, $output_type, $external_typedefs );
 
     if ( $output_type != 'html' )
     {

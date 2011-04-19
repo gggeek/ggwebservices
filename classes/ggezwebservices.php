@@ -184,8 +184,10 @@ class ggeZWebservices
     * but it should really be a function of the server class itself.
     * Since we do not want to pollute server classes with eZ specifics, we chose
     * to avoid the reverse depenency by putting the code here.
+    *
+    * @todo avoid parameter creep: use an options array
     */
-    static function methodsWSDL( $server, $methods, $service_name='', $version=1, $output_type='wsdl', $return_url=false )
+    static function methodsWSDL( $server, $methods, $service_name='', $return_url=false, $version=1, $output_type='wsdl', $external_typedefs=false )
     {
         $cachedir = eZSys::cacheDirectory() . '/webservices';
         $cachefilename = $cachedir . '/' . md5( "$output_type,$version," . implode( ',', $methods ) );
@@ -249,6 +251,7 @@ class ggeZWebservices
                 $tpl->setVariable( 'servicename', $service_name == '' ? 'SOAP' : ucfirst( $service_name ) );
                 $tpl->setVariable( 'functions', $wsdl_functions );
                 $tpl->setVariable( 'imports', array_keys( $wsdl_strings ) );
+                $tpl->setVariable( 'externalxsd', $external_typedefs );
                 $wsdl = $tpl->fetch( "design:webservices/wsdl{$version}.tpl" );
             }
 
