@@ -23,19 +23,21 @@
 {/foreach}
 
 <!-- messages -->
-{def $ptype=''
-     $rtype=''
-     $types = array()}
+{def $ptype = ''
+     $rtype = ''
+     $typename = ''
+     $newtypes = array()}
 {foreach $functions as $fname => $function}
     {set $fname = $fname|washxml()}
 
 <wsdl:message name="{$fname}Request">
 {foreach $function.params as $name => $type}
-    {set $ptype = $type|xsdtype()}
+    {set $ptype = $type|xsdtype('tnsxsd:')}
     {if $ptype|begins_with('tnsxsd:')}
-        {if $types|contains($ptype)|not()}
-            {set $types = $types|append($ptype)}
+        {if $newtypes|contains($ptype)|not()}
+            {set $newtypes = $newtypes|append($ptype)}
         {/if}
+        {set $ptype = 'tnsxsd:'|append($ptype|explode(':')|extract(1)|implode('_'))}
     {/if}
 
     <wsdl:part name="{$name}" type="{$ptype|washxml()}"/>
@@ -44,11 +46,12 @@
 </wsdl:message>
 
 <wsdl:message name="{$fname}Response">
-    {set $rtype = $function.returntype|xsdtype()}
+    {set $rtype = $function.returntype|xsdtype('tnsxsd:')}
     {if $rtype|begins_with('tnsxsd:')}
-        {if $types|contains($rtype)|not()}
-            {set $types = $types|append($rtype)}
+        {if $newtypes|contains($rtype)|not()}
+            {set $newtypes = $newtypes|append($rtype)}
         {/if}
+        {set $rtype = 'tnsxsd:'|append($rtype|explode(':')|extract(1)|implode('_'))}
     {/if}
     {if ne($rtype, '')}
         <wsdl:part name="{$fname}Return" type="{$rtype|washxml()}"/>
@@ -59,26 +62,26 @@
 {/foreach}
 {undef $rtype $ptype}
 
-{if $types|count()}
+{if $newtypes|count()}
 
 <!-- types -->
 <wsdl:types>
     <xsd:schema
       xmlns="http://www.w3.org/2001/XMLSchema"
-      targetNamespace="{$$namespace|append('/types')|washxml()}">
+      targetNamespace="{$namespace|append('/types')|washxml()}">
         {if $externalxsd}
         <xsd:import
-          namespace="{$$namespace|append('/types')|washxml()}"
+          namespace="{$namespace|append('/types')|washxml()}"
           schemaLocation="{concat('webservices/xsd/',$service)|ezurl(no, full)}"/>
         {else}
-            {foreach $types as $type}
-                {set $type = $type|extract(7)}
-                {if $type|begins_with('arrayOf')}
-                    {include uri='design:webservices/xsd/array.tpl' typename=$type basetype=$type|extract(7)}
-                {elseif $type|begins_with('choiceOf')}
-                    {include uri='design:webservices/xsd/array.tpl' typename=$type basetypes=$type|extract(8)|explode('Or')}
-                {elseif $type|begins_with('class')}
-                    {include uri='design:webservices/xsd/class.tpl' typename=$type basetype=$type|extract(5)}
+            {foreach $newtypes as $type}
+                {set $typename = $type|explode(':')|extract(1)|implode('_')}
+                {if $type|begins_with('tnsxsd:arrayOf')}
+                    {include uri='design:webservices/xsd/array.tpl' typename=$typename basetype=$type|extract(14) soapencns='SOAP-ENC'}
+                {elseif $type|begins_with('tnsxsd:choiceOf')}
+                    {include uri='design:webservices/xsd/array.tpl' typename=$typename basetypes=$type|extract(15)|explode('Or')}
+                {elseif $type|begins_with('tnsxsd:class')}
+                    {include uri='design:webservices/xsd/class.tpl' typename=$typename basetype=$type|extract(12)}
                 {else}
                     {* @todo ... *}
                 {/if}

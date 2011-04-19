@@ -55,13 +55,26 @@ class ggWSDLParser
 
     /**
     * Transforms type declarations used eg. in server's registerFunction() calls
-    * into xsd type declarations.
-    * Simple types will be prefixed with $xmlschemaprefix, complex ones with $targetprefix
+    * into xsd type declarations. The starting type decalarations can be either
+    * php types or "xml schema" types, in which case they will go trhough unchanged.
+    *
+    * Simple types (ie. simple types builtin in the xmlschema spec http://www.w3.org/TR/xmlschema-0/#CreatDt)
+    * will be prefixed with $xmlschemaprefix, structs/arrays with $soapencprefix
+    * (spec at http://schemas.xmlsoap.org/soap/encoding/), complex ones with $targetprefix.*
+    *
+    * Example returned complex types:
+    * . arrayOfstring
+    * . choiceOfintOrstring
+    * . classmyClass
+    *
+    * The magic type 'void' will be transformed into ''.
     */
-    static function phpType2xsdType( $type, $xmlschemaprefix='xsd:', $targetprefix='tnsxsd:' )
+    static function phpType2xsdType( $type, $targetprefix='tnsxsd:', $xmlschemaprefix='xsd:', $soapencprefix='SOAP-ENC:' )
     {
+        $type = trim( $type );
+
         // end user can give us xsd types directly: allow him to
-        if ( strpos( $type, $xmlschemaprefix ) === 0 )
+        if ( strpos( $type, $xmlschemaprefix ) === 0 || strpos( $type, $targetprefix ) === 0 || strpos( $type, $soapencprefix ) === 0 )
         {
             return $type;
         }
@@ -76,17 +89,21 @@ class ggWSDLParser
                     return "{$xmlschemaprefix}integer";
                 case 'float':
                     return "{$xmlschemaprefix}float";
-                case 'double':
-                    return "{$xmlschemaprefix}double";
                 case 'bool':
                 case 'boolean':
                     return "{$xmlschemaprefix}boolean";
+                // not a php type
+                case 'double':
+                    return "{$xmlschemaprefix}double";
+                // not a php type
+                case 'long':
+                    return "{$xmlschemaprefix}long";
                 case 'array':
-                case 'mixed':
-                    /// @todo
-                    break;
+                    return "{$soapencprefix}Array";
                 case 'void':
                     return '';
+                case 'mixed':
+                    return "{$xmlschemaprefix}anyType";
                 default:
                     if ( strpos( $type, '|' ) !== false )
                     {
@@ -94,24 +111,24 @@ class ggWSDLParser
                         $subtypes = explode( '|', $type );
                         foreach( $subtypes  as $i => $type )
                         {
-                            $subtypes[$i] = str_replace( $xmlschemaprefix, '',  self::phpType2xsdType( $type, $xmlschemaprefix, $targetprefix ) );
+                            $subtypes[$i] = /*str_replace( $xmlschemaprefix, '',*/ self::phpType2xsdType( $type, $targetprefix, $xmlschemaprefix, $soapencprefix ) /*)*/;
                         }
                         return $targetprefix . 'choiceOf' . implode( 'Or' ) . $subtypes;
                     }
                     else if ( strpos( $type, 'array of ' ) === 0 )
                     {
-                        $subtype = self::phpType2xsdType( substr( $type, 9 ), $xmlschemaprefix, $targetprefix );
+                        $subtype = self::phpType2xsdType( substr( $type, 9 ), $targetprefix, $xmlschemaprefix, $soapencprefix );
                         /// @todo what if target also is complex?
-                        return $targetprefix . "arrayOf" . str_replace( $xmlschemaprefix, '', $subtype );
+                        return $targetprefix . "arrayOf" . /*str_replace( $xmlschemaprefix, '',*/ $subtype /*)*/;
                     }
                     else if ( class_exists( $type ) )
                     {
-                        /// @todo analyze class name and describe it
-                        return $targetprefix . "class" . ucfirst( $type );
+                        /// @todo analyze class via reflection and describe it
+                        return $targetprefix . "class" . $type;
                     }
-                }
 
-            return "{$xmlschemaprefix}anyType";
+                    return "{$xmlschemaprefix}anyType";
+                }
         }
     }
 

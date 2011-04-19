@@ -11,14 +11,14 @@
      $rtype = ''}
 {foreach $functions as $fname => $function}
     {foreach $function.params as $name => $type}
-        {set $ptype = $type|xsdtype()}
+        {set $ptype = $type|xsdtype('tnsxsd:')}
         {if $ptype|begins_with('tnsxsd:')}
             {if $types|contains($ptype)|not()}
                 {set $types = $types|append($ptype)}
             {/if}
         {/if}
     {/foreach}
-    {set $rtype = $function.returntype|xsdtype()}
+    {set $rtype = $function.returntype|xsdtype('tnsxsd:')}
     {if $rtype|begins_with('tnsxsd:')}
         {if $types|contains($ptype)|not()}
             {set $types = $types|append($ptype)}
