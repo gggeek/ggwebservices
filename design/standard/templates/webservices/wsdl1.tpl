@@ -79,7 +79,7 @@
                 {if $type|begins_with('tnsxsd:arrayOf')}
                     {include uri='design:webservices/xsd/array.tpl' typename=$typename basetype=$type|extract(14) soapencns='SOAP-ENC'}
                 {elseif $type|begins_with('tnsxsd:choiceOf')}
-                    {include uri='design:webservices/xsd/array.tpl' typename=$typename basetypes=$type|extract(15)|explode('Or')}
+                    {include uri='design:webservices/xsd/choice.tpl' typename=$typename basetypes=$type|extract(15)|explode('Or')}
                 {elseif $type|begins_with('tnsxsd:class')}
                     {include uri='design:webservices/xsd/class.tpl' typename=$typename basetype=$type|extract(12)}
                 {else}

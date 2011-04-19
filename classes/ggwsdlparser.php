@@ -86,22 +86,24 @@ class ggWSDLParser
                     return "{$xmlschemaprefix}string";
                 case 'int':
                 case 'integer':
-                    return "{$xmlschemaprefix}integer";
+                    return "{$xmlschemaprefix}int";
                 case 'float':
                     return "{$xmlschemaprefix}float";
                 case 'bool':
                 case 'boolean':
                     return "{$xmlschemaprefix}boolean";
-                // not a php type
+                // nb: not a php type
                 case 'double':
                     return "{$xmlschemaprefix}double";
-                // not a php type
+                // nb: not a php type
                 case 'long':
                     return "{$xmlschemaprefix}long";
                 case 'array':
                     return "{$soapencprefix}Array";
                 case 'void':
                     return '';
+                case 'null':
+                    /// @todo
                 case 'mixed':
                     return "{$xmlschemaprefix}anyType";
                 default:
@@ -113,7 +115,7 @@ class ggWSDLParser
                         {
                             $subtypes[$i] = /*str_replace( $xmlschemaprefix, '',*/ self::phpType2xsdType( $type, $targetprefix, $xmlschemaprefix, $soapencprefix ) /*)*/;
                         }
-                        return $targetprefix . 'choiceOf' . implode( 'Or' ) . $subtypes;
+                        return $targetprefix . 'choiceOf' . implode( 'Or', $subtypes );
                     }
                     else if ( strpos( $type, 'array of ' ) === 0 )
                     {
