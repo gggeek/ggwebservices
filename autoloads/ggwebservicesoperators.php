@@ -53,14 +53,18 @@ class ggWebservicesOperators {
                     'default' => array() )
                 ),
             'xsdtype' => array(
+                'targetprefix' => array(
+                   'type' => 'string',
+                   'required' => true,
+                   'default' => 'tnsxsd:' ),
                 'xsdprefix' => array(
                     'type' => 'string',
                     'required' => true,
                     'default' => 'xsd:' ),
-                'targetprefix' => array(
+                'soapencprefix' => array(
                     'type' => 'string',
                     'required' => true,
-                    'default' => 'tnsxsd:' ),
+                    'default' => 'SOAP-ENC:' ),
             )
         );
     }
@@ -87,7 +91,7 @@ class ggWebservicesOperators {
                 /// @todo
                 break;
             case 'xsdtype':
-                $operatorValue = ggWSDLParser::phpType2xsdType( $operatorValue, $namedParameters['xsdprefix'], $namedParameters['targetprefix'] );
+                $operatorValue = ggWSDLParser::phpType2xsdType( $operatorValue, $namedParameters['targetprefix'], $namedParameters['xsdprefix'], $namedParameters['soapencprefix'] );
                 break;
         }
     }
