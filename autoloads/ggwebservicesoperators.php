@@ -37,7 +37,8 @@ class ggWebservicesOperators {
                  'type' => 'string',
                  'required' => false,
                  'default' => 'SOAP-ENC:' ),
-             )
+             ),
+         'classInspect' => array()
      );
 
     /**
