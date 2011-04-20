@@ -43,7 +43,8 @@ class ggPhpSOAPServer extends ggWebservicesServer
         {
             // this list of replacements built by testing different clients...
             // we should really parse the xml instead!
-            $soapaction = preg_replace( array( '#^urn:#', '#^/*#', '#Action$#' ), '', $_SERVER['HTTP_SOAPACTION'] );
+            $soapaction = trim( $_SERVER['HTTP_SOAPACTION'], '"' );
+            $soapaction = preg_replace( array( '#^urn:#', '#^/*#', '#Action$#' ), '', $soapaction );
             $request = new ggPhpSOAPRequest( $soapaction );
             // this call is used to store the raw  xml in the request object
             $request->decodeStream( $payload );
@@ -126,7 +127,7 @@ class ggPhpSOAPServer extends ggWebservicesServer
         }
         else
         {
-            $this->showResponse( $functionName, '...', ggWebservicesFault( self::INVALIDMETHODERROR, self::INVALIDMETHODSTRING . " '$functionName'" ) );
+            $this->showResponse( $functionName, '...', new ggWebservicesFault( self::INVALIDMETHODERROR, self::INVALIDMETHODSTRING . " '$functionName'" ) );
         }
     }
 
