@@ -16,6 +16,8 @@
 
 - server: return in-protocol error messages instead of html error page when access is denied ?
 
+- server: add a soap controller based on ggphpsoap + webservicescontroller.php (instead of ezsoap)
+
 - client: test: using CURL and proxy / complex auths works?
   + prevent curl from adding useless "accept: */*" header
   + test: bug using curl+compress request+soap call to ms servers
@@ -58,8 +60,6 @@
 - client: test objects vs. array return by default with ezsoap (in tpl code especially)
 
 - server: add a script that creates initialize.php from a wsdl file
-
-- server: add a soap controller based on ggphpsoap instead of ezsoap
 
 - add some doc showing the client/request/response and server/request/response interaction to make it easier to remember that requests are also used server-side (and responses client-side)
 
@@ -104,4 +104,4 @@
 
 - allow extension ro run on phpxmlrpc/phpjsonrpc/nusoap if php extensions are missing
 
-- add support for curl multi calls to execute multiple calls in parallel
+- client: add support for curl multi calls to execute multiple calls in parallel
