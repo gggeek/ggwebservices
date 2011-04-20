@@ -1,5 +1,6 @@
 {**
-  XSD template used to describe a 'php class' complex type in a soap context
+  XSD template used to describe a 'php class' complex type in a soap context.
+  Complex types found for class properties will be added to the $newtypes array.
   @param string $typename
   @param string $basetype
   @param array $newtypes
@@ -19,3 +20,4 @@
     {/foreach}
     </xsd:sequence>
 </xsd:complexType>
+{undef $proptypename}
