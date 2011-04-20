@@ -330,13 +330,12 @@ class ggeZWebservices
             include_once( 'kernel/common/template.php' );
             $tpl = templateInit();
 
-
             /// @todo !important we could build directly html output using an html template, to reduce resource usage
-            $namespace = 'webservices/wsdl/' . $service_name;
-            eZURI::transformURI( $namespace , false, 'full' );
-            $tpl->setVariable( 'namespace', $namespace );
+            //$namespace = 'webservices/wsdl/' . $service_name . '/types';
+            //eZURI::transformURI( $namespace , false, 'full' );
+            //$tpl->setVariable( 'namespace', $namespace );
             /// @todo we should use different service names if, depending on permissions, user cannot see all methods...
-            $tpl->setVariable( 'servicename', $service_name == '' ? 'SOAP' : ucfirst( $service_name ) );
+            //$tpl->setVariable( 'servicename', $service_name == '' ? 'SOAP' : ucfirst( $service_name ) );
             $tpl->setVariable( 'functions', $wsdl_functions );
             $wsdl = $tpl->fetch( "design:webservices/xsd.tpl" );
 
@@ -362,6 +361,7 @@ class ggeZWebservices
     {
         if ( !class_exists( $classname ) )
         {
+            eZDebug::writeError( "Cannot introspect class $classname for wsdl generation: class not found", __METHOD__ );
             return array();
         }
         $classmethods = get_class_methods( $classname );
@@ -403,7 +403,7 @@ class ggeZWebservices
             }
             else
             {
-                /// @todo log error message
+                eZDebug::writeError( "Cannot introspect subclass of eZPO for wsdl generation ($classname): missing extension ezpersistentobject_inspector", __METHOD__ );
             }
             return $out;
         }
@@ -412,10 +412,10 @@ class ggeZWebservices
             // not a template class: do a dump based on reflection
             $out = array();
             $reflectionClass = new ReflectionClass( $classname );
-            foreach( $reflectionClass->getProperties( ReflectionProperty::IS_PUBLIC & ReflectionProperty::IS_STATIC ) as $prop )
+            foreach( $reflectionClass->getProperties( ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_STATIC ) as $prop )
             {
                 $doc = $prop->getDocComment();
-                $type = $docs == '' ? 'mixed' : self::typeFromDocComment( $doc );
+                $type = $doc == '' ? 'mixed' : self::typeFromDocComment( $doc );
                 $out[$prop->name] = $type;
             }
             return $out;

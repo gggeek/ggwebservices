@@ -8,19 +8,45 @@
 
 class ggWebservicesOperators {
 
-    /**
-     Constructor
-    */
-    function ggWebservicesOperators() {
-        $this->Operators = array ( 'washxml', 'washxmlcomment', 'washxmlcdata', 'xsdtype', 'classInspect' );
-    }
+     static $operators = array(
+         'washxml' => array(),
+         'washxmlcomment' => array(),
+         'washxmlcdata' => array(),
+         'ws_send' => array(
+             'server' => array(
+                 'type' => 'string',
+                 'required' => true ),
+             'method' => array(
+                 'type' => 'string',
+                 'required' => true ),
+             'params' => array(
+                 'type' => 'array',
+                 'required' => true,
+                 'default' => array() )
+             ),
+         'xsdtype' => array(
+             'targetprefix' => array(
+                'type' => 'string',
+                'required' => false,
+                'default' => 'tnsxsd:' ),
+             'xsdprefix' => array(
+                 'type' => 'string',
+                 'required' => false,
+                 'default' => 'xsd:' ),
+             'soapencprefix' => array(
+                 'type' => 'string',
+                 'required' => false,
+                 'default' => 'SOAP-ENC:' ),
+             )
+     );
 
     /**
      Returns the operators in this class.
      @return array
     */
-    function operatorList() {
-        return $this->Operators;
+    function operatorList()
+    {
+        return array_keys( self::$operators );
     }
 
     /**
@@ -37,37 +63,7 @@ class ggWebservicesOperators {
      @return array
     */
     function namedParameterList() {
-        return array(
-            'washxml' => array(),
-            'washxmlcomment' => array(),
-            'washxmlcdata' => array(),
-            'ws_send' => array(
-                'server' => array(
-                    'type' => 'string',
-                    'required' => true ),
-                'method' => array(
-                    'type' => 'string',
-                    'required' => true ),
-                'params' => array(
-                    'type' => 'array',
-                    'required' => true,
-                    'default' => array() )
-                ),
-            'xsdtype' => array(
-                'targetprefix' => array(
-                   'type' => 'string',
-                   'required' => false,
-                   'default' => 'tnsxsd:' ),
-                'xsdprefix' => array(
-                    'type' => 'string',
-                    'required' => false,
-                    'default' => 'xsd:' ),
-                'soapencprefix' => array(
-                    'type' => 'string',
-                    'required' => false,
-                    'default' => 'SOAP-ENC:' ),
-            )
-        );
+        return self::$operators;
     }
 
     /**
