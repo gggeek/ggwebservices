@@ -4,9 +4,9 @@
  * http://www.xmethods.net/soapbuilders/proposal.html
  *
  * @version $Id$
- * @author
- * @license
+ * @author G. Giunta
  * @copyright G. Giunta 2011
+ * @license code licensed under the GPL License: see LICENSE file
  */
 
 $server->registerFunction(
