@@ -1,14 +1,16 @@
 - server: improve soap server w. wsdl support
-  + use introspection for generating wsdl if user did not provide any type info
-  + allow method signatures that contain choices between non-simple types
+  + proper parsing of called function name from xml (not from soapaction http header)
+  + use reflection for generating wsdl if user did not provide any type info
+  + finish use of reflection for generating wsdl for plain  (non-ezpo) classes: derive property type from phpdoc
+  + test: will ezpo subclasses actually serialize properly when using ggphpsoapserver or do we need to define type maps?
   + build proper xsd for methods that are registered with many signatures (as it is done eg. in xmlrpc to have optional params)
-  + allow de-inlining of included xsd via view parameter <= verify proper namespace usage
-  . move xsd to out-of-line by default (try to mitigate dos attack when user goes to http://localhost/ezp/installs/ezpublish-4.4.0/index.php/eng/webservices/wsdl/(view)/html and there is some ezpo class in the wsdl)
-  . proper parsing of called function name form xml (not soapaction header)
-  . test interop suite using a test suite client
-  . test ws-i conformance
-
-  + soap 1.2 support (needs php resp class to have 1.2 serialization)
+  + allow method signatures that contain choices between non-simple types (eg: eZDB | eZDBInterface )
+  + test recursive type defs (array of array of int)
+  + verify support for 'null' php type
+  + allow de-inlining of included xsd via view parameter
+    + try to mitigate "dos attack" when user goes to .../webservices/wsdl/(view)/html and there is some ezpo class in the wsdl (xslt goes in a loop or close to it)
+  + verify proper namespace usage in out-of-line-xsd
+  + soap 1.2 support (needs php resp class to have 1.2 serialization first)
   + wsdl 2.0 support
   + in wsdl 2.0, add more binding descriptions (rest, xmlrpc, ...)
 
