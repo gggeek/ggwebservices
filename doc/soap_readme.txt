@@ -1,6 +1,6 @@
 SOAP FAQ:
 
-Q: the generated wsdl points to xxx/webservices/wsdl, but I use the custom soap controller with a different url
+Q: the generated wsdl points to xxx/webservices/execute/phpsoap, but I use the custom soap controller with a different url
 A: just override the template used to generate the wsdl, in design/standard/templates/webservices/wsdl1.tpl
 
 Q: can I register a webservice and provide my own custom wsdl?

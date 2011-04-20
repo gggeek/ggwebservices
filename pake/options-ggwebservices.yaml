@@ -17,6 +17,7 @@ svn:
 
 create:
     tarball:  yes
+    doxygen_doc: yes
 
 releasenr:
     separator: .
