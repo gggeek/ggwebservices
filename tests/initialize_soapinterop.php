@@ -7,6 +7,8 @@
  * @author G. Giunta
  * @copyright G. Giunta 2011
  * @license code licensed under the GPL License: see LICENSE file
+ *
+ * @todo implement struct tests
  */
 
 $server->registerFunction(
