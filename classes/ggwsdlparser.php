@@ -3,8 +3,9 @@
  * WSDL helper functions
  *
  * @author G. Giunta
- * @version
+ * @version $Id$
  * @copyright (C) G. Giunta 2011
+ * @license code licensed under the GPL License: see LICENSE file
  */
 
 /**
@@ -125,7 +126,6 @@ class ggWSDLParser
                     }
                     else if ( class_exists( $type ) )
                     {
-                        /// @todo analyze class via reflection and describe it
                         return $targetprefix . "class" . $type;
                     }
 
