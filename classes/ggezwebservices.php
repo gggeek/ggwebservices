@@ -5,6 +5,7 @@
  * @author G. Giunta
  * @version $Id: ggezwebservicesclient.php 102 2009-09-02 09:03:34Z gg $
  * @copyright (C) 2009-2011 G. Giunta
+ * @license code licensed under the GPL License: see LICENSE file
  */
 
 class ggeZWebservices
@@ -349,6 +350,82 @@ class ggeZWebservices
             }
         }
         return $return_url ? $cachefilename : $wsdl;
+    }
+
+    /**
+     * Somehow inspired by ezPODocScanner::objInspect()
+     * Lists the publicly accessible properties of a class as an array name => type
+     * NB: returns php types, not xsd ones
+     * @todo move to another class?
+     */
+    static function classInspect( $classname )
+    {
+        if ( !class_exists( $classname ) )
+        {
+            return array();
+        }
+        $classmethods = get_class_methods( $classname );
+        if ( in_array( "attributes", $classmethods ) && in_array( "attribute", $classmethods ) )
+        {
+            // 'template object' (should be a descendant of ezpo)
+            $out = array();
+            if ( is_callable( 'ezPODocScanner::definition' ) )
+            {
+                // load theorical desc parsed from online docs. A warning is logged by ezPODocScanner if class is not found
+                $defs = ezPODocScanner::definition( strtolower( $classname ) );
+                if ( isset( $defs['attributes'] ) )
+                {
+                    foreach( $defs['attributes'] as $name => $attr )
+                    {
+                        if ( strpos( $attr['type'], 'object [' ) === 0 )
+                        {
+                            $typename = substr( $attr['type'], 8, -1 );
+                            // currently we get lowercase class names, but we want correct casing
+                            // (add strtolower in case in the future ezPODocScanner is fixed)
+                            $typename = ezPODocScanner::findClassNameGivenLowerCaseName( strtolower( $typename ) );
+                            $out[$name] = $typename;
+                        }
+                        else if ( strpos( $attr['type'], 'array [' ) === 0 )
+                        {
+                            $typename = substr( $attr['type'], 7, -1 );
+                            if ( !ezPODocScanner::isscalar( $typename ) && $typename != 'array' )
+                            {
+                                $typename = ezPODocScanner::findClassNameGivenLowerCaseName( strtolower( $typename ) );
+                            }
+                            $out[$name] = 'array of ' . $typename;
+                        }
+                        else
+                        {
+                            $out[$name] = $attr['type'];
+                        }
+                    }
+                }
+            }
+            else
+            {
+                /// @todo log error message
+            }
+            return $out;
+        }
+        else
+        {
+            // not a template class: do a dump based on reflection
+            $out = array();
+            $reflectionClass = new ReflectionClass( $classname );
+            foreach( $reflectionClass->getProperties( ReflectionProperty::IS_PUBLIC & ReflectionProperty::IS_STATIC ) as $prop )
+            {
+                $doc = $prop->getDocComment();
+                $type = $docs == '' ? 'mixed' : self::typeFromDocComment( $doc );
+                $out[$prop->name] = $type;
+            }
+            return $out;
+        }
+    }
+
+    // @todo parse javadoc to find out type
+    protected static function typeFromDocComment( $doc )
+    {
+        return 'mixed';
     }
 
     /**

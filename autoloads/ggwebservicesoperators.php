@@ -3,6 +3,7 @@
  * @author G. Giunta
  * @version $Id$
  * @copyright (C) G. Giunta 2009-2011
+* @license code licensed under the GPL License: see LICENSE file
  **/
 
 class ggWebservicesOperators {
@@ -11,7 +12,7 @@ class ggWebservicesOperators {
      Constructor
     */
     function ggWebservicesOperators() {
-        $this->Operators = array ( 'washxml', 'washxmlcomment', 'washxmlcdata', 'xsdtype' );
+        $this->Operators = array ( 'washxml', 'washxmlcomment', 'washxmlcdata', 'xsdtype', 'classInspect' );
     }
 
     /**
@@ -55,15 +56,15 @@ class ggWebservicesOperators {
             'xsdtype' => array(
                 'targetprefix' => array(
                    'type' => 'string',
-                   'required' => true,
+                   'required' => false,
                    'default' => 'tnsxsd:' ),
                 'xsdprefix' => array(
                     'type' => 'string',
-                    'required' => true,
+                    'required' => false,
                     'default' => 'xsd:' ),
                 'soapencprefix' => array(
                     'type' => 'string',
-                    'required' => true,
+                    'required' => false,
                     'default' => 'SOAP-ENC:' ),
             )
         );
@@ -89,9 +90,13 @@ class ggWebservicesOperators {
                 break;
             case 'washxmlcdata':
                 /// @todo
+                eZDebug::writeWarning( 'Template operator washxmlcdata not yet implemented, it should not be used!', __METHOD__ );
                 break;
             case 'xsdtype':
                 $operatorValue = ggWSDLParser::phpType2xsdType( $operatorValue, $namedParameters['targetprefix'], $namedParameters['xsdprefix'], $namedParameters['soapencprefix'] );
+                break;
+            case 'classInspect':
+                $operatorValue = ggeZWebservices::classInspect( $operatorValue );
                 break;
         }
     }
