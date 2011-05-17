@@ -10,6 +10,7 @@
 // this line moved to the top for a small bit extra safety when no rewrite rules
 // are in place
 require_once( "kernel/common/template.php" );
+include_once( 'kernel/common/i18n.php' );
 
 //$query_string = '';
 
