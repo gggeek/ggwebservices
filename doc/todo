@@ -1,3 +1,7 @@
+- support for wssecurity
+
+- implement ...?wsdl url pattern as alternative to ..../wsdl
+
 - server: improve soap server w. wsdl support
   + proper parsing of called function name from xml (not from soapaction http header)
   + use reflection for generating wsdl if user did not provide any type info
@@ -34,7 +38,9 @@
 
 - client: support the new ez rest protocol
 
-- add more client samples, eg. to call webservices on flickr/facebook/twitter
+- add more client samples, eg. to call webservices on facebook
+
+- implement oauth 2 client capabilities
 
 - add phpdoc-generated api docs to the distribution
 

@@ -2,9 +2,9 @@ extension:
     name: ggwebservices
 
 version:
-    major:  0
-    minor:  8
-    release:  0
+    major: 0
+    minor: 9
+    release: 0
 
 ezp:
     version:
@@ -16,7 +16,8 @@ svn:
     url:  http://svn.projects.ez.no/ggwebservices/trunk/extension/ggwebservices/
 
 create:
-    tarball:  yes
+    tarball: no
+    zip: yes
     doxygen_doc: yes
 
 releasenr:

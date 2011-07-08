@@ -1,10 +1,19 @@
-Changes from 0.8 to 0.9 - released 2011/xx/yy
+Changes from 0.8 to 0.9 - released 2011/7/8
 
 *General:
+
+- Add a new parameter to the Options that can be defined per-remote-server: responseType
+  This allows to force parsing received response as a given content-type instead of obeying
+  the Content-type header of the response. Useful eg. for calls to Flickr
+
+- Add sample client configurations for calling Flickr and Last.fm services
+
+- When both DebugOutput and DevelopmentMode are enabled, the webservice calls made by ggeZWebservicesClient
+  are sent to the standard eZ Publish error logs, to ease debugging
 
 *Bugfixes:
 
 - Debugger: fix incompatibility with eZP 4.5 and later
-
+- Debugger: allow ssl options to be set when using soap and wsdl in plain http modes (as wsdl might be http but service https)
 
 *Incompatible changes
