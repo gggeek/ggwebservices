@@ -30,9 +30,35 @@ class ggeZWebservices
      * Logs the string $logString to the logfile webservices.log
      * in the current log directory (usually var/log).
      * If logging is disabled, nothing is done.
+     *
+     * In dev mode, also writes to the eZP logs to ease debugging (this happens
+     * regardless of the logging level set for the extension itself)
      */
     static function appendLogEntry( $logString, $debuglevel )
     {
+        $ini = eZINI::instance( 'site.ini' );
+        if ( $ini->variable( 'DebugSettings', 'DebugOutput' ) == 'enabled' && $ini->variable( 'TemplateSettings', 'DevelopmentMode' ) == 'enabled' )
+        {
+            switch( $debuglevel )
+            {
+                case 'info':
+                case 'notice':
+                    eZDebug::writeNotice( $logString, 'ggwebservices' );
+                    break;
+                case 'debug':
+                    eZDebug::writeDebug( $logString, 'ggwebservices' );
+                    break;
+                case 'warning':
+                    eZDebug::writeWarning( $logString, 'ggwebservices' );
+                    break;
+                case 'error':
+                case 'critical':
+                    eZDebug::writeError( $logString, 'ggwebservices' );
+                    break;
+
+            }
+        }
+
         if ( !self::isLoggingEnabled( $debuglevel ) )
             return false;
 
@@ -56,6 +82,7 @@ class ggeZWebservices
             fwrite( $logFile, $text . "\n" );
             fclose( $logFile );
         }
+
     }
 
     /**
