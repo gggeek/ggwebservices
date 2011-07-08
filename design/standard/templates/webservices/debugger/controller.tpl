@@ -90,17 +90,17 @@
 
   function switchssl()
   {
-    if (document.frmaction.protocol.value != '2')
-    {
-      document.frmaction.verifypeer.disabled = true;
-      document.frmaction.verifyhost.disabled = true;
-      document.frmaction.cainfo.disabled = true;
-    }
-    else
+    if (document.frmaction.protocol.value == '2' || (document.frmsoap.yes.checked == true && document.frmaction.wsdl.checked && true))
     {
       document.frmaction.verifypeer.disabled = false;
       document.frmaction.verifyhost.disabled = false;
       document.frmaction.cainfo.disabled = false;
+    }
+    else
+    {
+      document.frmaction.verifypeer.disabled = true;
+      document.frmaction.verifyhost.disabled = true;
+      document.frmaction.cainfo.disabled = true;
     }
   }
 
@@ -246,10 +246,10 @@
 </script>
 </head>
 <body onload="switchtransport({$params.wstype}); switchssl(); switchauth(); swicthcainfo();{if $params.run} document.forms[4].submit();{/if}">
-<h1><form name="frmxmlrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(0);"/></form>XMLRPC
-/<form name="frmjsonrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(1);"/></form>JSONRPC
-/<form name="frmezjscore" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(2);"/></form>EZJSCORE
-/<form name="frmsoap" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(3);"/></form>SOAP
+<h1><form name="frmxmlrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(0); switchssl();"/></form>XMLRPC
+/<form name="frmjsonrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(1); switchssl();"/></form>JSONRPC
+/<form name="frmezjscore" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(2); switchssl();"/></form>EZJSCORE
+/<form name="frmsoap" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(3); switchssl();"/></form>SOAP
 Debugger</h1>
 <form name="frmaction" method="get" action="../action/" target="frmaction" onSubmit="switchFormMethod();">
 
@@ -259,7 +259,7 @@ Debugger</h1>
 <td class="labelcell">Address:</td><td><input type="text" name="host" value="{$params.host|wash()}" size="25" /></td>
 <td class="labelcell">Port:</td><td><input type="text" name="port" value="{$params.port|wash()}" size="5" maxlength="5" /></td>
 <td class="labelcell">Path:</td><td><input type="text" name="path" value="{$params.path|wash()}" size="40" /></td>
-<td class="labelcell">WSDL</td><td><input type="checkbox" name="wsdl" value="1"{if eq($params.wsdl, '1')} checked="checked"{/if} /></td>
+<td class="labelcell">WSDL</td><td><input type="checkbox" name="wsdl" value="1"{if eq($params.wsdl, '1')} checked="checked"{/if} onchange="switchssl();" /></td>
 </tr>
 </table>
 
