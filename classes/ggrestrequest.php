@@ -240,6 +240,12 @@ class ggRESTRequest extends ggWebservicesRequest
         return $this->ResponseType;
     }
 
+    /// used to force type of expected response instead of finding the type from http headers (when used by client class)
+    function setResponseType( $value )
+    {
+        $this->ResponseType = $value;
+    }
+
     function jsonpCallback()
     {
         return $this->JsonpCallback;

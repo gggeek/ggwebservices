@@ -87,10 +87,15 @@ class ggRESTResponse extends ggWebservicesResponse
     {
         $this->Cookies = $cookies;
 
-        $contentType = isset( $headers['content-type'] ) ? $headers['content-type'] : '';
-        if ( ( $pos = strpos( $contentType, ';' ) ) !== false )
+        // allow request to force an expected response type
+        // this is useful if servers do respons with eg. text/plain content-header
+        if ( ( $contentType = $request->responseType() ) == '' )
         {
-            $contentType = substr( $contentType, 0, $pos );
+            $contentType = isset( $headers['content-type'] ) ? $headers['content-type'] : '';
+            if ( ( $pos = strpos( $contentType, ';' ) ) !== false )
+            {
+                $contentType = substr( $contentType, 0, $pos );
+            }
         }
 
         switch( $contentType )

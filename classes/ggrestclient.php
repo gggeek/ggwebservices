@@ -31,6 +31,10 @@ class ggRESTClient extends ggWebservicesClient
         {
             $request->setNameVar( $this->NameVar );
         }
+        if ( $this->ResponseType !== null )
+        {
+            $request->setResponseType( $this->ResponseType );
+        }
         return parent::send( $request );
     }
 
@@ -40,6 +44,10 @@ class ggRESTClient extends ggWebservicesClient
         {
             $this->NameVar = $value;
         }
+        else if ( $option == 'responseType' )
+        {
+            $this->ResponseType = $value;
+        }
         else
         {
             return parent::setOption( $option, $value );
@@ -48,6 +56,8 @@ class ggRESTClient extends ggWebservicesClient
 
     // store this in the client to inject it in requests
     protected $NameVar = null;
+    // also injected in the requests if not null
+    protected $ResponseType = null;
     // override default value from ggwsclient: if the user sets this via a
     // setOption call, we will later inject it into the request object
     protected $Verb = null;
