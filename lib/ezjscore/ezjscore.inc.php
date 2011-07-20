@@ -165,7 +165,15 @@
 		        case 'text/javascript':
 		        case 'application/json':
 		            $r = json_decode( $data, true );
-		            if (($err= json_last_error()) != JSON_ERROR_NONE)
+		            if ( function_exists( 'json_last_error' ) )
+		            {
+		                $err = json_last_error();
+		            }
+		            else
+		            {
+		                $err = ( $val === null ) ? 1 : false;
+		            }
+		            if ( $err )
 		            {
 		                $r = new ezjscoreresp(0, $GLOBALS['xmlrpcerr']['invalid_return'], $GLOBALS['xmlrpcerrstr']['invalid_return'] . ". Json decoding error: $err");
 		            }

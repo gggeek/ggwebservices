@@ -31,7 +31,15 @@ if ( isset( $_GET['type'] ) && in_array( $_GET['type'], array( 'jsonrpc', 'xmlrp
 if ( isset( $_GET['params'] ) && $_GET['params'] != '' )
 {
 	$paramvals = json_decode( base64_decode( $_GET['params'] ), true );
-	if ( json_last_error() != JSON_ERROR_NONE )
+    if ( function_exists( 'json_last_error' ) )
+    {
+        $err = json_last_error();
+    }
+    else
+    {
+        $err = ( $val === null ) ? 1 : false;
+    }
+	if ( $err )
 	{
 		$paramvals = array();
 	}

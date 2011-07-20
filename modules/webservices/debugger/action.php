@@ -261,7 +261,15 @@ if ( $action )
             if ( $payload != '' )
             {
                 $php_payload = json_decode( $payload, true );
-                if ( json_last_error() != JSON_ERROR_NONE || !is_array( $php_payload ) )
+                if ( function_exists( 'json_last_error' ) )
+                {
+                    $err = json_last_error();
+                }
+                else
+                {
+                    $err = ( $val === null ) ? 1 : false;
+                }
+                if ( $err || !is_array( $php_payload ) )
                 {
                     $actionname = '[ERROR: invalid payload (must be in json format)]';
                     $msg = array();

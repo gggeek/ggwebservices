@@ -102,7 +102,15 @@ class ggRESTResponse extends ggWebservicesResponse
         {
             case 'application/json':
                 $val = json_decode( $stream, true );
-                if ( $err = json_last_error() )
+                if ( function_exists( 'json_last_error' ) )
+                {
+                    $err = json_last_error();
+                }
+                else
+                {
+                    $err = ( $val === null ) ? 1 : false;
+                }
+                if ( $err )
                 {
                     $this->IsFault = true;
                     $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
