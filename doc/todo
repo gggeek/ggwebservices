@@ -1,3 +1,7 @@
+- implement oauth 2 client capabilities
+
+- implement/test POST, PUT, DELETE methods for REST client
+
 - support for wssecurity
 
 - implement ...?wsdl url pattern as alternative to ..../wsdl
@@ -38,11 +42,7 @@
 
 - client: support the new ez rest protocol
 
-- add more client samples, eg. to call webservices on facebook
-
-- implement oauth 2 client capabilities
-
-- add phpdoc-generated api docs to the distribution
+- add more client samples, eg. to call webservices on facebook, youtube, amazon, google
 
 - in debugger:
   + use templates for output of action.php
@@ -68,6 +68,8 @@
 - server: add a script that creates initialize.php from a wsdl file
 
 - add some doc showing the client/request/response and server/request/response interaction to make it easier to remember that requests are also used server-side (and responses client-side)
+
+- client: add some xml parsing to rest code, driven by options (return either simplexml objs or nested arrays or ?)
 
 - server: add 'plain' xml format to REST server output. see eg http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
   or http://svn.php.net/viewvc/pear/packages/XML_Serializer/trunk/XML/Serializer.php?revision=294967&view=markup
