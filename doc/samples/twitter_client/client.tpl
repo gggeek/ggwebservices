@@ -1,15 +1,13 @@
-<h3>Test call to YQL: yahoo.finance stock quotes</h3>
-(full docs at: http://developer.yahoo.com/yql/)
+<h3>Test call to Twitter: last messages</h3>
+(full docs at: https://dev.twitter.com/)
 
 {def $results = fetch('webservices', 'call',
-                 hash('server', 'yql',
-                      'method', 'select * from yahoo.finance.quotes where symbol in ("MSFT", "GOOG")',
-                      'parameters', hash(
-                        'env', 'http://datatables.org/alltables.env',
-                        'format', 'json')))}
+                 hash('server', 'twitter',
+                      'method', 'statuses/public_timeline.json',
+                      'parameters', hash()))}
 <ul>
-{*$results|attribute(show,4)*}
-{foreach $results.query.results.quote as $symbol}
-    <li>"{$symbol.symbol|wash()}": {$symbol.Ask|wash()}</a></li>
+{foreach $results as $tweet}
+    <li>From "{$tweet.user.name|wash()}": {$tweet.text|wash()}</a></li>
 {/foreach}
 </ul>
+

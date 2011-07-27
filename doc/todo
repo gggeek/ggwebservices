@@ -1,6 +1,8 @@
 - implement oauth 2 client capabilities
 
-- implement/test POST, PUT, DELETE methods for REST client
+- implement/test POST, PUT, DELETE methods for REST client (or implement at least POST as separate server, put it in the examples)
+
+- implement per-server fixed parameters, useful for eg. rest client where the type=json is more or less fixed
 
 - support for wssecurity
 
