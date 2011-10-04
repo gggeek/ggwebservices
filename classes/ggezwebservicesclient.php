@@ -26,16 +26,16 @@ class ggeZWebservicesClient
      * @param string $server provider name from the wsproviders.ini located in the extension's settings
      * @param string $method the webservice method to be executed
      * @param array $parameters parameters for the webservice method
-     * @param boolean $return_reponse_obj
+     * @param boolean $return_response_obj
      * @param array $options extra options to be set into the ws client
      * @return array containing value 0 if method call failed, else plain php value (tbd: something more informative?)
      *
      * @bug returning 0 for non-error responses is fine as long as the protocol
      *      does not permit empty responses. This is not the case with json-rpc!
-     * @todo this API is crappy. we should get rid of $return_reponse_obj and let the call function
+     * @todo this API is crappy. we should get rid of $return_response_obj and let the call function
      *       wrap the results in the desired array...
      */
-    static function send( $server, $method, $parameters, $return_reponse_obj = false, $options = array() )
+    static function send( $server, $method, $parameters, $return_response_obj = false, $options = array() )
     {
 
         //include_once ("lib/ezutils/classes/ezini.php");
@@ -65,7 +65,7 @@ class ggeZWebservicesClient
             $timeout = false;
 
         // 'new style' server config: make it easier to define any desired client setting,
-        // even ones added in future releases, without having to perse it by hand in this class
+        // even ones added in future releases, without having to parse it by hand in this class
         $providerOptions = $ini->hasVariable( $server, 'Options' ) ? $ini->variable( $server, 'Options' ) : array();
 
         // add the user-set options on top of the options set in ini file
@@ -225,7 +225,7 @@ class ggeZWebservicesClient
 
                 ggeZWebservices::appendLogEntry( 'HTTP-level error ' . $client->errorNumber() . ': '. $client->errorString(), 'error' );
 
-                if ( $return_reponse_obj )
+                if ( $return_response_obj )
                 {
                     $response = new $responseClass( $method );
                     $response->setValue( new ggWebservicesFault( $client->errorNumber(), $client->errorString() ) );
@@ -241,11 +241,11 @@ class ggeZWebservicesClient
                 if ( $response->isFault() )
                 {
                     ggeZWebservices::appendLogEntry( "$providerType protocol-level error " . $response->faultCode() . ':' . $response->faultString() , 'error' );
-                    if ( !$return_reponse_obj )
+                    if ( !$return_response_obj )
                         return array( 'result' => null );
                 }
 
-                if ( $return_reponse_obj )
+                if ( $return_response_obj )
                     return array( 'result' => $response );
                 else
                     return array( 'result' => $response->value() );
@@ -256,7 +256,7 @@ class ggeZWebservicesClient
         default:
             // unsupported protocol
             ggeZWebservices::appendLogEntry( 'Error in user request: unsupported protocol ' . $providerType, 'error' );
-            /// @todo shall we return a resp. obj in $return_reponse_obj mode?
+            /// @todo shall we return a resp. obj in $return_response_obj mode?
             return array( 'error' => 'Error in user request: unsupported protocol ' . $providerType, 'error' );
         }
     }
