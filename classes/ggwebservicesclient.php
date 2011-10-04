@@ -562,7 +562,12 @@ class ggWebservicesClient
             }
             $data = substr( $data, $pos );
         }
-        if( !preg_match( '/^HTTP\/[0-9.]+ 200 /', $data ) )
+        /// @todo settle on a definitive (or dynamic) list of http return codes accepted
+        ///       the spec says btw: applications MUST understand the class of any status code,
+        ///       as indicated by the first digit, and treat any unrecognized response as being
+        ///       equivalent to the x00 status code of that class, with the exception that an
+        ///       unrecognized response MUST NOT be cached
+        if( !preg_match( '/^HTTP\/[0-9.]+ 20[0-9] /', $data ) )
         {
             $errstr = substr( $data, 0, strpos( $data, "\n" ) - 1 );
             $this->errorNumber = self::ERROR_BAD_RESPONSE;
