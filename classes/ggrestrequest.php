@@ -224,7 +224,7 @@ class ggRESTRequest extends ggWebservicesRequest
         {
             return '';
         }
-        return 'application/x-www-form-urlencoded';
+        return $this->ContentType;
     }
 
     function requestHeaders()
@@ -281,6 +281,8 @@ class ggRESTRequest extends ggWebservicesRequest
     protected $JsonpRegexp = '/^\w+$/';
     /// where we store the callback received in the request
     protected $JsonpCallback = false;
+
+    protected $ContentType = 'application/x-www-form-urlencoded';
 }
 
 ?>
