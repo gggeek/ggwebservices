@@ -10,7 +10,7 @@
 class ggRESTRequest extends ggWebservicesRequest
 {
     /**
-    * No request body for GET requests, as all aparams are put in the url
+    * No request body for GET requests, as all params are put in the url
     */
     function payload()
     {
@@ -82,22 +82,35 @@ class ggRESTRequest extends ggWebservicesRequest
 
     protected function _payload( $params )
     {
-        $results = array();
-        foreach( $params as $key => $val )
+        switch( $this->ContentType )
         {
-            if ( is_array( $val ) )
-            {
-                foreach ( $val as $vkey => $vval )
+            case 'application/x-www-form-urlencoded':
+                $results = array();
+                foreach( $params as $key => $val )
                 {
-                    $results[] = urlencode( $key ) . '[' . urlencode( $vkey ) . ']=' . urlencode( $vval );
+                    if ( is_array( $val ) )
+                    {
+                        foreach ( $val as $vkey => $vval )
+                        {
+                            $results[] = urlencode( $key ) . '[' . urlencode( $vkey ) . ']=' . urlencode( $vval );
+                        }
+                    }
+                    else
+                    {
+                        $results[] = urlencode( $key ) . '=' . urlencode( $val );
+                    }
                 }
-            }
-            else
-            {
-                $results[] = urlencode( $key ) . '=' . urlencode( $val );
-            }
+                return implode( '&', $results );
+            case 'application/json':
+                return json_encode( $params );
+            case 'php':
+            case 'application/x-httpd-php':
+                return var_export( $params );
+            case 'phps':
+            case 'application/vnd.php.serialized':
+                return serialize( $params );
         }
-        return implode( '&', $results );
+
     }
 
     /**
@@ -263,6 +276,16 @@ class ggRESTRequest extends ggWebservicesRequest
         $this->NameVar = $var;
     }
 
+    function setContentType( $type )
+    {
+        if ( in_array( $type, self::$KnownContentTypes ) )
+        {
+            $this->ContentType = $type;
+            return true;
+        }
+        return false;
+    }
+
     protected $Verb = 'GET';
     protected $ResponseType = '';
 
@@ -283,6 +306,14 @@ class ggRESTRequest extends ggWebservicesRequest
     protected $JsonpCallback = false;
 
     protected $ContentType = 'application/x-www-form-urlencoded';
+    protected static $KnownContentTypes = array(
+        'application/x-www-form-urlencoded',
+        'application/json',
+        'php',
+        'application/x-httpd-php',
+        'phps',
+        'application/vnd.php.serialized'
+    );
 }
 
 ?>

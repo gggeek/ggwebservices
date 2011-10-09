@@ -3,6 +3,7 @@ Changes from 0.9.1 to 0.10 - released 2011/10/xx
 *General:
 
 - client now accepts all 20x http reponse codes, to make it more REST compliant
+- REST client can now send requests with a body encodes as json (or php) instead of urlencoding it
 
 *Bugfixes:
 

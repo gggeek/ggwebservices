@@ -35,6 +35,10 @@ class ggRESTClient extends ggWebservicesClient
         {
             $request->setResponseType( $this->ResponseType );
         }
+        if ( $this->RequestType !== null )
+        {
+            $request->setContentType( $this->RequestType );
+        }
         return parent::send( $request );
     }
 
@@ -48,6 +52,10 @@ class ggRESTClient extends ggWebservicesClient
         {
             $this->ResponseType = $value;
         }
+        else if ( $option == 'requestType' )
+        {
+            $this->RequestType = $value;
+        }
         else
         {
             return parent::setOption( $option, $value );
@@ -58,6 +66,10 @@ class ggRESTClient extends ggWebservicesClient
     protected $NameVar = null;
     // also injected in the requests if not null
     protected $ResponseType = null;
+    // this one too. In the request it is actually called ContentType, but the
+    // default ContenType in the client is not null, so we need an extra variable
+    protected $RequestType = null;
+
     // override default value from ggwsclient: if the user sets this via a
     // setOption call, we will later inject it into the request object
     protected $Verb = null;
