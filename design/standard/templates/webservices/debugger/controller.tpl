@@ -392,8 +392,29 @@ Debugger</h1>
 <tr id="restcell">
 <td class="labelcell">REST:</td>
 <td class="labelcell">Name variable:</td><td><input type="text" name="namevariable" value="{$params.namevariable|wash()}"/></td>
-<td class="labelcell">Verb:</td><td><input type="text" name="verb" value="{$params.verb|wash()}"/></td>
-<td class="labelcell">Request type:<br/>Response type:</td><td><input type="text" name="requesttype" value="{$params.requesttype|wash()}"/><br/><input type="text" name="responsetype" value="{$params.responsetype|wash()}"/></td>
+
+<td class="labelcell">Verb:</td><td><select name="verb">
+<option value="GET"{if eq($params.verb|upcase, 'GET')} selected="selected"{/if}>GET</option>
+<option value="POST"{if eq($params.verb|upcase, 'POST')} selected="selected"{/if}>POST</option>
+<option value="PUT"{if eq($params.verb|upcase, 'PUT')} selected="selected"{/if}>PUT</option>
+<option value="DELETE"{if eq($params.verb|upcase, 'DELETE')} selected="selected"{/if}>DELETE</option>
+<option value="HEAD"{if eq($params.verb|upcase, 'HEAD')} selected="selected"{/if}>HEAD</option>
+</select></td>
+
+<td class="labelcell">Request type:<p>Response type:</p></td>
+<td><select name="requesttype">
+{foreach $known_req_content_types as $ct}
+<option value="{$ct}"{if eq($params.requesttype, $ct)} selected="selected"{/if}>{$ct}</option>
+{/foreach}
+</select><br/>
+<select name="responsetype">
+<option value="">Automatic</option>
+{foreach $known_resp_content_types as $ct}
+<option value="{$ct}"{if eq($params.responsetype, $ct)} selected="selected"{/if}>{$ct}</option>
+{/foreach}
+</select></td>
+
+<!--<tr><td>Response type:</td><td></td>-->
 <!--<td class="labelcell">Request type:</td><td><input type="text" name="requesttype" size="25" value="{$params.requesttype|wash()}"/></td>-->
 </tr>
 

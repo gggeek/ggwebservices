@@ -596,7 +596,7 @@ else
 <li>Run a 'list available methods' action against desired server (for SOAP servers this needs a wsdl file)</li>
 <li>If list of methods appears, click on 'describe method' for desired method</li>
 <li>To run method: click on 'load method synopsis' for desired method. This will load a skeleton for method call parameters in the form above. Complete all values with appropriate data and click 'Execute'</li>
-<li>If you get any "call FAILED" error, use the "Show debug info" parameter to begin debugging</li>
+<li>If you get any "call FAILED" error, use the "Show debug info" option to begin debugging</li>
 </ol>
 <?php
     if ( !extension_loaded( 'curl' ) )
@@ -618,7 +618,13 @@ Server Address: soap.amazon.com, Path: /schemas3/AmazonWebServices.wsdl (for soa
 <li>If you get an error <i>Fault code: [-301] Reason: 'Response received from server is not valid json/xmlrpc'</i> when testing the server itself, a probable cause is that you did neither specify a session cookie for your call, nor give rights to the anonymous user to execute webservice calls</li>
 <li>The format for cookies is to separate them using a comma</li>
 <li><b>The format for the payload is <a href="http://wwww.json.org/">json</a>, regardless of the webservice protocol in use</b></li>
-<li>For ezjscore calls, the GET parameters have to be specified after method name (eg: ezstarrating::rate::55::1::5). Parameters specified as part of Payload will be sent via POST</li>
+<li>For ezjscore calls, the GET parameters have to be specified after method name (eg: ezstarrating::rate::55::1::5). Parameters specified as part of Payload will be sent via the request body</li>
+<li>For REST calls:<ul>
+    <li>The "method" name is appended to the URL by default. Use the "Name variable" option if you want method name passed in the query string</li>
+    <li>When using GET, the Payload is serialized into the query string. For POST/PUT, it is serialized into the request body, using the format defined by the "Request type" option</li>
+    <li>The "Response type" option is used to force proper parsing of response from servers that send incorrect Content-type headers. application/json and text/xml supported so far</li>
+</ul></li>
+<li>OAUTH authentication is not supported yet</li>
 </ul>
 
 <?php

@@ -241,6 +241,11 @@ class ggRESTRequest extends ggWebservicesRequest
         return $this->ContentType;
     }
 
+    static function knownContentTypes()
+    {
+        return array_unique( self::$KnownContentTypes );
+    }
+
     function requestHeaders()
     {
         /// shall we declare support for insecure stuff such as php and serialized php?
@@ -279,9 +284,9 @@ class ggRESTRequest extends ggWebservicesRequest
 
     function setContentType( $type )
     {
-        if ( in_array( $type, self::$KnownContentTypes ) )
+        if ( isset( self::$KnownContentTypes[$type] ) )
         {
-            $this->ContentType = $type;
+            $this->ContentType = self::$KnownContentTypes[$type];
             return true;
         }
         return false;
@@ -308,13 +313,16 @@ class ggRESTRequest extends ggWebservicesRequest
 
     protected $ContentType = 'application/x-www-form-urlencoded';
     protected static $KnownContentTypes = array(
-        'json',
         'application/x-www-form-urlencoded',
-        'application/json',
-        'php',
-        'application/x-httpd-php',
-        'phps',
-        'application/vnd.php.serialized'
+
+        'json' => 'application/json',
+        'application/json' => 'application/json',
+
+        'php' => 'application/x-httpd-php',
+        'application/x-httpd-php' => 'application/x-httpd-php',
+
+        'phps' => 'application/vnd.php.serialized',
+        'application/vnd.php.serialized' => 'application/vnd.php.serialized'
     );
 }
 

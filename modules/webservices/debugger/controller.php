@@ -21,6 +21,8 @@ if ( $params['action'] == '' )
 
 $tpl = templateInit();
 $tpl->setVariable( 'params', $params );
+$tpl->setVariable( 'known_req_content_types', ggRESTRequest::knownContentTypes() );
+$tpl->setVariable( 'known_resp_content_types', ggRESTResponse::knownContentTypes() );
 $Result['content'] = $tpl->fetch( "design:webservices/debugger/controller.tpl" );
 $Result['pagelayout'] = 'debugger_pagelayout.tpl';
 

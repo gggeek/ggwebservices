@@ -4,7 +4,10 @@ Changes from 0.9.1 to 0.10 - released 2011/10/xx
 
 - client now accepts all 20x http reponse codes, to make it more REST compliant
 - REST client can now send requests with a body encodes as json (or php) instead of urlencoding it
+- REST support available in the debugger
 
 *Bugfixes:
 
 *Incompatible changes
+
+- method ggeZWebservicesClient::send is deprecated and will be removed at some point in the future

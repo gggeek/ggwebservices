@@ -161,8 +161,19 @@ class ggRESTResponse extends ggWebservicesResponse
         $this->JsonpCallback = $callback;
     }
 
+    static function knownContentTypes()
+    {
+        return array_unique( self::$KnownContentTypes );
+    }
+
     protected $defaultContentType = 'application/json';
     protected $JsonpCallback = false;
+
+    protected static $KnownContentTypes = array(
+        'application/json' => 'application/json',
+        'text/xml' => 'text/xml',
+        'application/xml' => 'application/xml'
+    );
 }
 
 ?>
