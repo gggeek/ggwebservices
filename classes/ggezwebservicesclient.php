@@ -7,47 +7,85 @@
  * @copyright (C) 2009-2011 G. Giunta
  *
  * @todo move ini file name to class constant
- * @todo move log file name to ini entry; parse it for absolute paths
  * @todo modify logging mechanism to use debug level instead of useless labels
  */
 
 class ggeZWebservicesClient
 {
 
-    /// The function called by the tpl fetch function webservices/call
+    /**
+    * The function called by the template fetch function webservices/call
+    *
+    * @todo allow template-level code to grab error messages if it wants to
+    */
     static function call( $server, $method, $parameters = array(), $options = array() )
     {
-        return self::send( $server, $method, $parameters, false, $options );
+        return self::send(  $server, $method, $parameters, false, $options );
     }
 
     /**
-     * This method sends a XML-RPC/JSON-RPC/SOAP Request to the provider,
-     * returning results in a correct format to be used in tpl fetch functions
+     * Sends a XML-RPC/JSON-RPC/SOAP/REST Request to the provider,
+     * returning results in a correct format to be used in tpl fetch functions.
+     * Optionally it returns the response object instead of the response value.
+     *
      * @param string $server provider name from the wsproviders.ini located in the extension's settings
      * @param string $method the webservice method to be executed
      * @param array $parameters parameters for the webservice method
      * @param boolean $return_response_obj
      * @param array $options extra options to be set into the ws client
-     * @return array containing value 0 if method call failed, else plain php value (tbd: something more informative?)
+     * @return array ( 'result' => null ) in case response is a fault one and $return_response_obj == false
      *
-     * @bug returning 0 for non-error responses is fine as long as the protocol
-     *      does not permit empty responses. This is not the case with json-rpc!
-     * @todo this API is crappy. we should get rid of $return_response_obj and let the call function
-     *       wrap the results in the desired array...
+     * @bug returning NULL for non-error responses is fine only as long as the
+     *      protocol does not permit empty responses
+     *
+     * @deprecated left here for backward compatibility - this API is crappy
      */
     static function send( $server, $method, $parameters, $return_response_obj = false, $options = array() )
     {
+        try
+        {
+            $response = self::_call(  $server, $method, $parameters, $options );
 
-        //include_once ("lib/ezutils/classes/ezini.php");
+            if  ( $return_response_obj )
+            {
+                return array( 'result' => $response );
+            }
 
-        //Gets provider's data from the conf
+            if ( $response->isFault() )
+            {
+                 return array( 'result' => null );
+            }
+
+            return array( 'result' => $response->value() );
+        }
+        catch ( Exception $e )
+        {
+            /// @todo shall we return a resp. obj in $return_response_obj mode?
+            return array( 'error' => $e->getMessage() );
+        }
+    }
+
+    /**
+     * This method sends a XML-RPC/JSON-RPC/SOAP/REST Request to the provider,
+     * throwing an exception in case of major problems
+     *
+     * @param string $server provider name from the wsproviders.ini located in the extension's settings
+     * @param string $method the webservice method to be executed
+     * @param array $parameters parameters for the webservice method
+     * @param array $options extra options to be set into the ws client
+     * @return mixed an object instance of a ggWebservicesResponse subclass
+     */
+    static private function _call( $server, $method, $parameters, $options = array() )
+    {
+
+        // Gets provider's data from the conf
         $ini = eZINI::instance( 'wsproviders.ini' );
 
         /// check: if section $server does not exist, error out here
         if ( !$ini->hasGroup( $server ) )
         {
             ggeZWebservices::appendLogEntry( 'Trying to call service on undefined server: ' . $server, 'error' );
-            return array( 'error' => 'Trying to call service on undefined server: ' . $server, 'error' );
+            throw new Exception( 'Trying to call service on undefined server: ' . $server );
         }
         $providerURI = $ini->variable( $server, 'providerUri' );
         $providerType = $ini->variable( $server, 'providerType' );
@@ -55,8 +93,8 @@ class ggeZWebservicesClient
 
         /// @deprecated all of the ini vars in this block of code are deprecated
         $soapversion = ( $ini->hasVariable( $server, 'SoapVersion' ) && strtolower( $ini->variable( $server, 'SoapVersion' ) ) == 'soap12' ) ? 2 : 1; // work even if php soap ext. disabled
-        $providerAuthtype = $ini->hasVariable( $server, 'providerAuthtype' ) ? $ini->variable( $server, 'providerAuthtype' ) : false; /// @TODO: to be implemented
-        $providerSSLRequired = $ini->hasVariable( $server, 'providerSSLRequired' ) ? $ini->variable( $server, 'providerSSLRequired' ) : false; /// @TODO: to be implemented
+        //$providerAuthtype = $ini->hasVariable( $server, 'providerAuthtype' ) ? $ini->variable( $server, 'providerAuthtype' ) : false; /// @TODO: to be implemented
+        //$providerSSLRequired = $ini->hasVariable( $server, 'providerSSLRequired' ) ? $ini->variable( $server, 'providerSSLRequired' ) : false; /// @TODO: to be implemented
         $providerUsername = $ini->hasVariable( $server, 'providerUsername' ) ? $ini->variable( $server, 'providerUsername' ) : false;
         $providerPassword = $ini->hasVariable( $server, 'providerPassword' ) ? $ini->variable( $server, 'providerPassword' ) : false;
         if ( $ini->hasVariable( $server, 'timeout' ) )
@@ -141,7 +179,7 @@ class ggeZWebservicesClient
                 if ( !isset( $url['scheme'] ) || !isset( $url['host'] ) )
                 {
                     ggeZWebservices::appendLogEntry( "Error in user request: bad server url $providerURI for server $server", 'error' );
-                    return array( 'error' => 'Error in user request: bad server url for server ' . $server, 'error' );
+                    throw new Exception( "Error in user request: bad server url $providerURI for server $server" );
                 }
                 if ( !isset( $url['path'] ) )
                 {
@@ -168,11 +206,12 @@ class ggeZWebservicesClient
                 else
                 {
                     ggeZWebservices::appendLogEntry( "Error in user request: no server url for server $server", 'error' );
-                    return array( 'error' => 'Error in user request: no server url for server ' . $server, 'error' );
+                    throw new Exception( "Error in user request: no server url for server $server" );
                 }
             }
 
             $client = new $clientClass( $url['host'], $url['path'], $url['port'], $url['scheme'], $wsdl );
+            /// deprecated settings
             if ( $providerUsername != '' )
             {
                 $client->setOptions( array( 'login' => $providerUsername, 'password' => $providerPassword ) );
@@ -181,6 +220,11 @@ class ggeZWebservicesClient
             {
                 $client->setOption( 'timeout', $timeout );
             }
+            if ( $providerType == 'PhpSOAP' )
+            {
+                $client->setOption( 'soapVersion', $soapversion );
+            }
+            /// other settings
             if ( $providerProxy != '' )
             {
                 $client->setOptions( array( 'proxyHost' => $providerProxy, 'proxyPort' => $providerProxyPort, 'proxyUser' => $providerProxyUser, 'proxyPassword' => $providerProxyPassword ) );
@@ -189,6 +233,12 @@ class ggeZWebservicesClient
             {
                 $client->setOptions( $providerOptions );
             }
+            /// @todo shall we allow caller to override this setting?
+            if ( ggeZWebservices::isLoggingEnabled( 'info' ) )
+            {
+                $client->setOption( 'debug', 2 );
+            }
+
             if ( $providerType == 'SOAP' || $providerType == 'PhpSOAP' )
             {
                 $namespace = null;
@@ -203,61 +253,34 @@ class ggeZWebservicesClient
             {
                 $request = new $requestClass( $method, $parameters );
             }
-            if ( $providerType == 'PhpSOAP' )
-            {
-                $client->setOption( 'soapVersion', $soapversion );
-            }
-            if ( ggeZWebservices::isLoggingEnabled( 'info' ) )
-            {
-                $client->setOption( 'debug', 2 );
-            }
+
             $response = $client->send( $request );
+
             if ( ggeZWebservices::isLoggingEnabled( 'info' ) )
             {
                 ggeZWebservices::appendLogEntry( 'Sent: ' . $client->requestPayload(), 'info' );
                 ggeZWebservices::appendLogEntry( 'Received: ' . $client->responsePayload(), 'info' );
             }
+
             if ( !is_object( $response ) )
             {
-                /*$code = WebServicesOperator :: getCodeError($err);
-                $tab = array ('error' => $err, 'CodeError' => $code, 'parametres' => $parameters);
-                if($DEBUG){print_r($tab);}*/
-
                 ggeZWebservices::appendLogEntry( 'HTTP-level error ' . $client->errorNumber() . ': '. $client->errorString(), 'error' );
-
-                if ( $return_response_obj )
-                {
-                    $response = new $responseClass( $method );
-                    $response->setValue( new ggWebservicesFault( $client->errorNumber(), $client->errorString() ) );
-                }
-                unset( $client );
-                // nb: the only non-object value for $response is currently 0
-                return array( 'result' => $response );
+                $response = new $responseClass( $method );
+                $response->setValue( new ggWebservicesFault( $client->errorNumber(), $client->errorString() ) );
+                return $response;
             }
-            else
+
+            unset( $client );
+            if ( $response->isFault() )
             {
-                unset( $client );
-
-                if ( $response->isFault() )
-                {
-                    ggeZWebservices::appendLogEntry( "$providerType protocol-level error " . $response->faultCode() . ':' . $response->faultString() , 'error' );
-                    if ( !$return_response_obj )
-                        return array( 'result' => null );
-                }
-
-                if ( $return_response_obj )
-                    return array( 'result' => $response );
-                else
-                    return array( 'result' => $response->value() );
+                ggeZWebservices::appendLogEntry( "$providerType protocol-level error " . $response->faultCode() . ':' . $response->faultString(), 'error' );
             }
-
-            break;
+            return $response;
 
         default:
             // unsupported protocol
-            ggeZWebservices::appendLogEntry( 'Error in user request: unsupported protocol ' . $providerType, 'error' );
-            /// @todo shall we return a resp. obj in $return_response_obj mode?
-            return array( 'error' => 'Error in user request: unsupported protocol ' . $providerType, 'error' );
+            ggeZWebservices::appendLogEntry( "Error in user request: unsupported protocol $providerType", 'error' );
+            throw new Exception( "Error in user request: unsupported protocol $providerType" );
         }
     }
 
