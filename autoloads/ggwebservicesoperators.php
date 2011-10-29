@@ -74,10 +74,6 @@ class ggWebservicesOperators {
     function modify( &$tpl, &$operatorName, &$operatorParameters, &$rootNamespace, &$currentNamespace, &$operatorValue, &$namedParameters ) {
         switch ($operatorName)
         {
-            /*case 'get_topics_of_subcat_xml':
-            {
-                $operatorValue = $this->get_topics_of_subcat_xml();
-            } break;*/
             case 'washxml':
                 $operatorValue = str_replace( array( '&', '"', "'", '<', '>' ), array( '&amp;', '&quot;', '&apos;', '&lt;', '&gt;' ), $operatorValue );
                 break;
@@ -98,6 +94,5 @@ class ggWebservicesOperators {
         }
     }
 
-    private $Operators;
 }
 ?>

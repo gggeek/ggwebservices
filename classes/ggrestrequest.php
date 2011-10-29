@@ -101,6 +101,7 @@ class ggRESTRequest extends ggWebservicesRequest
                     }
                 }
                 return implode( '&', $results );
+            case 'json':
             case 'application/json':
                 return json_encode( $params );
             case 'php':
@@ -307,6 +308,7 @@ class ggRESTRequest extends ggWebservicesRequest
 
     protected $ContentType = 'application/x-www-form-urlencoded';
     protected static $KnownContentTypes = array(
+        'json',
         'application/x-www-form-urlencoded',
         'application/json',
         'php',
