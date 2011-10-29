@@ -61,6 +61,8 @@ $response = ggeZWebservicesClient::send( $remoteserver, $request->name(), $reque
 $response = reset( $response );
 if ( !is_object( $response ) )
 {
+    /// @todo the only case where we do not get back a response is when we get back an error string.
+    ///       Shall we show that error string to the caller instead of the generic error string?
     $server->showResponse(
         $request->name(),
         $namespaceURI,
