@@ -12,7 +12,7 @@ class ggWebservicesOperators {
          'washxml' => array(),
          'washxmlcomment' => array(),
          'washxmlcdata' => array(),
-         'ws_send' => array(
+         /*'ws_send' => array(
              'server' => array(
                  'type' => 'string',
                  'required' => true ),
@@ -23,7 +23,7 @@ class ggWebservicesOperators {
                  'type' => 'array',
                  'required' => true,
                  'default' => array() )
-             ),
+             ),*/
          'xsdtype' => array(
              'targetprefix' => array(
                 'type' => 'string',
