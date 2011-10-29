@@ -69,6 +69,9 @@ if ( $action )
     $methodseparator = '.';
     switch( $wstype )
     {
+        case 4:
+            $wsprotocol = 'REST';
+            break;
         case 3:
             $wsprotocol = 'PhpSOAP';
             break;
@@ -218,6 +221,26 @@ if ( $action )
         $client->setOption( 'cacheWSDL', WSDL_CACHE_NONE );
     }
 
+    if ( $wsprotocol == 'REST' )
+    {
+        if ( $verb != '' )
+        {
+            $client->setOption( 'method', $verb );
+        }
+        if ( $namevariable != '' )
+        {
+            $client->setOption( 'nameVariable', $namevariable );
+        }
+        if ( $responsetype != '' )
+        {
+            $client->setOption( 'responseType', $responsetype );
+        }
+        if ( $requesttype != '' )
+        {
+            $client->setOption( 'requestType', $requesttype );
+        }
+    }
+
     // prepare an array of ws calls to execute (can be one or two)
 
     $msg = array();
@@ -290,7 +313,7 @@ if ( $action )
     /// @todo use a template for html layout
     if ( $action != 'inspect' || $debug )
     {
-        echo '<h2>'.htmlspecialchars($actionname).' on server '.htmlspecialchars($server)." ...</h2>\n";
+        echo '<h2>' . htmlspecialchars( $actionname ) . ' on server ' . htmlspecialchars( $server ) . " ...</h2>\n";
         flush();
     }
 
@@ -313,7 +336,7 @@ if ( $action )
         echo '<div class="dbginfo"><h2>Debug info:</h2>';
         if ( $debug > 1 ) echo '<span class="evidence">Sent: </span>' . htmlspecialchars( $client->requestPayload() ) . "\n";
         echo '<span class="evidence">Received: </span>' . htmlspecialchars( $client->responsePayload() );
-        if ( $debug > 1 ) echo "\n" . '<span class="evidence">Cookies: </span>' . htmlspecialchars( var_export( $response->cookies(), true) ) ;
+        if ( $debug > 1 && is_object( $response ) ) echo "\n" . '<span class="evidence">Cookies: </span>' . htmlspecialchars( var_export( $response->cookies(), true) ) ;
         echo "</div>\n";
     }
 

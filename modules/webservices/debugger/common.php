@@ -39,7 +39,7 @@
   $params['id'] = '';
   if (isset($_GET['action']))
   {
-    if (isset($_GET['wstype']) && ($_GET['wstype'] == '1' || $_GET['wstype'] == '2' || $_GET['wstype'] == '3'))
+    if (isset($_GET['wstype']) && ($_GET['wstype'] == '1' || $_GET['wstype'] == '2' || $_GET['wstype'] == '3' || $_GET['wstype'] == '4'))
     {
       $params['wstype'] = $_GET['wstype'];
       // this is only unseful for jsonrpc, but anyway
@@ -104,8 +104,14 @@
       $params['responsecompression'] = 0;
 
     $params['clientcookies'] = isset($_GET['clientcookies']) ? $_GET['clientcookies'] : '';
+    // soap
   	$params['wsdl'] = isset($_GET['wsdl']) ? (int)$_GET['wsdl'] : 0;
     $params['soapversion'] = isset($_GET['soapversion']) ? (int)$_GET['soapversion'] : 0;
+    // rest
+    $params['namevariable'] = isset($_GET['namevariable']) ? $_GET['namevariable'] :'';
+    $params['responsetype'] = isset($_GET['responsetype']) ? $_GET['responsetype'] :'';
+    $params['requesttype'] = isset($_GET['requesttype']) ? $_GET['requesttype'] :'';
+    $params['verb'] = isset($_GET['verb']) ? $_GET['verb'] :'';
   }
   else
   {
@@ -130,8 +136,14 @@
     $params['requestcompression'] = 0;
     $params['responsecompression'] = 0;
     $params['clientcookies'] = '';
+    // soap
   	$params['wsdl'] = 0;
     $params['soapversion'] = 0;
+    // rest
+    $params['namevariable'] = '';
+    $params['responsetype'] = '';
+    $params['requesttype'] = '';
+    $params['verb'] = '';
   }
 
   // check input for known XMLRPC attacks against this or other libs

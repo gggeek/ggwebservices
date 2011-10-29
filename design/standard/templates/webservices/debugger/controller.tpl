@@ -134,10 +134,12 @@
     if (wstype == 0)
     {
       document.getElementById("idcell").style.visibility = 'hidden';
+      document.getElementById("restcell").style.visibility = 'hidden';
       document.frmjsonrpc.yes.checked = false;
       document.frmxmlrpc.yes.checked = true;
       document.frmezjscore.yes.checked = false;
       document.frmsoap.yes.checked = false;
+      document.frmrest.yes.checked = false;
       document.frmaction.wstype.value="0";
       document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
@@ -148,10 +150,12 @@
     else if (wstype == 1)
     {
       document.getElementById("idcell").style.visibility = 'visible';
+      document.getElementById("restcell").style.visibility = 'hidden';
       document.frmjsonrpc.yes.checked = true;
       document.frmxmlrpc.yes.checked = false;
       document.frmezjscore.yes.checked = false;
       document.frmsoap.yes.checked = false;
+      document.frmrest.yes.checked = false;
       document.frmaction.wstype.value="1";
       document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
@@ -162,10 +166,12 @@
     else if (wstype == 2)
     {
       document.getElementById("idcell").style.visibility = 'hidden';
+      document.getElementById("restcell").style.visibility = 'hidden';
       document.frmjsonrpc.yes.checked = false;
       document.frmxmlrpc.yes.checked = false;
       document.frmezjscore.yes.checked = true;
       document.frmsoap.yes.checked = false;
+      document.frmrest.yes.checked = false;
       document.frmaction.wstype.value="2";
       document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
@@ -176,10 +182,12 @@
     else if (wstype == 3)
     {
       document.getElementById("idcell").style.visibility = 'hidden';
+      document.getElementById("restcell").style.visibility = 'hidden';
       document.frmjsonrpc.yes.checked = false;
       document.frmxmlrpc.yes.checked = false;
       document.frmezjscore.yes.checked = false;
       document.frmsoap.yes.checked = true;
+      document.frmrest.yes.checked = false;
       document.frmaction.wstype.value="3";
       //document.frmaction.executemethod.checked = true;
       //document.frmaction.listmethods.checked = false;
@@ -189,6 +197,25 @@
       document.frmaction.wsdl.disabled = false;
       document.frmaction.inspectwsdl.disabled = false;
       document.frmaction.soapversion.disabled = false;
+    }
+    else if (wstype == 4)
+    {
+      document.getElementById("idcell").style.visibility = 'hidden';
+      document.getElementById("restcell").style.visibility = 'visible';
+      document.frmjsonrpc.yes.checked = false;
+      document.frmxmlrpc.yes.checked = false;
+      document.frmezjscore.yes.checked = false;
+      document.frmsoap.yes.checked = false;
+      document.frmrest.yes.checked = true;
+      document.frmaction.wstype.value="4";
+      //document.frmaction.executemethod.checked = true;
+      //document.frmaction.listmethods.checked = false;
+      document.frmaction.listmethods.disabled = true;
+      //document.frmaction.describemethod.checked = false;
+      document.frmaction.describemethod.disabled = true;
+      document.frmaction.wsdl.disabled = true;
+      document.frmaction.inspectwsdl.disabled = true;
+      document.frmaction.soapversion.disabled = true;
     }
     // used to make sure the 'edit' link to the visual editor gets reset properly
     switchaction();
@@ -216,6 +243,8 @@
 	    url += '&type=ezjscore';
 	  else if (document.frmaction.wstype.value == "3")
 	    url += '&type=soap';
+	  else if (document.frmaction.wstype.value == "4")
+	    url += '&type=rest';
 	  var wnd = window.open(url, '_blank', 'width=750, height=400, location=0, resizable=1, menubar=0, scrollbars=1');
   }
 
@@ -235,7 +264,7 @@
   function switchFormMethod()
   {
       /// @todo use a more precise calculation, adding the rest of the fields to the actual generated url lenght
-      if (document.frmaction.methodpayload.value.length > 1536 )
+      if ( /*document.frmaction.methodpayload.value.length > 1536*/ true )
       {
           document.frmaction.action = document.frmaction.action + '/?usepost=true';
           document.frmaction.method = 'post';
@@ -250,6 +279,7 @@
 /<form name="frmjsonrpc" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(1); switchssl();"/></form>JSONRPC
 /<form name="frmezjscore" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(2); switchssl();"/></form>EZJSCORE
 /<form name="frmsoap" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(3); switchssl();"/></form>SOAP
+/<form name="frmrest" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(4); switchssl();"/></form>REST
 Debugger</h1>
 <form name="frmaction" method="get" action="../action/" target="frmaction" onSubmit="switchFormMethod();">
 
@@ -302,6 +332,7 @@ Debugger</h1>
 <option value="2"{if eq($params.protocol, 2)} selected="selected"{/if}>HTTPS</option>
 </select></td>
 </tr>
+
 <tr>
 <td class="labelcell">COOKIES:</td>
 <td></td>
@@ -319,6 +350,7 @@ Debugger</h1>
 </select></td>
 <td></td>
 </tr>
+
 <tr>
 <td class="labelcell">SSL:</td>
 <td class="labelcell">Verify Host's CN:</td><td><select name="verifyhost">
@@ -329,12 +361,14 @@ Debugger</h1>
 <td class="labelcell">Verify Cert:</td><td><input type="checkbox" value="1" name="verifypeer" onclick="swicthcainfo();"{if $params.verifypeer} checked="checked"{/if} /></td>
 <td class="labelcell">CA Cert file:</td><td><input type="text" name="cainfo" value="{$params.cainfo|wash()}" /></td>
 </tr>
+
 <tr>
 <td class="labelcell">PROXY:</td>
 <td class="labelcell">Server:</td><td><input type="text" name="proxy" value="{$params.proxy|wash()}" /></td>
 <td class="labelcell">Proxy user:</td><td><input type="text" name="proxyuser" value="{$params.proxyuser|wash()}" /></td>
 <td class="labelcell">Proxy pwd:</td><td><input type="password" name="proxypwd" value="{$params.proxypwd|wash()}" /></td>
 </tr>
+
 <tr>
 <td class="labelcell">COMPRESSION:</td>
 <td class="labelcell">Request:</td><td><select name="requestcompression">
@@ -354,6 +388,15 @@ Debugger</h1>
 <option value="1"{if eq($params.soapversion, 1)} selected="selected"{/if}>1.2</option>
 </select></td>
 </tr>
+
+<tr id="restcell">
+<td class="labelcell">REST:</td>
+<td class="labelcell">Name variable:</td><td><input type="text" name="namevariable" value="{$params.namevariable|wash()}"/></td>
+<td class="labelcell">Verb:</td><td><input type="text" name="verb" value="{$params.verb|wash()}"/></td>
+<td class="labelcell">Request type:<br/>Response type:</td><td><input type="text" name="requesttype" value="{$params.requesttype|wash()}"/><br/><input type="text" name="responsetype" value="{$params.responsetype|wash()}"/></td>
+<!--<td class="labelcell">Request type:</td><td><input type="text" name="requesttype" size="25" value="{$params.requesttype|wash()}"/></td>-->
+</tr>
+
 </table>
 
 </form>

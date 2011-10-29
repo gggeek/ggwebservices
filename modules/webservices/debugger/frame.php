@@ -111,6 +111,45 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
                 {
                     $params .= '&wsdl=0';
                 }
+                if ( isset( $target_list[$groupname]['Options'] ) )
+                {
+                    if ( isset( $target_list[$groupname]['Options']['login'] ) && $target_list[$groupname]['Options']['login'] != '' )
+                    {
+                        $params .= '&username=' . $target_list[$groupname]['Options']['login'] . '&amp;password=' . $target_list['Options']['password'];
+                    }
+                    if ( isset( $target_list[$groupname]['Options']['timeout'] ) )
+                    {
+                        $params .= '&timeout=' . $target_list[$groupname]['Options']['timeout'];
+                    }
+                    if ( isset( $target_list[$groupname]['Options']['authType'] ) )
+                    {
+                        $params .= '&authtype=' . $target_list[$groupname]['Options']['authType'];
+                    }
+
+                    if ( isset( $target_list[$groupname]['Options']['soapVersion'] ) )
+                    {
+                        $params .= '&soapversion=' . ( (int)$target_list[$groupname]['Options']['soapVersion'] - 1 );
+                    }
+
+                    if ( isset( $target_list[$groupname]['Options']['method'] ) )
+                    {
+                        $params .= '&verb=' .$target_list[$groupname]['Options']['method'];
+                    }
+                    if ( isset( $target_list[$groupname]['Options']['nameVariable'] ) )
+                    {
+                        $params .= '&namevariable=' .$target_list[$groupname]['Options']['nameVariable'];
+                    }
+                    if ( isset( $target_list[$groupname]['Options']['responseType'] ) )
+                    {
+                        $params .= '&responsetype=' . $target_list[$groupname]['Options']['responseType'];
+                    }
+                    if ( isset( $target_list[$groupname]['Options']['requestType'] ) )
+                    {
+                        $params .= '&requesttype=' . $target_list[$groupname]['Options']['requestType'];
+                    }
+
+                    /// @todo also parse from ini forceCURL, requestCompression, acceptedCompression
+                }
                 switch( $target_list[$groupname]['providerType'] )
                 {
                     case 'JSONRPC':
@@ -122,7 +161,9 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
                     case 'PhpSOAP':
                         $params .= '&wstype=3';
                         break;
-                    // nb: we leave REST as wstype 0, which is wrong
+                    case 'REST':
+                        $params .= '&wstype=4';
+                        break;
                 }
                 $target_list[$groupname]['urlparams'] = $params;
             }
