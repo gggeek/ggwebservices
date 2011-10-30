@@ -394,7 +394,7 @@ if ( $action )
                 {
           $max = count( $v );
           echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
-          echo "<thead>\n<tr><th>Method</th><th>Description</th></tr>\n</thead>\n<tbody>\n";
+          echo "<thead>\n<tr><th>Method ($max found)</th><th>Description</th></tr>\n</thead>\n<tbody>\n";
           for($i=0; $i < $max; $i++)
           {
             $rec = $v[$i];
@@ -425,7 +425,7 @@ if ( $action )
               "<input type=\"hidden\" name=\"wsdl\" value=\"$wsdl\" />".
               "<input type=\"hidden\" name=\"soapversion\" value=\"$soapversion\" />".
               "<input type=\"hidden\" name=\"action\" value=\"describe\" />".
-              "<input type=\"hidden\" name=\"run\" value=\"now\" />".
+              //"<input type=\"hidden\" name=\"run\" value=\"now\" />".
               "<input type=\"submit\" value=\"Describe\" /></form>";
             echo "</td>";
 
@@ -614,8 +614,9 @@ else
 
 <h3>Examples:</h3>
 <p>
-Server Address: phpxmlrpc.sourceforge.net, Path: /server.php (for xmlrpc)<br/>
-Server Address: soap.amazon.com, Path: /schemas3/AmazonWebServices.wsdl (for soap with wsdl)
+Server Address: phpxmlrpc.sourceforge.net, Path: <a target="frmcontroller" href="./controller/?action=&host=phpxmlrpc.sourceforge.net&path=/server.php&wstype=0">/server.php</a> (for xmlrpc)<br/>
+Server Address: soap.amazon.com, Path: <a target="frmcontroller" href="./controller/?action=&host=soap.amazon.com&path=/schemas3/AmazonWebServices.wsdl&wstype=3">/schemas3/AmazonWebServices.wsdl</a> (for soap with wsdl)<br/>
+Server Address: api.twitter.com, Path: /1, Method: <a target="frmcontroller" href="./controller/?action=execute&host=api.twitter.com&path=/1&method=statuses/public_timeline.json&wstype=4">statuses/public_timeline.json</a> (for rest)
 </p>
 
 <h3>Notes:</h3>
