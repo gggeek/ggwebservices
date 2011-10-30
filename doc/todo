@@ -88,10 +88,13 @@
 
 - server: test module view that does ws execution (memory, time) vs. using jsonrpc.php vs. index_ajax.php
 
+- add some friendly method as replacement for ggeZWebservicesClient::send
+
 - finish proxy module
   => add soap support. Need to create a new soap server class, too?
   => add POST/GET (rest) support. Need to create a new server class, too? nb: could do with basically json/php serialized/ encoding of results (see solr-supported formats too)
   => add fine-grained policy control with per_server_per_method limitations (this one needs server to support listMethods() call), possibly per_siteaccess?
+  => move it away from usage of ggeZWebservicesClient::send() method
 
 - server: allow ws controllers to operate in no-session mode (useful? since 4.4 whole of eZ can be sessionless)
 
