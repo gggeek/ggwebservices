@@ -579,7 +579,14 @@ if ( $action )
         break;
 
             case 'execute':
-                echo '<div id="response"><h2>Response:</h2>'.htmlspecialchars( print_r( $response->value(), true ) ).'</div>';
+                $note = "";
+                $value =  $response->value();
+                if ( $value instanceof ggSimpleTemplateXML )
+                {
+                    $note = "<u>NB</u>: actual response is an object of class 'ggSimpleTemplateXML', it is shown as an array for convenience\n\n";
+                    $value = $value->toArray();
+                }
+                echo '<div id="response"><h2>Response:</h2>'. $note . htmlspecialchars( print_r( $value, true ) ).'</div>';
                 break;
 
             default: // give a warning

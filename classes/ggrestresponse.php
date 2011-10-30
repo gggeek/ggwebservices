@@ -125,17 +125,39 @@ class ggRESTResponse extends ggWebservicesResponse
             case 'application/xml':
                 try
                 {
-                    $xml = new SimpleXMLElement( $stream );
+                    $doc = new DOMDocument();
+                    $prev = libxml_use_internal_errors( true );
+                    libxml_clear_errors();
+                    $doc->loadXML( $stream );
+                    $node = $doc->documentElement;
+                    if ( $node == null )
+                    {
+                        $errors = libxml_get_errors();
+                        libxml_use_internal_errors( $prev );
+                        $errorText = '';
+                        foreach( $errors as $error)
+                        {
+                            if ( $error->level > LIBXML_ERR_WARNING )
+                            {
+                                $errorText .= trim ( $error->message ) . ", line: $error->line" . " column: $error->column\n";
+                            }
+                        }
+                        throw new Exception( $errorText );
+                    }
+                    libxml_use_internal_errors( $prev );
+                    $this->Value = new ggSimpleTemplateXML( $node );
+                    //$xml = new SimpleXMLElement( $stream );
+                    //$this->Value = $xml;
                     $this->IsFault = false;
                     $this->FaultString = false;
                     $this->FaultCode = false;
-                    $this->Value = $xml;
+
                 }
                 catch ( Exception $e )
                 {
                     $this->IsFault = true;
                     $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
-                    $this->FaultString = ggRESTResponse::INVALIDRESPONSESTRING . ' xml. ' .$e->getMessage();
+                    $this->FaultString = ggRESTResponse::INVALIDRESPONSESTRING . ' xml. ' . $e->getMessage();
                 }
                 break;
             default:
