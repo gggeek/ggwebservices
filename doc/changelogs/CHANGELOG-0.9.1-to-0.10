@@ -8,6 +8,12 @@ Changes from 0.9.1 to 0.10 - released 2011/10/xx
 
 *Bugfixes:
 
+- complex results from SOAP services would net be usable in template code when using ggPhpSOAPClient
+
 *Incompatible changes
 
+- ggPhpSOAPClient::send() now returns php arrays instead of StdClass objects.
+  This makes its behaviour the same as the one of ggSOAPClient::send(), and makes
+  it easy to use it in template code.
+  To turn this behaviour off for a specific server, set "Options[returnArrays]=0" for it in wsproviders.ini
 - method ggeZWebservicesClient::send is deprecated and will be removed at some point in the future

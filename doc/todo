@@ -1,8 +1,10 @@
 - implement oauth 2 client capabilities
 
-- test POST, PUT, DELETE, HEAD methods for REST client (when not to put any payload?)
+- test POST, PUT, DELETE, HEAD methods for REST client:
+  + when not to put any payload? currently get/head, but should eb true for delete too
+  + if nameVar is given, when doing POST/PUT/DELETE calls, keep the method name in the url or put it in the payload?
 
-- replace method(), setmethod(), setOptions('method') with corresponding 'verb' ?
+- replace method(), setmethod(), setOptions('method') with corresponding 'verb' ? clarify / unify this naming conundrum
 
 - implement per-server fixed parameters, useful for eg. rest client where the type=json is more or less fixed
 
@@ -44,23 +46,20 @@
 
 - client: add to ezwsclient support for proxy auth type, proxy conf via options[] (and in debugger too)
 
-- client: support the new ez rest protocol
-
 - add more client samples, eg. to call webservices on facebook, youtube, amazon, google
 
 - in debugger:
   + use templates for output of action.php
   + add siteaccess choice for local server on the left-hand col (nb: looks like getting correct urls for other sa is quite hard... langswitcher does it for nodes only?)
-  + add rest support
   + allow to hide/show client's options
   + add nr. of total ws methods found when asking for list of methods
   + improve layout (eg. 1st line, visualeditor space on top, add admin2 tpl for left menu with resizing handle, etc...)
-  + allow picking preferred content-type for responses when using ezjscore
+  + allow picking preferred content-type for responses when using ezjscore, same as done for rest
   + investigate fatal errors in soap client, wsdl mode, when parsing a non-wsdl page (they should be caught as exceptions except they're not)
-  + allow to create sample ini block for current server
+  + allow to create sample ini block for current server; also sample tpl/php code for current call
   + ezjscore methods: improve parsing of phpdoc comments to get signature
   + test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
-  + parse all Options from wsproviders.ini for loading remote server config from left col
+  + parse all Options from wsproviders.ini for loading remote server config from left col (some are not yest supported)
   + fix: why using the same session cookie of admin session to send a ws call stalls the debugger?
 
 - add jsonrpc 2.0 support (both client and server)

@@ -139,6 +139,10 @@ class ggPhpSOAPClient extends ggWebservicesClient
             }
             else
             {
+                if ( $this->returnArrays )
+                {
+                    $results = $this->toArray( $results );
+                }
                 $response->setValue( $results );
             }
             return $response;
@@ -227,10 +231,35 @@ class ggPhpSOAPClient extends ggWebservicesClient
         {
             $this->CacheWSDL = $value;
         }
+        else if ( $option == 'returnArrays' )
+        {
+            $this->returnArrays = $value;
+        }
         else
         {
             return parent::setOption( $option, $value );
         }
+    }
+
+    /**
+    * Converts recursively all objects to arrays
+    * Used eg. when making soap calls and returning results to templates, which
+    * like arrays better than StdClass
+    */
+    protected function toArray( $data )
+    {
+        if ( is_object( $data ) )
+        {
+            $data = (array) $data;
+        }
+        if ( is_array( $data ) )
+        {
+           foreach( $data as $key => $val )
+           {
+               $data[$key] = $this->toArray( $val );
+           }
+        }
+        return $data;
     }
 
     /// @todo override function payload() of parent and throw an exception when called, as we do not set up proper RequestHeaders anyway
@@ -238,6 +267,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
     protected $Wsdl;
     protected $SoapVersion = SOAP_1_1;
     protected $CacheWSDL = -1; // defaults to values set in php.ini
+    protected $returnArrays = true; // forces the server to always return arrays instead of stdclass objects
 
     protected $ResponseClass = 'ggPhpSOAPResponse';
     protected $UserAgent = 'gg eZ PHPSOAP client';

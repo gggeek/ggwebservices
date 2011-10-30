@@ -27,6 +27,7 @@ class ggeZWebservicesClient
      * Sends a XML-RPC/JSON-RPC/SOAP/REST Request to the provider,
      * returning results in a correct format to be used in tpl fetch functions.
      * Optionally it returns the response object instead of the response value.
+     * NB: for xmlrpc/jsonrpc/soap, all structured received data is converted to php arrays, not objects
      *
      * @param string $server provider name from the wsproviders.ini located in the extension's settings
      * @param string $method the webservice method to be executed
