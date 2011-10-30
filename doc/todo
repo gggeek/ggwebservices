@@ -1,12 +1,14 @@
-- implement oauth 2 client capabilities
+- client: implement oauth 2 client capabilities
 
-- test POST, PUT, DELETE, HEAD methods for REST client:
+- client: test POST, PUT, DELETE, HEAD methods for REST client:
   + when not to put any payload? currently get/head, but should eb true for delete too
   + if nameVar is given, when doing POST/PUT/DELETE calls, keep the method name in the url or put it in the payload?
 
+- test proper support for cdata section, entities, in ggSimpleTemplateXML
+
 - replace method(), setmethod(), setOptions('method') with corresponding 'verb' ? clarify / unify this naming conundrum
 
-- implement per-server fixed parameters, useful for eg. rest client where the type=json is more or less fixed
+- client: implement per-server fixed parameters, useful for eg. rest client where the type=json is more or less fixed
 
 - support for wssecurity
 
@@ -52,7 +54,6 @@
   + use templates for output of action.php
   + add siteaccess choice for local server on the left-hand col (nb: looks like getting correct urls for other sa is quite hard... langswitcher does it for nodes only?)
   + allow to hide/show client's options
-  + add nr. of total ws methods found when asking for list of methods
   + improve layout (eg. 1st line, visualeditor space on top, add admin2 tpl for left menu with resizing handle, etc...)
   + allow picking preferred content-type for responses when using ezjscore, same as done for rest
   + investigate fatal errors in soap client, wsdl mode, when parsing a non-wsdl page (they should be caught as exceptions except they're not)
@@ -66,13 +67,9 @@
 
 - add support for xmlrpc datatypes base64 and datetime (check if it works when using plain php classes)
 
-- client: test objects vs. array return by default with ezsoap (in tpl code especially)
-
 - server: add a script that creates initialize.php from a wsdl file
 
 - add some doc showing the client/request/response and server/request/response interaction to make it easier to remember that requests are also used server-side (and responses client-side)
-
-- client: add some xml parsing to rest code, driven by options (return either simplexml objs or nested arrays or ?)
 
 - server: add 'plain' xml format to REST server output. see eg http://snipplr.com/view/3491/convert-php-array-to-xml-or-simple-xml-object-if-you-wish/
   or http://svn.php.net/viewvc/pear/packages/XML_Serializer/trunk/XML/Serializer.php?revision=294967&view=markup
