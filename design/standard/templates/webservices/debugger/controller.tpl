@@ -399,6 +399,7 @@ Debugger</h1>
 <option value="PUT"{if eq($params.verb|upcase, 'PUT')} selected="selected"{/if}>PUT</option>
 <option value="DELETE"{if eq($params.verb|upcase, 'DELETE')} selected="selected"{/if}>DELETE</option>
 <option value="HEAD"{if eq($params.verb|upcase, 'HEAD')} selected="selected"{/if}>HEAD</option>
+<option value="OPTIONS"{if eq($params.verb|upcase, 'OPTIONS')} selected="selected"{/if}>OPTIONS</option>
 </select></td>
 
 <td class="labelcell">Request type:<p>Response type:</p></td>
