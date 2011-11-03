@@ -12,6 +12,8 @@
 
 - support for wssecurity
 
+- client: add to ezwsresponse::decodestream() a new argument with status code
+
 - implement ...?wsdl url pattern as alternative to ..../wsdl
 
 - server: improve soap server w. wsdl support

@@ -160,6 +160,17 @@ class ggRESTResponse extends ggWebservicesResponse
                     $this->FaultString = ggRESTResponse::INVALIDRESPONSESTRING . ' xml. ' . $e->getMessage();
                 }
                 break;
+            case '':
+                // Allow empty payloads
+                /// @todo shall we check that responses with no content type are only 204/205 ones?
+                if ( $stream == '' && ( !isset( $headers['content-length'] ) || $headers['content-length'] == 0 ) )
+                {
+                    $this->Value = null;
+                    $this->IsFault = false;
+                    $this->FaultString = false;
+                    $this->FaultCode = false;
+                    break;
+                }
             default:
                 $this->IsFault = true;
                 $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;

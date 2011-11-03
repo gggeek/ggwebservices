@@ -567,13 +567,14 @@ class ggWebservicesClient
         ///       as indicated by the first digit, and treat any unrecognized response as being
         ///       equivalent to the x00 status code of that class, with the exception that an
         ///       unrecognized response MUST NOT be cached
-        if( !preg_match( '/^HTTP\/[0-9.]+ 20[0-9] /', $data ) )
+        if( !preg_match( '/^HTTP\/[0-9.]+ (20[0-9]) /', $data, $matches ) )
         {
             $errstr = substr( $data, 0, strpos( $data, "\n" ) - 1 );
             $this->errorNumber = self::ERROR_BAD_RESPONSE;
             $this->errorString = 'HTTP error (' . $errstr . ')';
             return false;
         }
+        $status_code = $matches[1];
 
         $headers = array();
         $cookies = array();
@@ -708,7 +709,7 @@ class ggWebservicesClient
             }
         } // end of 'if needed, de-chunk, re-inflate response'
 
-        return array( 'headers' => $headers, 'cookies' => $cookies );
+        return array( 'headers' => $headers, 'cookies' => $cookies, 'status_code' => $status_code );
     }
 
     /**
