@@ -400,6 +400,7 @@ Debugger</h1>
 <option value="DELETE"{if eq($params.verb|upcase, 'DELETE')} selected="selected"{/if}>DELETE</option>
 <option value="HEAD"{if eq($params.verb|upcase, 'HEAD')} selected="selected"{/if}>HEAD</option>
 <option value="OPTIONS"{if eq($params.verb|upcase, 'OPTIONS')} selected="selected"{/if}>OPTIONS</option>
+<option value="TRACE"{if eq($params.verb|upcase, 'TRACE')} selected="selected"{/if}>TRACE</option>
 </select></td>
 
 <td class="labelcell">Request type:<p>Response type:</p></td>
