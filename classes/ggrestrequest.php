@@ -14,7 +14,7 @@ class ggRESTRequest extends ggWebservicesRequest
     */
     function payload()
     {
-        if ( $this->Verb == 'GET' || $this->Verb == 'HEAD' )
+        if ( $this->Verb == 'GET' || $this->Verb == 'HEAD' || $this->Verb == 'TRACE' )
         {
             return '';
         }
@@ -45,10 +45,10 @@ class ggRESTRequest extends ggWebservicesRequest
         {
             $return .= $parsed['user'] . '@' . $parsed['pass'];
         }
-        $params = ( $this->Verb == 'GET' || $this->Verb == 'HEAD' ) ? $this->Parameters : array();
+        $params = ( $this->Verb == 'GET' || $this->Verb == 'HEAD' || $this->Verb == 'TRACE' ) ? $this->Parameters : array();
         if ( $this->NameVar == null )
         {
-            $return .= rtrim( $parsed['path'], '/' ) . '/' . $this->Name;
+            $return .= rtrim( $parsed['path'], '/' ) . '/' . ltrim( $this->Name, '/' );
         }
         else
         {
