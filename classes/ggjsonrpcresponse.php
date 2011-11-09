@@ -42,7 +42,7 @@ class ggJSONRPCResponse extends ggWebservicesResponse
     * Request is used for matching id.
     * @todo Name is not set to response from request - a bit weird...
     */
-    function decodeStream( $request, $stream, $headers=false, $cookies=array()  )
+    function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200"  )
     {
         $this->Cookies = $cookies;
 

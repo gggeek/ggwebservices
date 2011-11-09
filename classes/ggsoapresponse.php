@@ -191,7 +191,7 @@ TODO: add encoding checks with schema validation.
         return $returnValue;
     }
 
-    function decodeStream( $request, $stream, $headers=false, $cookies=array() )
+    function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200" )
     {
         $this->Cookies = $cookies;
 
