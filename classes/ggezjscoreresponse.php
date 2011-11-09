@@ -36,7 +36,7 @@ class ggeZJSCoreResponse extends ggWebservicesResponse
     * Decodes the response stream.
     * nb: many return types from ezjscore extension: text/javascript for json, text/xml for xml
     */
-    function decodeStream( $request, $stream, $headers = false  )
+    function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200"  )
     {
         $ct = explode( ';', $headers['content-type'], 2 );
         switch( $ct[0] )

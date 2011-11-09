@@ -37,9 +37,12 @@ abstract class ggWebservicesResponse
     * @param ggWebservicesRequest $request the original request object
     * @param string $stream the complete HTTP response in case $headers is false, the response body if $headers is an array
     * @param array $headers the http headers received along with the response
+    * @param string $statuscode http status code
     * @return void (if parsing of stream fails, set isFault to true plus error code and description)
+    *
+    * @todo debloat this api: use a struct to holad all of this info? see how ezcmvc does it...
     */
-    abstract function decodeStream( $request, $stream, $headers=false, $cookies=array() );
+    abstract function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200" );
 
     /**
     * This function imported from php-xmlrpc lib: it is more correct than eZ SOAP client one

@@ -366,7 +366,7 @@ class ggWebservicesClient
             }
         }
         $response = new $ResponseClass( $request->name() );
-        $response->decodeStream( $request, $rawResponse, $respArray['headers'], $respArray['cookies'] );
+        $response->decodeStream( $request, $rawResponse, $respArray['headers'], $respArray['cookies'], $respArray['status_code'] );
         return $response;
     }
 
@@ -512,6 +512,7 @@ class ggWebservicesClient
     /**
     * HTTP parsing code taken from the phpxmlrpc lib - should be battle worn.
     * @todo look at PEAR, ZEND, other libs, if they do it better...
+    * @todo when gettig 204, 205 responses, we should not return body
     */
     protected function parseHTTPResponse( &$data, $headers_processed=false )
     {

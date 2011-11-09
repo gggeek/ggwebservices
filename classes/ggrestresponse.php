@@ -83,7 +83,7 @@ class ggRESTResponse extends ggWebservicesResponse
     * Request is not used, kept for compat with sibling classes
     * Name is not set to response from request - a bit weird...
     */
-    function decodeStream( $request, $stream, $headers=false, $cookies=array() )
+    function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200" )
     {
         $this->Cookies = $cookies;
 
@@ -95,6 +95,26 @@ class ggRESTResponse extends ggWebservicesResponse
             if ( ( $pos = strpos( $contentType, ';' ) ) !== false )
             {
                 $contentType = substr( $contentType, 0, $pos );
+            }
+        }
+
+        // Allow empty payloads regardless of declared content type, for 204 and 205 responses
+        if ( $statuscode == '204' || $statuscode == '205' )
+        {
+            if ( $stream == '' && ( !isset( $headers['content-length'] ) || $headers['content-length'] == 0 ) )
+            {
+                $this->Value = null;
+                $this->IsFault = false;
+                $this->FaultString = false;
+                $this->FaultCode = false;
+                return;
+            }
+            else
+            {
+                /// @todo this is not valid according to rfc 2616 - but we should leave that control to client really
+                $this->IsFault = true;
+                $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
+                $this->FaultString = ggRESTResponse::INVALIDRESPONSESTRING . " (received http response 204/205 with a body. Not valid http)";
             }
         }
 
@@ -160,17 +180,6 @@ class ggRESTResponse extends ggWebservicesResponse
                     $this->FaultString = ggRESTResponse::INVALIDRESPONSESTRING . ' xml. ' . $e->getMessage();
                 }
                 break;
-            case '':
-                // Allow empty payloads
-                /// @todo shall we check that responses with no content type are only 204/205 ones?
-                if ( $stream == '' && ( !isset( $headers['content-length'] ) || $headers['content-length'] == 0 ) )
-                {
-                    $this->Value = null;
-                    $this->IsFault = false;
-                    $this->FaultString = false;
-                    $this->FaultCode = false;
-                    break;
-                }
             default:
                 $this->IsFault = true;
                 $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
