@@ -23,6 +23,7 @@ class ggPhpSOAPResponse extends ggWebservicesResponse
     {
         /// @todo verify if this makes sense
         $this->Cookies = $cookies;
+        $this->StatusCode = $statuscode;
 
         $this->Value = $stream;
     }

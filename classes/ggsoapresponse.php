@@ -194,6 +194,7 @@ TODO: add encoding checks with schema validation.
     function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200" )
     {
         $this->Cookies = $cookies;
+        $this->StatusCode = $statuscode;
 
         $this->IsFault = 1;
         $this->FaultCode = ggWebservicesResponse::INVALIDRESPONSEERROR;

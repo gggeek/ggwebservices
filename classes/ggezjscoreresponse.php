@@ -38,6 +38,9 @@ class ggeZJSCoreResponse extends ggWebservicesResponse
     */
     function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200"  )
     {
+        $this->Cookies = $cookies;
+        $this->StatusCode = $statuscode;
+
         $ct = explode( ';', $headers['content-type'], 2 );
         switch( $ct[0] )
         {

@@ -154,6 +154,11 @@ abstract class ggWebservicesResponse
         return $this->Cookies;
     }
 
+    function statusCode()
+    {
+        return $this->StatusCode;
+    }
+
     /// Contains the response value
     protected $Value = false;
     /// Contains fault string
@@ -169,6 +174,8 @@ abstract class ggWebservicesResponse
     protected $Charset = 'UTF-8';
 
     protected $Cookies = array();
+
+    protected $StatusCode = null;
 }
 
 ?>

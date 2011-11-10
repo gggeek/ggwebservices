@@ -86,6 +86,7 @@ class ggRESTResponse extends ggWebservicesResponse
     function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200" )
     {
         $this->Cookies = $cookies;
+        $this->StatusCode = $statuscode;
 
         // allow request to force an expected response type
         // this is useful if servers do respons with eg. text/plain content-header
