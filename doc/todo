@@ -50,6 +50,12 @@
 
 - client: add to ezwsclient support for proxy auth type, proxy conf via options[] (and in debugger too)
 
+- client: return more specific error codes than ERROR_BAD_RESPONSE when decoding response fails
+
+- client: allow usage of different patterns for call();
+  . throw exception on errors instead of returning response object
+  . return response objects even on http errors (?)
+
 - add more client samples, eg. to call webservices on facebook, youtube, amazon, google
 
 - in debugger:

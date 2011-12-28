@@ -36,8 +36,9 @@ class ggWebservicesClient
     const ERROR_CANNOT_CONNECT = -102;
     const ERROR_CANNOT_WRITE = -103;
     const ERROR_NO_DATA = -104;
-    const ERROR_BAD_RESPONSE = -105;
+    const ERROR_BAD_RESPONSE = -105; // means response invalid according to http protocol
     const ERROR_TIMEOUT = -106;
+    const ERROR_NON_200_RESPONSE = -107; // means response status line is ok but not 20x
 
     /**
      * Creates a new client.
@@ -434,7 +435,7 @@ class ggWebservicesClient
                 {
                     //error_log('Only Basic auth is supported');
                 }
-                $RequestHeaders['Authorization'] = "Basic " . base64_encode( $this->login() . ":" . $this->password() ) . "\r\n" ;
+                $RequestHeaders['Authorization'] = "Basic " . base64_encode( $this->login() . ":" . $this->password() );
             }
 
             if ( $this->UserAgent != '' )
@@ -552,27 +553,37 @@ class ggWebservicesClient
         }
 
         // Strip HTTP 1.1 100 Continue header if present
+        /// @todo we should only match 100 here - what about eg. 101?
         while( preg_match( '/^HTTP\/1\.1 1[0-9]{2} /', $data ) )
         {
             $pos = strpos( $data, 'HTTP', 12 );
-            // server sent a Continue header without any (valid) content following...
-            // give the client a chance to know it
             if( $pos === false )
             {
+                // server sent a Continue header without any (valid) content following...
+                // give the client a chance to know it
                 break;
             }
             $data = substr( $data, $pos );
         }
+
         /// @todo settle on a definitive (or dynamic) list of http return codes accepted
         ///       the spec says btw: applications MUST understand the class of any status code,
         ///       as indicated by the first digit, and treat any unrecognized response as being
         ///       equivalent to the x00 status code of that class, with the exception that an
         ///       unrecognized response MUST NOT be cached
-        if( !preg_match( '/^HTTP\/[0-9.]+ (20[0-9]) /', $data, $matches ) )
+        if( !preg_match( '/^HTTP\/[0-9]+\.[0-9]+ (20[0-9]) /', $data, $matches ) )
         {
             $errstr = substr( $data, 0, strpos( $data, "\n" ) - 1 );
-            $this->errorNumber = self::ERROR_BAD_RESPONSE;
-            $this->errorString = 'HTTP error (' . $errstr . ')';
+            if ( preg_match( '/^HTTP\/[0-9]+\.[0-9]+ ([0-9]{3}) (.*)/', $errstr, $matches ) )
+            {
+                $this->errorNumber = self::ERROR_NON_200_RESPONSE;
+                $this->errorString = 'HTTP error ' . $matches[1] . ' (' . $matches[2] . ')';
+            }
+            else
+            {
+                $this->errorNumber = self::ERROR_BAD_RESPONSE;
+                $this->errorString = 'HTTP error (' . $errstr . ')';
+            }
             return false;
         }
         $status_code = $matches[1];

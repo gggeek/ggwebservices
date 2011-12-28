@@ -68,7 +68,7 @@ class ggeZWebservicesClient
 
     /**
      * This method sends a XML-RPC/JSON-RPC/SOAP/REST Request to the provider,
-     * throwing an exception in case of major problems
+     * throwing an exception in case of major problems (ie. client-side errors)
      *
      * @param string $server provider name from the wsproviders.ini located in the extension's settings
      * @param string $method the webservice method to be executed
