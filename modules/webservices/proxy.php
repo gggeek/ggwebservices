@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) 2009-2011 G. Giunta
+ * @copyright (C) 2009-2012 G. Giunta
  *
  * @bug for xmlrpc, datetime and base64 parameters will be sent to remote server as strings...
  */

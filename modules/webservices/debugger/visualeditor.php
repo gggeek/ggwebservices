@@ -3,7 +3,7 @@
  * WS debugger: Dialog for visually editing trees of values
  *
  * @version $Id$
- * @copyright (C) 2006-2011 G. Giunta
+ * @copyright (C) 2006-2012 G. Giunta
  * @author Gaetano Giunta
  *
  * @todo reimplement support for xmlrpc types which are outside of json (datetime, base64) ?

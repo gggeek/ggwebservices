@@ -17,7 +17,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) G. Giunta 2009-2011
+ * @copyright (C) 2009-2012 G. Giunta
  *
  * @todo add a better way to register methods, supporting definition of type of return value and per-param help text
  * @todo add propert property support, for $exception_handling and future ones

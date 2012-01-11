@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright 2011 G. Giunta
+ * @copyright (C) 2011-2012 G. Giunta
  *
  * @todo add support for letting user choose WSDL 2.0
  */

@@ -5,7 +5,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) 2011 G. Giunta
+ * @copyright (C) 2011-2012 G. Giunta
  *
  * @todo finish support for soap 1.2
  */

@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) G. Giunta 2009-2011
+ * @copyright (C) 2009-2012 G. Giunta
  *
  * @todo (!important) add a nusoap version
  * @todo using SOAP 1.2 requests can be serialized using GET too...

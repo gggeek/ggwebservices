@@ -16,7 +16,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) 2011 G. Giunta
+ * @copyright (C) 2011-2012 G. Giunta
  * @license code licensed under the GPL License: see LICENSE file
  *
  * @todo give a look at xpath usage for attribute(): is it faster?

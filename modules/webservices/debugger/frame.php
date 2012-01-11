@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id: debugger.php 145 2010-06-19 20:25:32Z gg $
- * @copyright (C) 2010-2011 Gaetano Giunta
+ * @copyright (C) 2010-2012 Gaetano Giunta
  */
 
 // this line moved to the top for a small bit extra safety when no rewrite rules

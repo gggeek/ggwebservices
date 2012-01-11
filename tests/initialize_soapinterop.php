@@ -5,7 +5,7 @@
  *
  * @version $Id$
  * @author G. Giunta
- * @copyright G. Giunta 2011
+ * @copyright (C) 2011-2012 G. Giunta
  * @license code licensed under the GPL License: see LICENSE file
  *
  * @todo implement struct tests

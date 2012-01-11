@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id: ggezwebservicesclient.php 102 2009-09-02 09:03:34Z gg $
- * @copyright (C) 2009-2011 G. Giunta
+ * @copyright (C) 2009-2012 G. Giunta
  * @license code licensed under the GPL License: see LICENSE file
  */
 

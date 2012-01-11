@@ -7,7 +7,7 @@
  *
  * @author G. Giunta
  * @version $Id$
- * @copyright (C) G. Giunta 2009
+ * @copyright (C) 2009-2012 G. Giunta
  *
  * @todo add a check to see if param $arguments.0 is set and a valid protocol...
  * @todo test again in vhost mode

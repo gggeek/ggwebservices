@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id: ggjsonrpcrequest.php 290 2011-02-06 17:36:55Z gg $
- * @copyright (C) G. Giunta 2011
+ * @copyright (C) 2011-2012 G. Giunta
  */
 
 class ggeZJSCoreRequest extends ggWebservicesRequest

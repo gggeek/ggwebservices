@@ -7,7 +7,7 @@
  *
  * @author G. Giunta
  * @version $Id: checkusers.php 368 2009-07-01 13:05:03Z CPTICD1 $
- * @copyright (C) G. Giunta 2009-2011
+ * @copyright (C) 2009-2012 G. Giunta
  */
 
 $ini = eZINI::instance( 'wsproviders.ini' );

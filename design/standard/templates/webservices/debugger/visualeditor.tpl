@@ -1,7 +1,7 @@
 {**
  * Dialog for visually editing trees of json/xmlrpc values
  * @version $Id$
- * @copyright (C) 2006-2011 G. Giunta
+ * @copyright (C) 2006-2012 G. Giunta
  * @author Gaetano Giunta
  *
  * @todo do not set to "null" new nodes

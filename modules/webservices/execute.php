@@ -4,7 +4,7 @@
  *
  * @author G. Giunta
  * @version $Id: proxy.php 86 2009-06-22 16:33:52Z gg $
- * @copyright (C) 2009-2011 G. Giunta
+ * @copyright (C) 2009-2012 G. Giunta
  */
 
 // decode input params
