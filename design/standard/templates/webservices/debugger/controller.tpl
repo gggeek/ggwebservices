@@ -35,12 +35,12 @@
     if (document.frmaction.path.value == '')
       document.frmaction.path.value = '/';
     var action = '';
-    for (counter = 0; counter < document.frmaction.action.length; counter++)
-      if (document.frmaction.action[counter].checked)
+    for (counter = 0; counter < document.frmaction.wsaction.length; counter++)
+      if (document.frmaction.wsaction[counter].checked)
       {
-        action = document.frmaction.action[counter].value;
+        action = document.frmaction.wsaction[counter].value;
       }
-    if (document.frmaction.method.value == '' && (action == 'execute' || action == 'wrap' || action == 'describe'))
+    if (document.frmaction.wsmethod.value == '' && (action == 'execute' || action == 'wrap' || action == 'describe'))
     {
       alert('Please insert a method name');
       return false;
@@ -56,16 +56,16 @@
   {
     // reset html layout depending on action to be taken
     var action = '';
-    for (counter = 0; counter < document.frmaction.action.length; counter++)
-      if (document.frmaction.action[counter].checked)
+    for (counter = 0; counter < document.frmaction.wsaction.length; counter++)
+      if (document.frmaction.wsaction[counter].checked)
       {
-        action = document.frmaction.action[counter].value;
+        action = document.frmaction.wsaction[counter].value;
       }
     if (action == 'execute')
     {
       document.frmaction.methodpayload.disabled = false;
       displaydialogeditorbtn(true); //document.frmezjscore.yes.checked == false);//if (document.getElementById('methodpayloadbtn') != undefined) document.getElementById('methodpayloadbtn').disabled = false;
-      document.frmaction.method.disabled = false;
+      document.frmaction.wsmethod.disabled = false;
       document.frmaction.methodpayload.rows = 10;
     }
     else
@@ -75,14 +75,14 @@
       {
         document.frmaction.methodpayload.disabled = true;
         displaydialogeditorbtn(false); //if (document.getElementById('methodpayloadbtn') != undefined) document.getElementById('methodpayloadbtn').disabled = true;
-        document.frmaction.method.disabled = false;
+        document.frmaction.wsmethod.disabled = false;
         document.frmaction.wsdl.checked = true;
       }
       else // list || inspect
       {
         document.frmaction.methodpayload.disabled = true;
         displaydialogeditorbtn(false); //if (document.getElementById('methodpayloadbtn') != undefined) document.getElementById('methodpayloadbtn').disabled = false;
-        document.frmaction.method.disabled = true;
+        document.frmaction.wsmethod.disabled = true;
         document.frmaction.wsdl.checked = true;
       }
     }
@@ -143,6 +143,7 @@
       document.frmaction.wstype.value="0";
       document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
+      document.frmaction.executemethod.disabled = false;
       document.frmaction.wsdl.disabled = true;
       document.frmaction.inspectwsdl.disabled = true;
       document.frmaction.soapversion.disabled = true;
@@ -159,6 +160,7 @@
       document.frmaction.wstype.value="1";
       document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
+      document.frmaction.executemethod.disabled = false;
       document.frmaction.wsdl.disabled = true;
       document.frmaction.inspectwsdl.disabled = true;
       document.frmaction.soapversion.disabled = true;
@@ -175,6 +177,7 @@
       document.frmaction.wstype.value="2";
       document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
+      document.frmaction.executemethod.disabled = false;
       document.frmaction.wsdl.disabled = true;
       document.frmaction.inspectwsdl.disabled = true;
       document.frmaction.soapversion.disabled = true;
@@ -189,11 +192,12 @@
       document.frmsoap.yes.checked = true;
       document.frmrest.yes.checked = false;
       document.frmaction.wstype.value="3";
-      //document.frmaction.executemethod.checked = true;
       //document.frmaction.listmethods.checked = false;
       document.frmaction.listmethods.disabled = false;
       //document.frmaction.describemethod.checked = false;
       document.frmaction.describemethod.disabled = false;
+      document.frmaction.executemethod.checked = true;
+      document.frmaction.executemethod.disabled = false;
       document.frmaction.wsdl.disabled = false;
       document.frmaction.inspectwsdl.disabled = false;
       document.frmaction.soapversion.disabled = false;
@@ -208,11 +212,12 @@
       document.frmsoap.yes.checked = false;
       document.frmrest.yes.checked = true;
       document.frmaction.wstype.value="4";
-      //document.frmaction.executemethod.checked = true;
       //document.frmaction.listmethods.checked = false;
       document.frmaction.listmethods.disabled = true;
       //document.frmaction.describemethod.checked = false;
       document.frmaction.describemethod.disabled = true;
+      document.frmaction.executemethod.checked = true;
+      document.frmaction.executemethod.disabled = false;
       document.frmaction.wsdl.disabled = true;
       document.frmaction.inspectwsdl.disabled = true;
       document.frmaction.soapversion.disabled = true;
@@ -266,9 +271,15 @@
       /// @todo use a more precise calculation, adding the rest of the fields to the actual generated url lenght
       if ( /*document.frmaction.methodpayload.value.length > 1536*/ true )
       {
-          document.frmaction.action = document.frmaction.action + '/?usepost=true';
+          document.frmaction.action = document.frmaction.action.replace(/\/\?usepost=(true|false)/, '') + '/?usepost=true';
           document.frmaction.method = 'post';
       }
+      else
+      {
+          document.frmaction.action = document.frmaction.action.replace(/\/\?usepost=(true|false)/, '') + '/?usepost=false';
+          document.frmaction.method = 'get';
+      }
+      return true;
   }
 
 {/literal}//-->
@@ -281,7 +292,7 @@
 /<form name="frmsoap" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(3); switchssl();"/></form>SOAP
 /<form name="frmrest" style="display: inline;" action="."><input name="yes" type="radio" onclick="switchtransport(4); switchssl();"/></form>REST
 Debugger</h1>
-<form name="frmaction" method="get" action="../action/" target="frmaction" onSubmit="switchFormMethod();">
+<form name="frmaction" method="post" action="../action" target="frmaction" onSubmit="switchFormMethod();">
 
 <table id="serverblock">
 <tr>
@@ -296,10 +307,10 @@ Debugger</h1>
 <table id="actionblock">
 <tr>
 <td><h2>Action</h2></td>
-<td>List available methods<input type="radio" id="listmethods" name="action" value="list"{if eq($params.action,'list')} checked="checked"{/if} onclick="switchaction();" /></td>
-<td>Describe method<input type="radio" id="describemethod" name="action" value="describe"{if eq($params.action, 'describe')} checked="checked"{/if} onclick="switchaction();" /></td>
-<td>Execute method<input type="radio" id="executemethod" name="action" value="execute"{if eq($params.action, 'execute')} checked="checked"{/if} onclick="switchaction();" /></td>
-<td>Inspect wsdl<input type="radio" id="inspectwsdl" name="action" value="inspect"{if eq($params.action, 'inspect')} checked="checked"{/if} onclick="switchaction();" /></td>
+<td>List available methods<input type="radio" id="listmethods" name="wsaction" value="list"{if eq($params.action,'list')} checked="checked"{/if} onclick="switchaction();" /></td>
+<td>Describe method<input type="radio" id="describemethod" name="wsaction" value="describe"{if eq($params.action, 'describe')} checked="checked"{/if} onclick="switchaction();" /></td>
+<td>Execute method<input type="radio" id="executemethod" name="wsaction" value="execute"{if eq($params.action, 'execute')} checked="checked"{/if} onclick="switchaction();" /></td>
+<td>Inspect wsdl<input type="radio" id="inspectwsdl" name="wsaction" value="inspect"{if eq($params.action, 'inspect')} checked="checked"{/if} onclick="switchaction();" /></td>
 <!--<td>Generate stub for method call<input type="radio" name="action" value="wrap"{if eq($params.action, 'wrap')} checked="checked"{/if} onclick="switchaction();" /></td>-->
 <td><input type="hidden" name="wstype" value="{$params.wstype}" />
 <input type="submit" value="Execute" onclick="return verifyserver();"/></td>
@@ -310,7 +321,7 @@ Debugger</h1>
 <table id="methodblock">
 <tr>
 <td><h2>Method</h2></td>
-<td class="labelcell">Name:</td><td><input type="text" name="method" value="{$params.method|wash()}" size="25" /></td>
+<td class="labelcell">Name:</td><td><input type="text" name="wsmethod" value="{$params.method|wash()}" size="25" /></td>
 <td class="labelcell">Payload:<br/><div id="methodpayloadbtn"></div></td><td><textarea id="methodpayload" name="methodpayload" rows="1" cols="40">{$params.payload|wash()}</textarea></td>
 <td class="labelcell" id="idcell">Msg id: <input type="text" name="id" size="3" value="{$params.id|wash()}"/></td>
 </tr>

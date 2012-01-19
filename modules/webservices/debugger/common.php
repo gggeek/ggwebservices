@@ -37,7 +37,7 @@
   $params['run'] = false;
   $params['wstype'] = 0;
   $params['id'] = '';
-  if (isset($_GET['action']))
+  if (isset($_GET['wsaction']))
   {
     if (isset($_GET['wstype']) && ($_GET['wstype'] == '1' || $_GET['wstype'] == '2' || $_GET['wstype'] == '3' || $_GET['wstype'] == '4'))
     {
@@ -79,9 +79,9 @@
     $params['timeout'] = isset($_GET['timeout']) ? $_GET['timeout'] : 0;
     if (!is_numeric($params['timeout']))
       $params['timeout'] = 0;
-    $params['action'] = $_GET['action'];
+    $params['action'] = $_GET['wsaction'];
 
-    $params['method'] = isset($_GET['method']) ? $_GET['method'] : '';
+    $params['method'] = isset($_GET['wsmethod']) ? $_GET['wsmethod'] : '';
     //$params['methodsig'] = isset($_GET['methodsig']) ? $_GET['methodsig'] : 0;
     $params['payload'] = isset($_GET['methodpayload']) ? $_GET['methodpayload'] : '';
     $params['alt_payload'] = isset($_GET['altmethodpayload']) ? $_GET['altmethodpayload'] : '';
