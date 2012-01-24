@@ -95,6 +95,10 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
                 {
                     $params .= '&protocol=2';
                 }
+                else if( @$target_list[$groupname]['Options']['authType'] > 1 )
+                {
+                    $params .= '&protocol=1';
+                }
                 if ( isset( $target_list[$groupname]['providerUsername'] ) && $target_list[$groupname]['providerUsername'] != '' )
                 {
                     $params .= '&username=' . $target_list[$groupname]['providerUsername'] . '&amp;password=' . $target_list[$groupname]['providerPassword'];
