@@ -420,11 +420,11 @@ if ( $action )
               "<input type=\"hidden\" name=\"clientcookies\" value=\"".htmlspecialchars($clientcookies)."\" />".
               "<input type=\"hidden\" name=\"protocol\" value=\"$protocol\" />".
               "<input type=\"hidden\" name=\"timeout\" value=\"$timeout\" />".
-              "<input type=\"hidden\" name=\"method\" value=\"".htmlspecialchars( $rec )."\" />".
+              "<input type=\"hidden\" name=\"wsmethod\" value=\"".htmlspecialchars( $rec )."\" />".
               "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
               "<input type=\"hidden\" name=\"wsdl\" value=\"$wsdl\" />".
               "<input type=\"hidden\" name=\"soapversion\" value=\"$soapversion\" />".
-              "<input type=\"hidden\" name=\"action\" value=\"describe\" />".
+              "<input type=\"hidden\" name=\"wsaction\" value=\"describe\" />".
               //"<input type=\"hidden\" name=\"run\" value=\"now\" />".
               "<input type=\"submit\" value=\"Describe\" /></form>";
             echo "</td>";
@@ -559,13 +559,13 @@ if ( $action )
             "<input type=\"hidden\" name=\"clientcookies\" value=\"".htmlspecialchars($clientcookies)."\" />".
             "<input type=\"hidden\" name=\"protocol\" value=\"$protocol\" />".
             "<input type=\"hidden\" name=\"timeout\" value=\"".htmlspecialchars($timeout)."\" />".
-            "<input type=\"hidden\" name=\"method\" value=\"".htmlspecialchars($method)."\" />".
+            "<input type=\"hidden\" name=\"wsmethod\" value=\"".htmlspecialchars($method)."\" />".
             "<input type=\"hidden\" name=\"methodpayload\" value=\"".htmlspecialchars($payload)."\" />".
             "<input type=\"hidden\" name=\"altmethodpayload\" value=\"".htmlspecialchars($alt_payload)."\" />".
             "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
             "<input type=\"hidden\" name=\"wsdl\" value=\"$wsdl\" />".
             "<input type=\"hidden\" name=\"soapversion\" value=\"$soapversion\" />".
-            "<input type=\"hidden\" name=\"action\" value=\"execute\" />";
+            "<input type=\"hidden\" name=\"wsaction\" value=\"execute\" />";
             if ($wstype != 1 && $wstype != 2)
               echo "<input type=\"submit\" value=\"Load method synopsis\" />";
             echo "</form></td>\n";
@@ -614,10 +614,10 @@ else
 
 <h3>Examples:</h3>
 <p>
-Server Address: phpxmlrpc.sourceforge.net, Path: <a target="frmcontroller" href="./controller/?action=&host=phpxmlrpc.sourceforge.net&path=/server.php&wstype=0">/server.php</a> (for xmlrpc)<br/>
-Server Address: soap.amazon.com, Path: <a target="frmcontroller" href="./controller/?action=&host=soap.amazon.com&path=/schemas3/AmazonWebServices.wsdl&wstype=3">/schemas3/AmazonWebServices.wsdl</a> (for soap with wsdl)<br/>
-Server Address: api.twitter.com, Path: /1, Method: <a target="frmcontroller" href="./controller/?action=execute&host=api.twitter.com&path=/1&method=statuses/public_timeline.json&wstype=4">statuses/public_timeline.json</a> (for rest, json output)<br/>
-Server Address: where.yahooapis.com, Path: /, Method: <a target="frmcontroller" href="./controller/?action=execute&host=where.yahooapis.com&path=/&method=geocode&wstype=4&methodpayload={&quot;q&quot;:&quot;Klostergata 30, Skien&quot;,&quot;appid&quot;:&quot;[yourappidhere]&quot;}">geocode</a>, Parameters: q=&quot;Klostergata 30, Skien&quot;, appid=[yourappidhere] (for rest, xml output)
+Server Address: phpxmlrpc.sourceforge.net, Path: <a target="frmcontroller" href="./controller/?wsaction=&host=phpxmlrpc.sourceforge.net&path=/server.php&wstype=0">/server.php</a> (for xmlrpc)<br/>
+Server Address: soap.amazon.com, Path: <a target="frmcontroller" href="./controller/?wsaction=&host=soap.amazon.com&path=/schemas3/AmazonWebServices.wsdl&wstype=3">/schemas3/AmazonWebServices.wsdl</a> (for soap with wsdl)<br/>
+Server Address: api.twitter.com, Path: /1, Method: <a target="frmcontroller" href="./controller/?wsaction=execute&host=api.twitter.com&path=/1&wsmethod=statuses/public_timeline.json&wstype=4">statuses/public_timeline.json</a> (for rest, json output)<br/>
+Server Address: where.yahooapis.com, Path: /, Method: <a target="frmcontroller" href="./controller/?wsaction=execute&host=where.yahooapis.com&path=/&wsmethod=geocode&wstype=4&methodpayload={&quot;q&quot;:&quot;Klostergata 30, Skien&quot;,&quot;appid&quot;:&quot;[yourappidhere]&quot;}">geocode</a>, Parameters: q=&quot;Klostergata 30, Skien&quot;, appid=[yourappidhere] (for rest, xml output)
 </p>
 
 <h3>Notes:</h3>

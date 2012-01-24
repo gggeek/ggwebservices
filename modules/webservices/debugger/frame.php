@@ -37,7 +37,7 @@ foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap' ) as  $i => $protocol )
     if ( ( $protocol == 'ezjscore' && in_array( 'ezjscore', eZExtension::activeExtensions() ) ) || ( $protocol != 'ezjscore' && $wsINI->variable( 'GeneralSettings', 'Enable' . strtoupper( $protocol ) ) == 'true' ) )
     {
         $url = parse_url( $uri );
-        $params = '?action=';
+        $params = '?wsaction=';
         $params .= '&host=' . $url['host'];
         $params .= '&port=' . ( isset( $url['port'] ) ? $url['port'] : '' );
         $params .= '&path=' . ( isset( $url['path'] ) ? $url['path'] : '/' );
@@ -87,7 +87,7 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
             }
             else
             {
-                $params = '?action=';
+                $params = '?wsaction=';
                 $params .= '&host=' . $url['host'];
                 $params .= '&port=' . ( isset( $url['port'] ) ? $url['port'] : '' );
                 $params .= '&path=' . ( isset( $url['path'] ) ? $url['path'] : '/' );
