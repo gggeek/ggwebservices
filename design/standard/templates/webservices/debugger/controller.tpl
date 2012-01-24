@@ -144,8 +144,12 @@
       document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
       document.frmaction.executemethod.disabled = false;
-      document.frmaction.wsdl.disabled = true;
+      if (document.frmaction.inspectwsdl.checked == true)
+      {
+          document.frmaction.listmethods.checked = true
+      }
       document.frmaction.inspectwsdl.disabled = true;
+      document.frmaction.wsdl.disabled = true;
       document.frmaction.soapversion.disabled = true;
     }
     else if (wstype == 1)
@@ -161,8 +165,12 @@
       document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
       document.frmaction.executemethod.disabled = false;
-      document.frmaction.wsdl.disabled = true;
+      if (document.frmaction.inspectwsdl.checked == true)
+      {
+          document.frmaction.listmethods.checked = true
+      }
       document.frmaction.inspectwsdl.disabled = true;
+      document.frmaction.wsdl.disabled = true;
       document.frmaction.soapversion.disabled = true;
     }
     else if (wstype == 2)
@@ -178,8 +186,12 @@
       document.frmaction.listmethods.disabled = false;
       document.frmaction.describemethod.disabled = false;
       document.frmaction.executemethod.disabled = false;
-      document.frmaction.wsdl.disabled = true;
+      if (document.frmaction.inspectwsdl.checked == true)
+      {
+          document.frmaction.listmethods.checked = true
+      }
       document.frmaction.inspectwsdl.disabled = true;
+      document.frmaction.wsdl.disabled = true;
       document.frmaction.soapversion.disabled = true;
     }
     else if (wstype == 3)
@@ -196,7 +208,7 @@
       document.frmaction.listmethods.disabled = false;
       //document.frmaction.describemethod.checked = false;
       document.frmaction.describemethod.disabled = false;
-      document.frmaction.executemethod.checked = true;
+      //document.frmaction.executemethod.checked = true;
       document.frmaction.executemethod.disabled = false;
       document.frmaction.wsdl.disabled = false;
       document.frmaction.inspectwsdl.disabled = false;
@@ -212,11 +224,11 @@
       document.frmsoap.yes.checked = false;
       document.frmrest.yes.checked = true;
       document.frmaction.wstype.value="4";
+      document.frmaction.executemethod.checked = true;
       //document.frmaction.listmethods.checked = false;
       document.frmaction.listmethods.disabled = true;
       //document.frmaction.describemethod.checked = false;
       document.frmaction.describemethod.disabled = true;
-      document.frmaction.executemethod.checked = true;
       document.frmaction.executemethod.disabled = false;
       document.frmaction.wsdl.disabled = true;
       document.frmaction.inspectwsdl.disabled = true;
