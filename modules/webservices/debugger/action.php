@@ -626,7 +626,7 @@ Server Address: where.yahooapis.com, Path: /, Method: <a target="frmcontroller" 
 <li>Clicking on the left menu links will preload the address of this server itself for testing in the debugger. In this case the server will send a call to itself</li>
 <li>If you get an error <i>Fault code: [-301] Reason: 'Response received from server is not valid json/xmlrpc'</i> when testing the server itself, a probable cause is that you did neither specify a session cookie for your call, nor give rights to the anonymous user to execute webservice calls</li>
 <li>The format for cookies is to separate them using a comma</li>
-<li><b>The format for the payload is <a href="http://wwww.json.org/">json</a>, regardless of the webservice protocol in use</b></li>
+<li><b>The format for the payload is <a href="http://www.json.org/" target="_blank">json</a>, regardless of the webservice protocol in use</b></li>
 <li>For ezjscore calls, the GET parameters have to be specified after method name (eg: ezstarrating::rate::55::1::5). Parameters specified as part of Payload will be sent via the request body</li>
 <li>For REST calls:<ul>
     <li>The "method" name is appended to the URL by default. Use the "Name variable" option if you want method name passed in the query string</li>
