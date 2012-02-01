@@ -76,6 +76,10 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
             if ( $groupdef['providerUri'] == '' && @$groupdef['WSDL'] != '' )
             {
                 $url = parse_url( $groupdef['WSDL'] );
+                if ( !empty( $url['query'] ) )
+                {
+                    $url['path'] = $url['path'] . '?' . $url['query'];
+                }
             }
             else
             {
@@ -90,8 +94,8 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
                 $params = '?wsaction=';
                 $params .= '&host=' . $url['host'];
                 $params .= '&port=' . ( isset( $url['port'] ) ? $url['port'] : '' );
-                $params .= '&path=' . ( isset( $url['path'] ) ? $url['path'] : '/' );
-                if ( $url['scheme'] == 'htps' )
+                $params .= '&path=' . ( isset( $url['path'] ) ? urlencode( $url['path'] ) : '/' );
+                if ( $url['scheme'] == 'https' )
                 {
                     $params .= '&protocol=2';
                 }
@@ -101,7 +105,7 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
                 }
                 if ( isset( $target_list[$groupname]['providerUsername'] ) && $target_list[$groupname]['providerUsername'] != '' )
                 {
-                    $params .= '&username=' . $target_list[$groupname]['providerUsername'] . '&amp;password=' . $target_list[$groupname]['providerPassword'];
+                    $params .= '&username=' . urlencode( $target_list[$groupname]['providerUsername'] ) . '&password=' . urlencode( $target_list[$groupname]['providerPassword'] );
                 }
                 if ( isset( $target_list[$groupname]['timeout'] ) )
                 {
@@ -119,7 +123,7 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
                 {
                     if ( isset( $target_list[$groupname]['Options']['login'] ) && $target_list[$groupname]['Options']['login'] != '' )
                     {
-                        $params .= '&username=' . $target_list[$groupname]['Options']['login'] . '&amp;password=' . $target_list[$groupname]['Options']['password'];
+                        $params .= '&username=' . urlencode( $target_list[$groupname]['Options']['login'] ) . '&password=' . urlencode( $target_list[$groupname]['Options']['password'] );
                     }
                     if ( isset( $target_list[$groupname]['Options']['timeout'] ) )
                     {
@@ -137,19 +141,19 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
 
                     if ( isset( $target_list[$groupname]['Options']['method'] ) )
                     {
-                        $params .= '&verb=' .$target_list[$groupname]['Options']['method'];
+                        $params .= '&verb=' . $target_list[$groupname]['Options']['method'];
                     }
                     if ( isset( $target_list[$groupname]['Options']['nameVariable'] ) )
                     {
-                        $params .= '&namevariable=' .$target_list[$groupname]['Options']['nameVariable'];
+                        $params .= '&namevariable=' . $target_list[$groupname]['Options']['nameVariable'];
                     }
                     if ( isset( $target_list[$groupname]['Options']['responseType'] ) )
                     {
-                        $params .= '&responsetype=' . $target_list[$groupname]['Options']['responseType'];
+                        $params .= '&responsetype=' . urlencode( $target_list[$groupname]['Options']['responseType'] );
                     }
                     if ( isset( $target_list[$groupname]['Options']['requestType'] ) )
                     {
-                        $params .= '&requesttype=' . $target_list[$groupname]['Options']['requestType'];
+                        $params .= '&requesttype=' . urlencode( $target_list[$groupname]['Options']['requestType'] );
                     }
 
                     /// @todo also parse from ini forceCURL, requestCompression, acceptedCompression
