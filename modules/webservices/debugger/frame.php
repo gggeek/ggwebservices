@@ -119,7 +119,7 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
                 {
                     if ( isset( $target_list[$groupname]['Options']['login'] ) && $target_list[$groupname]['Options']['login'] != '' )
                     {
-                        $params .= '&username=' . $target_list[$groupname]['Options']['login'] . '&amp;password=' . $target_list['Options']['password'];
+                        $params .= '&username=' . $target_list[$groupname]['Options']['login'] . '&amp;password=' . $target_list[$groupname]['Options']['password'];
                     }
                     if ( isset( $target_list[$groupname]['Options']['timeout'] ) )
                     {
