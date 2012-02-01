@@ -615,7 +615,7 @@ else
 <h3>Examples:</h3>
 <p>
 Server Address: phpxmlrpc.sourceforge.net, Path: <a target="frmcontroller" href="./controller/?wsaction=&host=phpxmlrpc.sourceforge.net&path=/server.php&wstype=0">/server.php</a> (for xmlrpc)<br/>
-Server Address: soap.amazon.com, Path: <a target="frmcontroller" href="./controller/?wsaction=list&host=soap.amazon.com&path=/schemas3/AmazonWebServices.wsdl&wstype=3&wsdl=1">/schemas3/AmazonWebServices.wsdl</a> (for soap with wsdl)<br/>
+Server Address: www.webservicex.net, Path: <a target="frmcontroller" href="./controller/?wsaction=list&host=www.webservicex.net&path=uklocation.asmx?WSDL&wstype=3&wsdl=1">/uklocation.asmx?WSDL</a> (for soap with wsdl)<br/>
 Server Address: api.twitter.com, Path: /1, Method: <a target="frmcontroller" href="./controller/?wsaction=execute&host=api.twitter.com&path=/1&wsmethod=statuses/public_timeline.json&wstype=4">statuses/public_timeline.json</a> (for rest, json output)<br/>
 Server Address: where.yahooapis.com, Path: /, Method: <a target="frmcontroller" href="./controller/?wsaction=execute&host=where.yahooapis.com&path=/&wsmethod=geocode&wstype=4&methodpayload={&quot;q&quot;:&quot;Klostergata 30, Skien&quot;,&quot;appid&quot;:&quot;[yourappidhere]&quot;}">geocode</a>, Parameters: q=&quot;Klostergata 30, Skien&quot;, appid=[yourappidhere] (for rest, xml output)
 </p>
