@@ -171,6 +171,11 @@ class ggSOAPRequest extends ggWebservicesRequest
         return $this->ns;
     }
 
+    public function setNamespace( $ns )
+    {
+        $this->ns = $ns;
+    }
+
     public function setSoapVersion( $version )
     {
         $this->SoapVersion = $version;
