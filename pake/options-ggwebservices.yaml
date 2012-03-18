@@ -12,8 +12,8 @@ ezp:
         minor: 4
         release: 0
 
-svn:
-    url:  http://svn.projects.ez.no/ggwebservices/trunk/extension/ggwebservices/
+git:
+    url: https://gggeek@github.com/gggeek/ggwebservices.git
 
 create:
     tarball: no
