@@ -420,7 +420,7 @@ class ggWebservicesClient
             }
 
             $HTTPRequest = $verb . " " . $uri . " HTTP/1.0\r\n" .
-                "Host: " . $this->Server . $port . "\r\n";
+                "Host: " . $this->Server . $port . "\r\nConnection: close\r\n";
         }
 
         // added extra request headers for eg SOAP clients

@@ -1,3 +1,5 @@
+- soap calls: implement returning something where end user can distnguish between an array and an object, at least from tpl layer 
+
 - client: implement oauth 2 client capabilities
 
 - client: test POST, PUT, DELETE, HEAD methods for REST client:
