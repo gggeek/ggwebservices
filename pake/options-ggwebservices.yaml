@@ -13,7 +13,7 @@ ezp:
         release: 0
 
 git:
-    url: https://gggeek@github.com/gggeek/ggwebservices.git
+    url: https://github.com/gggeek/ggwebservices.git
 
 create:
     tarball: no
