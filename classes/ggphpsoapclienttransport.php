@@ -3,7 +3,7 @@
  * A ping-pong class: we take control of the "transport" part of the soap call
  * by routing it back to the ggPhpSOAPClient client itself
  *
- * @version $Id$
+ * @author G. Giunta
  * @copyright (C) 2010-2012 G. Giunta
  */
 

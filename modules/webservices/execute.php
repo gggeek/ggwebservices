@@ -3,8 +3,8 @@
  * View that executes webservice calls
  *
  * @author G. Giunta
- * @version $Id: proxy.php 86 2009-06-22 16:33:52Z gg $
  * @copyright (C) 2009-2012 G. Giunta
+ * @license code licensed under the GPL License: see LICENSE file
  */
 
 // decode input params

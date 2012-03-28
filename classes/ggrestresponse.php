@@ -4,7 +4,6 @@
  * Needs the simplexml extension when serializing in xml, the json ext. for json
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2009-2012 G. Giunta
  */
 

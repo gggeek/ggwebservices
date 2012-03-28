@@ -2,9 +2,9 @@
 /**
  * WS debugger: Dialog for visually editing trees of values
  *
- * @version $Id$
  * @copyright (C) 2006-2012 G. Giunta
  * @author Gaetano Giunta
+ * @license code licensed under the GPL License: see LICENSE file
  *
  * @todo reimplement support for xmlrpc types which are outside of json (datetime, base64) ?
  *       nb: this is not very useful if it's not supported by the php xmlrpc client anyway

@@ -3,8 +3,8 @@
  * WS debugger: top frame
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2010-2012 Gaetano Giunta
+ * @license code licensed under the GPL License: see LICENSE file
  *
  * @todo add support for more options, such as ntlm auth to proxy, or request charset encoding
  * @todo switch params for http compression from 0,1,2 to values to be used directly

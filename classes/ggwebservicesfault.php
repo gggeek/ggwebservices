@@ -3,7 +3,6 @@
  * generic WebServices fault class. Code taken from eZ Soap Fault (api is the same)
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2009-2012 G. Giunta
  */
 

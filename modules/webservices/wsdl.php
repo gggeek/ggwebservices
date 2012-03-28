@@ -3,8 +3,8 @@
  * View that shows the wsdl used for receiving soap calls
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2011-2012 G. Giunta
+ * @license code licensed under the GPL License: see LICENSE file
  *
  * @todo add support for letting user choose WSDL 2.0
  */

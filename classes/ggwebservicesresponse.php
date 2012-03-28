@@ -3,7 +3,6 @@
  * Generic class used to wrap webservices responses. Modeled after eZP Soap equivalent.
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2009-2012 G. Giunta
  */
 

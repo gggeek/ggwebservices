@@ -3,7 +3,6 @@
  * Class used to wrap soap requests, for use with the ggPhpSOAPClient.
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2009-2012 G. Giunta
  *
  * @todo this class could be replaced with a subclass of ggsoaprequest:

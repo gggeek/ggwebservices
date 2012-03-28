@@ -3,7 +3,6 @@
  * Class used to communicate with soap servers
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2009-2012 G. Giunta
  */
 

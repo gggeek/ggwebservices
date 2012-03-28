@@ -4,7 +4,6 @@
  * Needs the json extension
  *
  * @author G. Giunta
- * @version $Id: ggjsonrpcresponse.php 290 2011-02-06 17:36:55Z gg $
  * @copyright (C) 2012 G. Giunta
  *
  * @todo add support for other serializations that json

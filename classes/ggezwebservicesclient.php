@@ -3,7 +3,6 @@
  * generic WebServices client, with ini-based setup and logging
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2009-2012 G. Giunta
  *
  * @todo move ini file name to class constant

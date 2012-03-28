@@ -2,7 +2,6 @@
 /**
  *
  * @author G. Giunta
- * @version $Id: ggjsonrpcserver.php 199 2010-12-04 00:06:40Z gg $
  * @copyright (C) 2010-2012 G. Giunta
  *
  * @todo implement validateparams

@@ -16,7 +16,6 @@
  *        -- prepareResponse (adds to response obj any missing info gathered usually during parseRequest)
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2009-2012 G. Giunta
  *
  * @todo add a better way to register methods, supporting definition of type of return value and per-param help text

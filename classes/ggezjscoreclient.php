@@ -4,7 +4,6 @@
  * @deprecated use a plain ggWebservicesClient instead of this
  *
  * @author G. Giunta
- * @version $Id: ggjsonrpcclient.php 290 2011-02-06 17:36:55Z gg $
  * @copyright (C) 2011-2012 G. Giunta
  */
 

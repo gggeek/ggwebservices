@@ -3,8 +3,8 @@
  * Main view for the WS module
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2010-2012 G. Giunta
+ * @license code licensed under the GPL License: see LICENSE file
  */
 
 // decode input params

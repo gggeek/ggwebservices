@@ -2,8 +2,8 @@
 /**
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2009-2012  G. Giunta
+ * @license code licensed under the GPL License: see LICENSE file
  */
 
 $Module = array( 'name' => 'Webservices', "variable_params" => false );

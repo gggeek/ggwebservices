@@ -1,8 +1,8 @@
 {**
  * Dialog for visually editing trees of json/xmlrpc values
- * @version $Id$
  * @copyright (C) 2006-2012 G. Giunta
  * @author Gaetano Giunta
+ * @license code licensed under the GPL License: see LICENSE file
  *
  * @todo do not set to "null" new nodes
  * @todo improve display: do not show up/down arrows, 'angle line' for top level parameter

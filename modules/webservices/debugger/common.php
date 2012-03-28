@@ -2,7 +2,6 @@
 /**
  * WS debugger:initialize user parameters received via GET (or POST): set defaults, cleanup
  *
- * @version $Id$
  * @author Gaetano Giunta
  * @copyright (C) 2005-2012 G. Giunta
  * @license code licensed under the BSD License: http://phpxmlrpc.sourceforge.net/license.txt

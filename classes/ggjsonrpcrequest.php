@@ -3,7 +3,6 @@
  * Class used to wrap jsonrpc requests. Needs the json extension
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2009-2012 G. Giunta
  */
 

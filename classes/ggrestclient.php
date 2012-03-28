@@ -4,7 +4,6 @@
  * @deprecated use a plain ggWebservicesClient instead of this
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2009-2012 G. Giunta
  */
 

@@ -6,7 +6,6 @@
  * instead of relying on eZ default one, and a number of rotated files to be kept, too!
  *
  * @author G. Giunta
- * @version $Id: checkusers.php 368 2009-07-01 13:05:03Z CPTICD1 $
  * @copyright (C) 2009-2012 G. Giunta
  */
 

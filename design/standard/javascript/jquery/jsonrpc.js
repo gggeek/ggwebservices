@@ -8,8 +8,7 @@
 * of the eZ Publish installation
 *
 * @author G. Giunta
-* @copyright (c) 2009 G. Giunta
-* @version $Id$
+* @copyright (c) 2009-2012 G. Giunta
 *
 * @todo use closures instead of saving stuff around for later
 */

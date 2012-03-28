@@ -4,7 +4,6 @@
  * Supports many http methods - which are in this case taken from req. Name.
  *
  * @author G. Giunta
- * @version $Id$
  * @copyright (C) 2009-2012 G. Giunta
  */
 

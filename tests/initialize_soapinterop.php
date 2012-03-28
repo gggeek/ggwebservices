@@ -3,7 +3,6 @@
  * Implements the methods for the passing the interop test suite defined at
  * http://www.xmethods.net/soapbuilders/proposal.html
  *
- * @version $Id$
  * @author G. Giunta
  * @copyright (C) 2011-2012 G. Giunta
  * @license code licensed under the GPL License: see LICENSE file
