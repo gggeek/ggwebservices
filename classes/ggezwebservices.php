@@ -252,8 +252,7 @@ class ggeZWebservices
             }
 
             // wsdl building is done via template
-            include_once( 'kernel/common/template.php' );
-            $tpl = templateInit();
+            $tpl = eZTemplate::factory();
 
             // if the developer used custom wsdl files for his services, we do
             // not merge the files together, but create a wsdl file that links
@@ -353,8 +352,7 @@ class ggeZWebservices
             }
 
             // wsdl building is done via template
-            include_once( 'kernel/common/template.php' );
-            $tpl = templateInit();
+            $tpl = eZTemplate::factory();
 
             /// @todo !important we could build directly html output using an html template, to reduce resource usage
             //$namespace = 'webservices/wsdl/' . $service_name . '/types';
