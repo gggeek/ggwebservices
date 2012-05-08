@@ -174,7 +174,7 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
     }
 }
 // display the iframe_based template
-$tpl = templateInit();
+$tpl = ggWebservicesUtils::eZTemplateFactory();
 //$tpl->setVariable( 'query_string', $query_string );
 $tpl->setVariable( 'target_list', $target_list );
 $tpl->setVariable( 'server_list', $server_list );
@@ -182,6 +182,6 @@ $Result = array();
 $Result['content'] = $tpl->fetch( "design:webservices/debugger/frame.tpl" );
 $Result['left_menu'] = 'design:parts/wsdebugger/menu.tpl';
 $Result['path'] = array( array( 'url' => 'webservices/debugger',
-                                'text' => ezi18n( 'extension/webservices', 'WS Debugger' ) ) );
+                                'text' => ggWebservicesUtils::ezpI18ntr( 'extension/webservices', 'WS Debugger' ) ) );
 
 ?>

@@ -15,7 +15,7 @@ include( dirname( __FILE__ ) . "/common.php" );
 if ( $params['action'] == '' )
     $params['action'] = 'list';
 
-$tpl = templateInit();
+$tpl = ggWebservicesUtils::eZTemplateFactory();
 $tpl->setVariable( 'params', $params );
 $tpl->setVariable( 'known_req_content_types', ggRESTRequest::knownContentTypes() );
 $tpl->setVariable( 'known_resp_content_types', ggRESTResponse::knownContentTypes() );

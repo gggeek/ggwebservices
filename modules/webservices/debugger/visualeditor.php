@@ -81,7 +81,7 @@ else
 /// when set to true/1, adding new vals or modifying type of initial values is forbidden
 //$noadd = ( isset( $_GET['noadd'] ) ) ? (bool)$_GET['noadd'] : false;
 
-$tpl = templateInit();
+$tpl = ggWebservicesUtils::eZTemplateFactory();
 //$tpl->setVariable( 'noadd', $noadd );
 //$tpl->setVariable( 'type', $jstype );
 //$tpl->setVariable( 'valid_types', $valid_types );
