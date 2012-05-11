@@ -1,0 +1,7 @@
+Changes from 0.11.2 to 0.11.3 - released 2012/3/18
+
+*General:
+
+*Bugfixes:
+
+- in non-curl mode, some buggy web servers would keep our requests pending for a long period (thinking we want to use keepalive)
