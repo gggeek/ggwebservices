@@ -3,6 +3,7 @@
  * helper class, used as container for generic functions used throughout the extension
  *
  * @author G. Giunta
+ * @author Carlos Revillo
  * @copyright (C) 2009-2012 G. Giunta
  * @license code licensed under the GPL License: see LICENSE file
  */
@@ -252,7 +253,7 @@ class ggeZWebservices
             }
 
             // wsdl building is done via template
-            $tpl = eZTemplate::factory();
+            $tpl = self::eZTemplateFactory();
 
             // if the developer used custom wsdl files for his services, we do
             // not merge the files together, but create a wsdl file that links
@@ -352,7 +353,7 @@ class ggeZWebservices
             }
 
             // wsdl building is done via template
-            $tpl = eZTemplate::factory();
+            $tpl = self::eZTemplateFactory();
 
             /// @todo !important we could build directly html output using an html template, to reduce resource usage
             //$namespace = 'webservices/wsdl/' . $service_name . '/types';
@@ -552,6 +553,44 @@ class ggeZWebservices
         return isset( self::$protocolconfigs[$protocol] ) ? self::$protocolconfigs[$protocol] : null;
     }
 
+    /**
+     * Wrapper method to translate labels and eventually takes advantage of new 4.3 i18n API
+     * @param $context
+     * @param $message
+     * @param $comment
+     * @param $argument
+     * @return string
+     */
+    public static function ezpI18ntr( $context, $message, $comment = null, $argument = null )
+    {
+        // eZ Publish < 4.3 => use old i18n system
+        if( eZPublishSDK::majorVersion() >= 4 && eZPublishSDK::minorVersion() < 3 )
+        {
+            include_once( 'kernel/common/i18n.php' );
+            return ezi18n( $context, $message, $comment, $argument );
+        }
+        else
+        {
+            return ezpI18n::tr( $context, $message, $comment, $argument );
+        }
+    }
+
+    /**
+     * Wrapper method to initialize a template and eventually takes advantage of new 4.3 TPL API
+     * @return eZTemplate
+     */
+    public static function eZTemplateFactory()
+    {
+        if( eZPublishSDK::majorVersion() >= 4 && eZPublishSDK::minorVersion() < 3 )
+        {
+            include_once( 'kernel/common/template.php' );
+            return templateInit();
+        }
+        else
+        {
+            return eZTemplate::factory();
+        }
+    }
 }
 
 ?>
