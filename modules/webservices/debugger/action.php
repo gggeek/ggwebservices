@@ -13,9 +13,6 @@
  * @todo move to template-based output
  **/
 
-// this line added at the top for extra safety when no rewrite rules are in place
-require_once( "kernel/common/template.php" );
-
 include( dirname(__FILE__) . '/common.php' );
 
 

@@ -11,10 +11,6 @@
  * @todo also in visual editor disallow types outside of the protocol range (eg. null for xmlrpc)
  */
 
-// this line moved to the top for a small bit extra safety when no rewrite rules
-// are in place
-require_once( "kernel/common/template.php" );
-
 $type = 'xmlrpc';
 $named_params = false;
 $paramsjson = '';
@@ -85,7 +81,7 @@ else
 /// when set to true/1, adding new vals or modifying type of initial values is forbidden
 //$noadd = ( isset( $_GET['noadd'] ) ) ? (bool)$_GET['noadd'] : false;
 
-$tpl = templateInit();
+$tpl = ggWebservicesUtils::eZTemplateFactory();
 //$tpl->setVariable( 'noadd', $noadd );
 //$tpl->setVariable( 'type', $jstype );
 //$tpl->setVariable( 'valid_types', $valid_types );
