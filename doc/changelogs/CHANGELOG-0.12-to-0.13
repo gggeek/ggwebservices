@@ -1,0 +1,9 @@
+Changes from 0.12 to 0.13 - released 2012/9/20
+
+*General:
+
+- added samples for querying weatherunderground
+
+*Bugfixes:
+
+- in non-curl mode, be more tolerant of encodings that webservers use when they declare to use "deflate"

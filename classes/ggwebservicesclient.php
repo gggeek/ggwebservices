@@ -695,11 +695,20 @@ class ggWebservicesClient
                     // if decoding works, use it. else assume data wasn't gzencoded
                     if( function_exists( 'gzinflate' ) )
                     {
-                        if( $headers['content-encoding'] == 'deflate' && $degzdata = @gzuncompress( $data ) )
+                        // RFC 2616 defines 'deflate' encoding as zlib format from RFC 1950,
+                        // while many applications send raw deflate stream from RFC 1951.
+                        // We check for presence of zlib header and use gzuncompress() or
+                        // gzinflate() as needed. Code taken from Pear http2
+                        if( $headers['content-encoding'] == 'deflate' )
                         {
-                            $data = $degzdata;
+                            $header = unpack( 'n', substr( $data, 0, 2 ) );
+                            $degzdata = ( ( 0 == $header[1] % 31 ) ? @gzuncompress( $data ) : @gzinflate( $data ) );
+                            if ( $degzdata )
+                            {
+                                $data = $degzdata;
+                            }
                         }
-                        elseif($headers['content-encoding'] == 'gzip' && $degzdata = @gzinflate( substr( $data, 10 ) ) )
+                        elseif( $headers['content-encoding'] == 'gzip' && $degzdata = @gzinflate( substr( $data, 10 ) ) )
                         {
                             $data = $degzdata;
                         }
