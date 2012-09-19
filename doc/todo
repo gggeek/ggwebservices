@@ -1,3 +1,5 @@
+- look into using guzzle for http layer (reimplement ggWebservicesClient::send and company)
+
 - soap calls: implement returning something where end user can distnguish between an array and an object, at least from tpl layer 
 
 - client: implement oauth 2 client capabilities
