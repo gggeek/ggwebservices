@@ -4,7 +4,7 @@
 * API based on ezjscore's client for maximum interoperability (but not identical!)
 * Uses jquery.json plugin for json (de)serializing
 * Works both if parsed as javascript-generating template or if included as plain javascript file.
-* In the latter case, the var Y.ez.url should be set up with the url of the root
+* In the latter case, the var $.ez.url should be set up with the url of the root
 * of the eZ Publish installation
 *
 * @author G. Giunta
@@ -16,11 +16,11 @@
 (function($) {
 
     // this looks weird but is ok, it is just needed for writing meta-js via tpl
-    // and not passing it through the teemplate system...
-    var _serverUrl = '{/literal}{'/'|ezurl('no', 'full')}{literal}', _configBak;
-    if ( '{' + "/literal}{'/'|ezurl('no', 'full')}{literal}" == _serverUrl )
+    // and not passing it through the template system...
+    var _serverUrl = '{/literal}{"/"|ezurl("no", "full")}{literal}', _configBak;
+    if ( '{' + '/literal}{"/"|ezurl("no", "full")}{literal}' == _serverUrl )
     {
-        if ( typeof $.ez.url != undefined )
+        if ( typeof $.ez !== "undefined" && typeof $.ez.url !== "undefined" )
         {
             _serverUrl = $.ez.url.replace( '/ezjscore/', '' );
         }
@@ -33,6 +33,29 @@
     $.jsonrpc = function _jsonrpc( callMethod, callParams, options )
     {
         var url = _serverUrl + '/webservices/execute/jsonrpc';
+
+        // backup user callback functions, as we inject our decoding success call
+        if ( options !== undefined )
+            _configBak = options;
+
+        // force json transport
+        var c = {
+            contentType: 'application/json',
+            data: $.toJSON( { method: callMethod, params: callParams, id: 1 } ),
+            dataType: 'text', // avoid having jquery parsing response json using eval
+            accepts: { text: 'application/json,text/javascript' }, // fix the accept header
+            processData: false,
+            success: _iojsonrpcSuccess,
+            error: options.error,
+            type: 'POST',
+            url: url
+        };
+        return $.ajax( c );
+    };
+
+    $.wsproxy = function _wsproxy( remoteServer, callMethod, callParams, options )
+    {
+        var url = _serverUrl + '/webservices/proxy/jsonrpc/' + remoteServer;
 
         // backup user callback functions, as we inject our decoding success call
         if ( options !== undefined )

@@ -1,9 +1,12 @@
-Changes from 0.12 to 0.13 - released 2012/9/20
+Changes from 0.12 to 0.13 - released 2012/9/21
 
 *General:
 
-- added samples for querying weatherunderground
+- added samples for making ajax calls via the proxy service
+- added two new javascript helpers: $.wsproxy and Y.io.jsproxy
+- added version 2.3 of the bundled jQuery JSON Plugin
 
 *Bugfixes:
 
-- in non-curl mode, be more tolerant of encodings that webservers use when they declare to use "deflate"
+- make $.jsonrpc and Y.io.jsonrpc javascript functions actually work
+- fix changelogs

@@ -113,7 +113,7 @@
   + use either
 
     . the Y.io.jsonrpc( string method, array params, object config )
-      javascript function, available in the io-jsonropc yui module
+      javascript function, available in the io-jsonrpc yui module
       (supports only jsonrpc, not xmlrpc)
 
     . the set of javascript classes defined in the JS-XMLRPC library
