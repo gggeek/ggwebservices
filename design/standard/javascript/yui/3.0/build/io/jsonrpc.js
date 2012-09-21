@@ -31,6 +31,11 @@ YUI( YUI3_config ).add('io-jsonrpc', function( Y )
         }
     }
 
+    /**
+     * @param string callMethod
+     * @param array callParams
+     * @param object c options, following the Y.io convention. Esp. important are the callbacks: "on.sucesss" and "on.failure"
+     */
     Y.io.jsonrpc = function ( callMethod, callParams, c )
     {
         var url = _serverUrl + '/webservices/execute/jsonrpc';
@@ -57,6 +62,12 @@ YUI( YUI3_config ).add('io-jsonrpc', function( Y )
         return Y.io( url, c );
     }
 
+    /**
+     * @param string remoteServer
+     * @param string callMethod
+     * @param array callParams
+     * @param object c options, following the Y.io convention. Esp. important are the callbacks: "on.sucesss" and "on.failure"
+     */
     Y.io.wsproxy = function ( remoteServer, callMethod, callParams, c )
     {
         var url = _serverUrl + '/webservices/proxy/jsonrpc/' + remoteServer;
@@ -99,22 +110,35 @@ YUI( YUI3_config ).add('io-jsonrpc', function( Y )
             var response;
             try {
                 response = Y.JSON.parse( o.responseText );
-                /// @todo we should check that either result or error are null...
                 // we return in responseJSON both the jsonrpc-style members and the ezjscore ones
+                returnObject.responseJSON = response;
+                // 1st check: valid jsonrpc responses have to have these memebers
+                if ( typeof response.result === "undefined" || typeof response.error === "undefined" )
+                {
+                    throw { message: "Invalid jsonrpc response received: missing 'result' or 'error' members" };
+                }
                 response.content = response.result;
                 response.error_text = response.error;
-                returnObject.responseJSON = response;
+                // 2nd check: if we have an error result, let the error callback handle it
+                if ( response.error_text !== null && response.content === null )
+                {
+                    throw { message: "Jsonrpc error response received. Details avilable in ResponseJSON.error_text" };
+                }
             } catch ( error ) {
                 var c = _configBak;
                 if ( c.on.failure !== undefined )
                 {
-                    returnObject.statusText = error.message + ' error in file ' + error.fileName + ' line ' + error.lineNumber;
-                    // shall we also patch status to something else than 200?
+                    returnObject.statusText = error.message;
+                    // should we also patch status to something else than 200?
                     c.on.failure( id, returnObject );
                     return;
                 }
                 else
                 {
+                    if ( window.console !== undefined )
+                    {
+                         window.console.error( 'Y.io.jsonrpc(): ' + $.toJSON( error ) );
+                    }
                     throw error;
                 }
             }
@@ -131,10 +155,7 @@ YUI( YUI3_config ).add('io-jsonrpc', function( Y )
         }
         else if ( window.console !== undefined )
         {
-            if ( returnObject.responseJSON.error_text != null )
-                window.console.error( 'Y.io.jsonrpc(): ' + Y.JSON.stringify(returnObject.responseJSON.error_text) );
-            else
-                window.console.log( 'Y.io.jsonrpc(): ' + Y.JSON.stringify(returnObject.responseJSON.content) );
+            window.console.log( 'Y.io.jsonrpc(): ' + Y.JSON.stringify( returnObject.responseJSON.content ) );
         }
     }
 

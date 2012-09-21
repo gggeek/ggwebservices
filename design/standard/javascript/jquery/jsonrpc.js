@@ -32,6 +32,11 @@
         }
     }
 
+    /**
+     * @param string callMethod
+     * @param array callParams
+     * @param object options options, following the $.ajax convention. Esp. important are the callbacks: "sucesss" and "error"
+     */
     $.jsonrpc = function _jsonrpc( callMethod, callParams, options )
     {
         var url = _serverUrl + '/webservices/execute/jsonrpc';
@@ -55,6 +60,12 @@
         return $.ajax( c );
     };
 
+    /**
+     * @param string remoteServer
+     * @param string callMethod
+     * @param array callParams
+     * @param object options options, following the $.ajax convention. Esp. important are the callbacks: "sucesss" and "error"
+     */
     $.wsproxy = function _wsproxy( remoteServer, callMethod, callParams, options )
     {
         var url = _serverUrl + '/webservices/proxy/jsonrpc/' + remoteServer;
@@ -91,21 +102,35 @@
         var response;
         try {
             response = $.secureEvalJSON( data );
-            /// @todo we should check that either result or error are null...
             // we return in responseJSON both the jsonrpc-style members and the ezjscore ones
+            returnObject.responseJSON = response;
+            // 1st check: valid jsonrpc responses have to have these memebers
+            if ( typeof response.result === "undefined" || typeof response.error === "undefined" )
+            {
+                throw { message: "Invalid jsonrpc response received: missing 'result' or 'error' members" };
+            }
             response.content = response.result;
             response.error_text = response.error;
-            returnObject.responseJSON = response;
+            // 2nd check: if we have an error result, let the error callback handle it
+            if ( response.error_text !== null && response.content === null )
+            {
+                throw { message: "Jsonrpc error response received. Details avilable in ResponseJSON.error_text" };
+            }
         } catch ( error ) {
             var c = _configBak;
             if ( c.error !== undefined )
             {
-                returnObject.statusText = error.message + ' error in file ' + error.fileName + ' line ' + error.lineNumber;
+                returnObject.statusText = error.message;
+                // should we also patch status to something else than 200?
                 c.error( returnObject );
                 return;
             }
             else
             {
+                if ( window.console !== undefined )
+                {
+                     window.console.error( '$.jsonrpc(): ' + $.toJSON( error ) );
+                }
                 throw error;
             }
         }
@@ -117,10 +142,7 @@
         }
         else if ( window.console !== undefined )
         {
-            if ( returnObject.responseJSON.error_text != null )
-                window.console.error( '$.jsonrpc(): ' + $.toJSON( returnObject.responseJSON.error_text ) );
-            else
-                window.console.log( '$.jsonrpc(): ' + $.toJSON( returnObject.responseJSON.content ) );
+            window.console.log( '$.jsonrpc(): ' + $.toJSON( returnObject.responseJSON.content ) );
         }
     }
 
