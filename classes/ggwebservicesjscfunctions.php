@@ -1,7 +1,7 @@
 <?php
 /**
- * Implementation of the webservices for eZDebug: immplement the system.* ones
- * that are standfard for xmlrpc
+ * Implementation of the webservices for the ws debugger: expose via the eZJSCore
+ * protocol the system.* methods that are standard for xmlrpc
  *
  * @author G. Giunta
  * @copyright (C) 2010-2012 G. Giunta

@@ -1,13 +1,15 @@
 
 /**
-* JSON-RPC client for yui 3
+* JSON-RPC client for yui 3 - for easy ajax calls to the eZPublish server
 * API based on Y.io.ez for maximum interoperability (but not identical!)
-* Works both if parsed as javascript-generating template or if included as plain javascript file.
-* In the latter case, the var Y.io.ez.url should be set up with the url of the root
-* of the eZ Publish installation
+* Works both if included as plain javascript file or if parsed as javascript-generating
+* template (see jquery.tpl on how to do that).
+* In the first case, the var Y.io.ez.url should be set up with the url of the root
+* of the eZ Publish installation _before_ including this
+*
 * @author G. Giunta
-* @copyright (c) 2009 G. Giunta
-* @version $Id$
+* @copyright (c) 2009-2012 G. Giunta
+* @license code licensed under the GPL License: see LICENSE file
 *
 * @todo use closures instead of saving stuff around for later
 */

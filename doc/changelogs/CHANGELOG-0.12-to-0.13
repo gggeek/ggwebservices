@@ -2,11 +2,13 @@ Changes from 0.12 to 0.13 - released 2012/9/21
 
 *General:
 
-- added samples for making ajax calls via the proxy service
 - added two new javascript helpers: $.wsproxy and Y.io.jsproxy
 - added version 2.3 of the bundled jQuery JSON Plugin
+- added samples for making ajax calls, to the ez server and cross-domain via the proxy service
 
 *Bugfixes:
 
 - make $.jsonrpc and Y.io.jsonrpc javascript functions actually work
+- fix warnings emitted by {ezscript_require( array( 'ezjsc::yui3', 'ggwstemplate::yui3::jsonrpc' ) )}
+  and {ezscript_require( array( 'ezjsc::jquery', 'ggwstemplate::jquery::json', 'ggwstemplate::jquery::jsonrpc' ) )}
 - fix changelogs

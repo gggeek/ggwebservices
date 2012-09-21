@@ -1,14 +1,16 @@
 
 /**
-* JSON-RPC client for jquery
+* JSON-RPC client for jquery - for easy ajax calls to the eZPublish server
 * API based on ezjscore's client for maximum interoperability (but not identical!)
-* Uses jquery.json plugin for json (de)serializing
-* Works both if parsed as javascript-generating template or if included as plain javascript file.
-* In the latter case, the var $.ez.url should be set up with the url of the root
-* of the eZ Publish installation
+* Works both if included as plain javascript file or if parsed as javascript-generating
+* template (see jquery.tpl on how to do that).
+* In the first case, the var $.ez.url should be set up with the url of the root
+* of the eZ Publish installation _before_ including this
+* NB: Uses (needs) jquery.json plugin for json (de)serializing
 *
 * @author G. Giunta
 * @copyright (c) 2009-2012 G. Giunta
+* @license code licensed under the GPL License: see LICENSE file
 *
 * @todo use closures instead of saving stuff around for later
 */

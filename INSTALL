@@ -163,10 +163,18 @@
     eZ Publish user, possibly with a limitation on remote server
 
   + the url to be called is:
-    http://my.ez.server/index.php/siteaccess/webservices/proxy/$protocol/$remoteservername
+    http://my.ez.server/index.php/<siteaccess>/webservices/proxy/$protocol/$remoteservername
     where protocol is either "phpxmlrpc" or "jsonrpc", and remoteservername is
     the name of a server defined in wsproviders.ini.append.php file (the remote
     server can use a different protocol, such as soap, from the one used by the
     browser)
+
+  + for easy ajax implementation, use the $.wsproxy( servername, method, params, callback ) or
+    Y.io.wsproxy( servername, method, params, callback ) methods, which are made available
+    by this extension.
+    To load them, use:
+    {ezscript_require( array( 'ezjsc::jquery', 'ggwstemplate::jquery::json', 'ggwstemplate::jquery::jsonrpc' ) )}
+    or
+    {ezscript_require( array( 'ezjsc::yui3', 'ggwstemplate::yui3::jsonrpc' ) )}
 
 9 - more detailed info in the README file

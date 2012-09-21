@@ -1,3 +1,4 @@
+//{literal}
 /**
  * jQuery JSON Plugin
  * version: 2.3 (2011-09-17)
@@ -152,7 +153,7 @@
 		? JSON.parse
 		: function( src ) {
 
-		var filtered = 
+		var filtered =
 			src
 			.replace( /\\["\\\/bfnrtu]/g, '@' )
 			.replace( /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
@@ -191,3 +192,4 @@
 	};
 
 })( jQuery );
+//{/literal}

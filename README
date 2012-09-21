@@ -14,7 +14,7 @@ Allow to expose existing functionality as JSONRPC or XMLRPC, REST (and eventuall
 Allow to expose functionality as webservice regardless of the protocol used by the client - without having to duplicate code
 Provide a proxy module allowing javascript code served by an eZ Publish server to execute cross-domain webservice calls (without resorting to html tricks) and even cross-protocol calls
 Allow easy debugging of webservice calls via inclusion of a complete debugging interface
-Improve support for WSDL in soap calls (both server-side and client-side)
+Improve support for WSDL in SOAP calls (both server-side and client-side)
 Improve the existing http client adding features such as support for more authentication schemes, compressed requests etc...
 Allow usage of JSONRPC or XMLRPC (and eventually SOAP) to call functions exposed via the ezjscore extension API
 Keep the same API as the existing eZP SOAP classes for maximum interoperability
@@ -49,7 +49,7 @@ For more details, read the INSTALL file.
 
 Modules and Views:
 
-- webservices/debugger: view used to display a WS debugger in the admin interface. Currently limited to jsonrpc/xmlrpc/ezjscore calls
+- webservices/debugger: view used to display a WS debugger in the admin interface
 - webservices/proxy: view used to allow javascript code in eZ Publish pages to execute cross-domain webservice calls (ie. execute calls to other servers)
 - webservices/execute: view used to execute webservice calls when not using a custom controller file
 
@@ -71,7 +71,7 @@ Cronjobs:
 
 Php classes:
 
-- to be documented...
+- look in doc/api/html
 
 
 Javascript classes:
@@ -83,4 +83,9 @@ FAQ:
 
   Q: how do I debug webservices without going insane?
   A1: you're a lucky guy, since this extension provides a nice grapgical debugger within the standard admin interface
-  A2: by enabling logging, you n00b!
+  A2: when DebugSettings/DebugOutput and TemplateSettings/DevelopmentMode are
+      both enabled, the requests sent by the fetch function webservices/call
+      will be displayed as part of the standard debug output
+  A3: by enabling logging, you n00b!
+      - there is an ini setting in wsproviders.ini that controls verbosity for a
+        log file dedicated to webservices: var/<vardir>/log/webservices.log
