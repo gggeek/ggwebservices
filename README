@@ -77,15 +77,17 @@ Php classes:
 Javascript classes:
 
 - to be documented...
+- look at INSTALL file for some explanation of provided ajax functionality
 
 
 FAQ:
 
   Q: how do I debug webservices without going insane?
-  A1: you're a lucky guy, since this extension provides a nice grapgical debugger within the standard admin interface
+  A1: you're a lucky guy, since this extension provides a nice grapgical debugger
+      within the standard admin interface
   A2: when DebugSettings/DebugOutput and TemplateSettings/DevelopmentMode are
       both enabled, the requests sent by the fetch function webservices/call
       will be displayed as part of the standard debug output
   A3: by enabling logging, you n00b!
-      - there is an ini setting in wsproviders.ini that controls verbosity for a
-        log file dedicated to webservices: var/<vardir>/log/webservices.log
+      There is an ini setting in wsproviders.ini that controls verbosity for a
+      log file dedicated to webservices: var/<vardir>/log/webservices.log

@@ -15,9 +15,17 @@
 3 - there is no fight club!
 
 
+4 - if you enable logging of the webservice calls made by this extension, take
+    care that the log file var/<vardir>/log/webservices.log is not rotated by
+    default and will grow without limits.
+    A dedicated cronjob is provided to rotate that file: rotatewslogs.
+    It is not scheduled by default as part of either standard, frequent or
+    infrequent groups, and you will have to schedule its execution
+
+
 ### SERVER-SIDE: exposing your webservices ###
 
-4 - to receive jsonrpc or xmlrpc or rest webservice calls:
+5 - to receive jsonrpc or xmlrpc or rest webservice calls:
 
   + define the php functions you want to expose as webservices in a file
     "initialize.php" in either a "phpxmlrpc", "jsonrpc" or "rest" folder in the
@@ -76,7 +84,7 @@
        ezp.authandexec( 'username', 'password', 'test', array( 'p1', 'p2' ) )
     e. use the built-in debugger to help with troubleshooting
 
-4b - an alternative to receive jsonrpc or xmlrpc webservice calls:
+5b - an alternative to receive jsonrpc or xmlrpc webservice calls:
 
   + copy the files jsonrpc.php/xmlrpc.php to the eZ Publish installation root
     folder
@@ -106,7 +114,7 @@
     will be available to everybody. TAKE CARE!
 
 
-5 - to enable js code in the browser to call webservices on the local server
+6 - to enable js code in the browser to call webservices on the local server
 
   + create the desired webservices, as per point 3 or 3b above
 
@@ -120,7 +128,7 @@
       (docs for it are available at http://phpxmlrpc.sourceforge.net/jsxmlrpc/javadoc/)
 
 
-6 - to enable usage of xmlrpc/jsonrpc protocols to call functions that have
+7 - to enable usage of xmlrpc/jsonrpc protocols to call functions that have
     already been made available via the jscore extension:
 
   + make sure the JscoreIntegration parameter is set to "enabled" in wsproviders.ini.append.php
@@ -139,7 +147,7 @@
 
 ### CLIENT-SIDE: calling webservices on remote servers ###
 
-7 - to make webservice calls to external servers via templates
+8 - to make webservice calls to external servers via templates
 
   + define the remote servers that will be made accessible in the
     wsproviders.ini.append.php file
@@ -153,7 +161,7 @@
     complete traces of webservice communication in var/nameofsiteaccess/log
 
 
-8 - to enable js code in the browser to call webservices on remote servers
+9 - to enable js code in the browser to call webservices on remote servers
     (cross domain requests) without the need for flash or other advanced techniques:
 
   + define the remote servers that will be made accessible in the
@@ -177,4 +185,4 @@
     or
     {ezscript_require( array( 'ezjsc::yui3', 'ggwstemplate::yui3::jsonrpc' ) )}
 
-9 - more detailed info in the README file
+10 - more detailed info in the README file
