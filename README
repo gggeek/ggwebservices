@@ -102,3 +102,14 @@ FAQ
   A3: by enabling logging, you n00b!
       There is an ini setting in wsproviders.ini that controls verbosity for a
       log file dedicated to webservices: var/<vardir>/log/webservices.log
+
+  Q: how secure is this extension?
+  A: the main author prides himself with being an extremely security-focused
+     developer - he learnt many things about webservices and security in the
+     infamous "lupper" incident, and later even worked as security consultant
+     for a short time.
+     Having said that, the codebase is by now quite large, and the amount of
+     functionality available staggering.
+     There is no guarantee whatsoever, either implicit or explicit, that using
+     it will expose your data, or data of your customers, to fraudulent use.
+     If this poses a problem to you, please sponsor a security audit.
