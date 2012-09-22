@@ -179,4 +179,4 @@ CLIENT-SIDE: calling webservices on remote servers
      or
      {ezscript_require( array( 'ezjsc::yui3', 'ggwstemplate::yui3::jsonrpc' ) )}
 
-11. more information is available in the README file
+11. more information is available in the api.rst file

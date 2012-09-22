@@ -69,13 +69,12 @@ Client (eZPublish accesses webservices exposed by other systems):
 - to call remote webservices from php code use
   ``ggeZWebServicesClient::call( $server, $metod, $params=array(), $options=array() );``
 
-For more details on usage of the extension, read the INSTALL file and look in the
-doc/ directory.
+For more details on usage of the extension, look in the doc/ directory.
 
 
 Known limitations
 -----------------
-- support for WSDL is pretty limited
+- support for WSDL is limited
 - jsonrpc support is only available for version 1.0, not for 2.0
 - the ws client does not support automatic cookie management
 - the ws client does not support oauth authentication
@@ -89,6 +88,7 @@ Known limitations
     string or http request payload, not into a slash-separated part of the url.
   + for the rest server, there is no support for having slash-separated
     parameters or complex routing rules
+- and much more: read doc/todo to get a detailed list of bits which could improve
 
 
 FAQ
