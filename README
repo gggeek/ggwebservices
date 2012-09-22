@@ -7,83 +7,94 @@ An extension that adds/improves the native capabilities of eZ Publish to work as
 with a visual webservices debugger thrown in for good measure
 
 
-Goals:
+Goals
+-----
+Allow to easily execute calls to remote servers using JSONRPC, XMLRPC and SOAP
+protocols or REST schemes (both from within php code and templates)
 
-Allow to easily execute calls to remote servers using JSONRPC, XMLRPC and SOAP protocols or REST schemes (both from within php code and templates)
-Allow to expose existing functionality as JSONRPC or XMLRPC, REST (and eventually better SOAP) webservices, much as it can already be done with SOAP and eZJSCore in any eZ Publish installation
-Allow to expose functionality as webservice regardless of the protocol used by the client - without having to duplicate code
-Provide a proxy module allowing javascript code served by an eZ Publish server to execute cross-domain webservice calls (without resorting to html tricks) and even cross-protocol calls
-Allow easy debugging of webservice calls via inclusion of a complete debugging interface
+Allow to expose existing functionality as JSONRPC or XMLRPC, REST (and eventually
+better SOAP) webservices, much as it can already be done with SOAP and eZJSCore
+in any eZ Publish installation
+
+Allow to expose functionality as webservice regardless of the protocol used by
+the client - without having to duplicate code
+
+Provide a proxy module allowing javascript code served by an eZ Publish server
+to execute cross-domain webservice calls (without resorting to html tricks) and
+even cross-protocol calls
+
+Allow easy debugging of webservice calls via inclusion of a complete debugging
+interface
+
 Improve support for WSDL in SOAP calls (both server-side and client-side)
-Improve the existing http client adding features such as support for more authentication schemes, compressed requests etc...
-Allow usage of JSONRPC or XMLRPC (and eventually SOAP) to call functions exposed via the ezjscore extension API
+
+Improve the existing http client adding features such as support for more
+authentication schemes, compressed requests etc...
+
+Allow usage of JSONRPC or XMLRPC (and eventually SOAP) to call functions exposed
+via the ezjscore extension API
+
 Keep the same API as the existing eZP SOAP classes for maximum interoperability
-Long term, the existing SOAP client and server could be replaced with a new one, based either on PHP::SOAP or NuSOAP
+
+Long term, the existing SOAP client and server could be replaced with a new one,
+based either on PHP::SOAP or NuSOAP
 
 
-Prerequisites:
+Prerequisites
+-------------
+- PHP 5 / eZP 4.0+
+- to execute/receive jsonrpc calls, the php JSON extension is needed
+- to execute/receive rest calls, the php SIMPLEXML or JSON extensions are needed
+- to execute/receive xmlrpc calls, the php XMLRPC extension is needed
+- to call remote services using wsdl descriptions the php SOAP extension is needed
+- to integrate with the ezjscore extension, eZP 4.2 is needed (and the ezjscore
+  extension too, of course)
 
-PHP 5 / eZP 4.0+
-to execute/receive jsonrpc calls, the php JSON extension is needed
-to execute/receive rest calls, the php SIMPLEXML or JSON extensions are needed
-to execute/receive xmlrpc calls, the php XMLRPC extension is needed
-to call remote services using wsdl descriptions the php SOAP extension is needed
-to integrate with the ezjscore extension, eZP 4.2 is needed (and the ezjscore extension too, of course)
 
-
-Basics:
-
-Server side:
+Basics
+------
+Server (eZPublish exposes webservices):
 - to receive xmlrpc, jsonrpc or 'rest' calls, you need to:
-  1 - modify the configuration in wsproviders.ini and possibly in site.ini.append.php
-  2 - create a file extension/xxx/<jsonrpc|xmlrpc|rest>/initialize.php with the php code to be exposed as webservice
+  1. modify the configuration in ``wsproviders.ini`` and possibly in ``site.ini.append.php``
+  2. create a file ``extension/<xxx>/<jsonrpc|xmlrpc|rest>/initialize.php`` with the
+     php code to be exposed as webservice
 
-Client side:
-- every remote webservice server that has to be accessed from the eZ Publish server itself has to be defined in wsproviders.ini
-- to call remote webservices from within templates use the fetch( 'webservices', 'call', hash( ... ) ) template fetch function.
-  Please remember to desactivate the view cache where needed for node templates that execute webservice calls
-- to call remote webservices from php code use ggeZWebServicesClient::send( $server, $metod, $params=array() );
+Client (eZPublish accesses webservices exposed by other systems):
+- every remote webservice server that has to be accessed from the eZ Publish
+  server itself has to be defined in ``wsproviders.ini``
+- to call remote webservices from within templates use the template fetch function
+  ``fetch( 'webservices', 'call', hash( paramname, value, ... ) )``
+  Please remember to desactivate the view cache where needed for node templates
+  that execute webservice calls
+- to call remote webservices from php code use
+  ``ggeZWebServicesClient::call( $server, $metod, $params=array(), $options=array() );``
 
-For more details, read the INSTALL file.
-
-
-Modules and Views:
-
-- webservices/debugger: view used to display a WS debugger in the admin interface
-- webservices/proxy: view used to allow javascript code in eZ Publish pages to execute cross-domain webservice calls (ie. execute calls to other servers)
-- webservices/execute: view used to execute webservice calls when not using a custom controller file
-
-
-Template fetch functions:
-
-- webservices/call: used to execute a webservice call to an external server in templates
+For more details on usage of the extension, read the INSTALL file and look in the
+doc/ directory.
 
 
-Template operators:
-
-- 'washxml', 'washxmlcomment', 'washxmlcdata': operators to be used to properly escape data in different xml contexts
-
-
-Cronjobs:
-
-- cronjob part 'rotatewslogs': rotates webservice logs generated by the extension. Max size of log files before rotation and number of rotated files to be kept are read from wsproviders.ini
-
-
-Php classes:
-
-- look in doc/api/html
-
-
-Javascript classes:
-
-- to be documented...
-- look at INSTALL file for some explanation of provided ajax functionality
+Known limitations
+-----------------
+- support for WSDL is pretty limited
+- jsonrpc support is only available for version 1.0, not for 2.0
+- the ws client does not support automatic cookie management
+- the ws client does not support oauth authentication
+- the proxy view works exposing an xmlrpc+jsonrpc api. This means that it can not
+  be used to emulate the richer semantics of soap/rest calls. E.g. at the moment
+  it can not be used to send POST calls to rest webservices
+- rest support is far from perfect, as the extension was developed based on rpc
+  semantics (call a *method* which takes a *hash of parameters*).
+  Currently:
+  + for the rest client, the parameters will be translated into query
+    string or http request payload, not into a slash-separated part of the url.
+  + for the rest server, there is no support for having slash-separated
+    parameters or complex routing rules
 
 
-FAQ:
-
+FAQ
+---
   Q: how do I debug webservices without going insane?
-  A1: you're a lucky guy, since this extension provides a nice grapgical debugger
+  A1: you're a lucky guy, since this extension provides a nice graphical debugger
       within the standard admin interface
   A2: when DebugSettings/DebugOutput and TemplateSettings/DevelopmentMode are
       both enabled, the requests sent by the fetch function webservices/call

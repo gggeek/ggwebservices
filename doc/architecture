@@ -2,11 +2,11 @@ Two layers of code can be found
 
 1) Base Layer
 
-This code has to
-. remain independent of eZP (ie. no right to use any eZP code)
-. keep the same API (as much as possible) as the eZP soap library
+   This code has to
+   . remain independent of eZP (ie. no right to use any eZP code)
+   . keep the same API (as much as possible) as the eZP soap library
 
 2) eZ Layer
 
-The glue code that allows the base code to be invoked via templates, ini files
-to be used for storing configuration and the debugger to work
+   The glue code that allows the base code to be invoked via templates, ini files
+   to be used for storing configuration and the debugger to work

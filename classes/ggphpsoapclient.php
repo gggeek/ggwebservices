@@ -40,6 +40,12 @@ class ggPhpSOAPClient extends ggWebservicesClient
     ///       methods? Is it doable at all?
     /// @todo test: proxy and auth usage of client for getting the wsdl are taken
     ///       from $options['login'] and $options['proxy_host'] ? ...
+    /**
+    * This method intercepts calls to system.listMethods and syste.methodSignature
+    * to transform them into wsdl-based calls. This way client-side code which
+    * uses those method calls can be used identically regardless of protocol
+    * in use
+    */
     function send( $request )
     {
         $this->RequestPayload = '';

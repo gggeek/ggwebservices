@@ -1,14 +1,16 @@
-Changes from 0.12 to 0.13 - released 2012/9/21
+Changes from 0.12 to 0.13 - released 2012/9/22
 
 *Added:
 
 - added two new javascript helper functions: $.wsproxy and Y.io.jsproxy
-- added sample code for making ajax calls, to the ez server and cross-domain via the proxy service
+- added sample code for making ajax calls, both to the eZ server and cross-domain
+  via the proxy service
 
 * Changed
 - added version 2.3 of the bundled jQuery JSON Plugin, used by default by $.jsonrpc
 - js functions $.jsonrpc and Y.io.jsonrpc now call the passed error handler instead of
   the success handler when receiving a valid jsonrpc response with an error payload
+- improved documentation (README, INSTALL files)
 
 *Bugfixes:
 
