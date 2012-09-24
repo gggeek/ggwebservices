@@ -56,16 +56,15 @@ if ( !$access )
 {
     // Error: access denied. We respond using an answer which is correct according
     // to the protocol used by the caller, instead of going through the standard
-    // eZ access denied error handler, shich displays in general an html page
+    // eZ access denied error handler, which displays in general an html page
     // with a 200 OK http return code
-    // NB: for REST calls, it might be better to use the standard instead?
-    // $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
     $server->showResponse(
         'unknown_function_name',
         $namespaceURI,
         new ggWebservicesFault( ggWebservicesServer::INVALIDAUTHERROR, ggWebservicesServer::INVALIDAUTHSTRING ) );
     eZExecution::cleanExit();
     die();
+    // $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
 }
 
 // execute method, return response as object
