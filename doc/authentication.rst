@@ -20,6 +20,19 @@ Authorization is managed via the standard "Roles & Policies" subsystem.
   webservices, and protect it via https, http authorization (basic or digest)
   or other means
 
+. There is no explicit support to deny access to a given service when using a
+  specific protol, while allowing access for other protocols.
+  In other words: if method "ezp.authandexec" is available for both jsonrpc and
+  xmlrpc calls, a user can either access it using both protocols or not at all.
+  The simple workaround is not to declare the method in the initialize.php
+  file for a given protocol.
+
+. A "master switch" is used to enable/disable individually access via any of the
+  supported protocols.
+  It is found in wsproviders.ini, section ``GeneralSettings``.
+  Note that by default when activating this extensions 3 protocols are activated:
+  xmlrpc, jsonrpc and rest
+
 . Access to the webservices/proxy view can only be limited based on the remote
   servers which are proxied, e.g. one role might be given rights to access the
   services on flickr and another the services on twitter
