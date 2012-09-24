@@ -15,4 +15,7 @@ Installation instructions for the GG Webservices extension for eZ Publish
    ``rotatewslogs`` part (see the documentation aboyt cronjobs for more details
    on how to set it up)
 
+5. If you want to expose webservice functionality to logged-in users (such as for
+   ajax call using jronrpc), you should disable the ezformtoken extension
+
 For usage instructions, head on to doc/usage.rst

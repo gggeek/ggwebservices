@@ -49,7 +49,12 @@ Prerequisites
 - to call remote services using wsdl descriptions the php SOAP extension is needed
 - to integrate with the ezjscore extension, eZP 4.2 is needed (and the ezjscore
   extension too, of course)
-
+- to make ajax calls to the server itself using the integrated javascript library
+  the ezjscore extension is recommended for loading js files. Any other javascript
+  library for xmlrpc/jsorpc can also do.
+- to receive soap/xmlrpc/jsonrpc/rest+post calls from users authenticated via the
+  standard session mechanism (such as e.g. ajax calls), the ezformtoken extension
+  has to be disabled
 
 Basics
 ------
@@ -106,10 +111,10 @@ FAQ
   Q: how secure is this extension?
   A: the main author prides himself with being an extremely security-focused
      developer - he learnt many things about webservices and security in the
-     infamous "lupper" incident, and later even worked as security consultant
+     infamous "lupii worm" incident, and later even worked as security consultant
      for a short time.
      Having said that, the codebase is by now quite large, and the amount of
      functionality available staggering.
      There is no guarantee whatsoever, either implicit or explicit, that using
-     it will expose your data, or data of your customers, to fraudulent use.
+     it will not expose your data, or data of your customers, to fraudulent use.
      If this poses a problem to you, please sponsor a security audit.
