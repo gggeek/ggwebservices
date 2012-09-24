@@ -11,30 +11,6 @@
  *   giving them the rights to access webservices/proxy
  *}
 
-<a id="goj" href="#">Test Using JQuery</a>
-{* note: the following line can be replaced with an ezscript_require and placed in html page's head *}
-{ezscript_load( array( 'ezjsc::jquery', 'ggwstemplate::jquery::json', 'ggwstemplate::jquery::jsonrpc' ) )}
-<script type="text/javascript">
-{literal}
-$( document ).ready( function(){
-   jQuery.wsproxy(
-       'wunderground',
-       'forecast/q/Norway/Oslo.json',
-       [],
-       {
-           success: function( r ){
-               alert( r.responseJSON.content.forecast.txt_forecast.date );
-           },
-           error: function( r ){
-               alert( r.statusText );
-           }
-       }
-   );
-});
-{/literal}
-</script>
-
-
 <a id="goy" href="#">Test Using YUI</h3>
 {* note: the following line can be replaced with an ezscript_require and placed in html page's head *}
 {ezscript_load( array( 'ezjsc::yui3', 'ggwstemplate::yui3::jsonrpc' ) )}
