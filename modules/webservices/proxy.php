@@ -1,6 +1,8 @@
 <?php
 /**
- *
+ * A view used to overcome the problem of Cross-Domain WS calls.
+ * It answers to calls received using different protocols, and forwards them
+ * to remote servers - transcoding the wire-format if needed
  *
  * @author G. Giunta
  * @copyright (C) 2009-2012 G. Giunta
@@ -70,7 +72,7 @@ if ( !is_object( $response ) )
 }
 else
 {
-    $server->showResponse( $request->name(), $namespaceURI, $response->value() );
+    $server->showResponse( $request->name(), $namespaceURI, $tmp = $response->value() );
 }
 
 eZExecution::cleanExit();
