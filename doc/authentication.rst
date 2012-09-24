@@ -61,7 +61,15 @@ Different configurations are possible
 
 5. basic auth, digest auth: these can be configured in the webserver itself, and
    the extension does not mingle with it.
-   Same with https
+   Same with https.
+
+   If you are now asking yourself the very interesting question:
+   "but... can I let Apache enforce Basic authentication and still use the
+   logins/passwords of eZPublish user accounts to manage fine-grained authorization?"
+   Then rejoyce because the answer is Yes!
+   In order to have Apache enforce Basic authentication and connect it
+   to eZ Publish user accounts, you just need the ezapacheauth extension, from
+   http://projects.ez.no/ezapacheauth
 
 6. oauth is not supported. Look at the native REST support of eZ Publish if you
    need it
