@@ -7,12 +7,15 @@
  * The native eZPublish "notification" functionality (which is by default
  * available as a view) gets here exposes as jsonrpc webservice.
  *
- * This file should be copied/moved in extension/<myext>/jsonrpc/initialize.php
+ * 1. this file should be copied/moved in extension/<myext>/jsonrpc/initialize.php
  * ( where "myext" is an extension which declares to expose jsonrpc webservices,
  *   by being set in wsproviders.ini, JSONRPCExtensions[] setting)
+ * 2. proper access policies for webservices/execute should be set up
+ * 3. the URL for accessing it is
+ *    http://<my.server>/index.php/<siteaccess>/webservices/execute/jsonrpc
  */
 $server->registerFunction(
-    'notification.addtonotification',
+    'notification.addtonotification', // name of websevice AND of the php function implementing it (with . replaced by _)
     array( 'ContentNodeID' => 'integer'  ),
     'integer',
     'Creates a notification for the given node for the current user. Returns 1 on creation, 2 if subscription already exists, or error' );
