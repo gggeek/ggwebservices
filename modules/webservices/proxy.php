@@ -2,7 +2,8 @@
 /**
  * A view used to overcome the problem of Cross-Domain WS calls.
  * It answers to calls received using different protocols, and forwards them
- * to remote servers - transcoding the wire-format if needed
+ * to remote servers - transcoding the wire-format if needed.
+ * Currently only supports XMLRPC and JSONRPC
  *
  * @author G. Giunta
  * @copyright (C) 2009-2012 G. Giunta
@@ -27,7 +28,7 @@ switch( $protocol )
         break;
     default:
         /// @todo return an http error 500 or something like that ?
-        echo 'Unsupported protocol : ' . $protocol;
+        echo ( $protocol == '' ) ? 'Protocol unspecified' : ( 'Unsupported protocol : ' . htmlspecialchars( $protocol ) );
         eZExecution::cleanExit();
         die();
 }
@@ -53,8 +54,18 @@ $user = eZUser::currentUser();
 $access = ggeZWebservices::checkAccessToServer( $remoteserver, $user );
 if ( !$access )
 {
-    // Error access denied
-    return $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
+    // Error: access denied. We respond using an answer which is correct according
+    // to the protocol used by the caller, instead of going through the standard
+    // eZ access denied error handler, shich displays in general an html page
+    // with a 200 OK http return code
+    // NB: for REST calls, it might be better to use the standard instead?
+    // $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
+    $server->showResponse(
+        'unknown_function_name',
+        $namespaceURI,
+        new ggWebservicesFault( ggWebservicesServer::INVALIDAUTHERROR, ggWebservicesServer::INVALIDAUTHSTRING ) );
+    eZExecution::cleanExit();
+    die();
 }
 
 // execute method, return response as object
