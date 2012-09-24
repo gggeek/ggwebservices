@@ -60,6 +60,7 @@ if ( !$access )
 // execute method, return response as object
 // this also does validation of server name
 $response = ggeZWebservicesClient::send( $remoteserver, $request->name(), $request->parameters(), true );
+/// @var ggWebservicesResponse $response
 $response = reset( $response );
 if ( !is_object( $response ) )
 {
@@ -72,7 +73,15 @@ if ( !is_object( $response ) )
 }
 else
 {
-    $server->showResponse( $request->name(), $namespaceURI, $tmp = $response->value() );
+    if ( $response->isFault() )
+    {
+        $val = new ggWebservicesFault( $response->faultCode(), $response->faultString() );
+    }
+    else
+    {
+        $val = $response->value();
+    }
+    $server->showResponse( $request->name(), $namespaceURI, $val );
 }
 
 eZExecution::cleanExit();
