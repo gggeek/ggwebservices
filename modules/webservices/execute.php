@@ -77,19 +77,6 @@ if ( !is_object( $request ) ) /// @todo use is_a instead
     die();
 }
 
-$wsINI = eZINI::instance( 'wsproviders.ini' );
-
-// auth: validate incoming IP address first
-if ( $wsINI->variable( 'GeneralSettings', 'ValidateClientIPs' ) == 'enabled' )
-{
-    if ( !in_array( $_SERVER['REMOTE_ADDR'], $wsINI->variable( 'GeneralSettings', 'ValidClientIPs' ) ) )
-    {
-        // Error access denied - shall we show an error response in protocol format instead of html?
-        // in that case, use an INVALIDAUTHERROR error code
-        return $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
-    }
-}
-
 if ( $protocol == 'REST' )
 {
     // hack! eZ is better at parsing the last path part than the REST request
@@ -101,6 +88,27 @@ else
     $functionName = $request->name();
 }
 $params = $request->parameters();
+
+$wsINI = eZINI::instance( 'wsproviders.ini' );
+
+// auth: validate incoming IP address first
+if ( $wsINI->variable( 'GeneralSettings', 'ValidateClientIPs' ) == 'enabled' )
+{
+    if ( !in_array( $_SERVER['REMOTE_ADDR'], $wsINI->variable( 'GeneralSettings', 'ValidClientIPs' ) ) )
+    {
+        // Error: access denied. We respond using an answer which is correct according
+        // to the protocol used by the caller, instead of going through the standard
+        // eZ access denied error handler, which displays in general an html page
+        // with a 200 OK http return code
+        $server->showResponse(
+            $functionName,
+            $namespaceURI,
+            new ggWebservicesFault( ggWebservicesServer::INVALIDAUTHERROR, ggWebservicesServer::INVALIDAUTHSTRING ) );
+        eZExecution::cleanExit();
+        die();
+        // $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
+    }
+}
 
 // if integration with jscore is enabled, look up function there
 // NB: ezjscServerRouter::getInstance does internally perms checking,  but
@@ -127,9 +135,13 @@ $user = eZUser::currentUser();
 $access = ggeZWebservices::checkAccess( $functionName, $user );
 if ( !$access )
 {
-    // Error access denied - shall we show an error response in protocol format instead of html?
-    // in that case, use an INVALIDAUTHERROR error code
-    return $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
+    $server->showResponse(
+        $functionName,
+        $namespaceURI,
+        new ggWebservicesFault( ggWebservicesServer::INVALIDAUTHERROR, ggWebservicesServer::INVALIDAUTHSTRING ) );
+    eZExecution::cleanExit();
+    die();
+    // $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
 }
 
 if ( $wsclass == 'PhpSOAP' )
