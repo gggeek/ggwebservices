@@ -1,27 +1,31 @@
-Changes from 0.12 to 0.13 - released 2012/9/22
+Changes from 0.12 to 0.13 - released 2012/9/25
 
 *Added:
 
 - added two new javascript helper functions: $.wsproxy and Y.io.jsproxy
 - added sample code for making ajax calls, both to the eZ server and cross-domain
   via the proxy service
+- lots of documentation
 
 * Changed
+
 - added version 2.3 of the bundled jQuery JSON Plugin, used by default by $.jsonrpc
   and $.wsproxy
 - js functions $.jsonrpc and Y.io.jsonrpc now call the user-specified error handler
   method instead of the success handler when receiving a valid jsonrpc response
   with an error payload
-- improved documentation (README, INSTALL files and a lot in the docs/ folder)
+- improved documentation (split from README, INSTALL files and moved to the docs/ folder)
+- webservices/proxy and webservices/executen now return a proper error when dealing
+  with authorization errors instead of showing an html page with login form
+- default log level for webservices.log throttled back to 'warning'
 
 *Bugfixes:
 
 - make $.jsonrpc and Y.io.jsonrpc javascript functions actually work
 - fix warnings emitted by {ezscript_require( array( 'ezjsc::yui3', 'ggwstemplate::yui3::jsonrpc' ) )}
   and {ezscript_require( array( 'ezjsc::jquery', 'ggwstemplate::jquery::json', 'ggwstemplate::jquery::jsonrpc' ) )}
-- webservices/proxy and webservices/execute: return a proper error when dealing
-  with authorization errors instead of showing an html page with login form
+- fix fatal error when managing permissions to execute webservices. Thx maxim Romanovsky
 - webservices/proxy: return a proper error when dealing with errors from upstream
   server (eg. bad content/type preventing parsing of response)
-- removed the definition of the test "myserver" remote server from wsproviders.ini
+- removed the definition of the test remote server "myserver" from wsproviders.ini
 - fix changelogs

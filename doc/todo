@@ -1,6 +1,20 @@
+Roughly sorted by priority:
+
+- allow users to specify more options for $.jsonrpc (same as Y.io.jsonrpc does)
+
+- add a better version of ezwsclient::send() that does not wrap response in an array
+
+- add url parsing (both in/out) for rest where parameters are in path instead of query string
+
+- doc comparing ez soap support to ggphpsoap support
+
+- doc w. feature list
+
+- add to ggeZWebservices some methods to derive class names from protocol and viceversa (esp. for phpsoap)
+
 - look into using guzzle for http layer (reimplement ggWebservicesClient::send and company)
 
-- soap calls: implement returning something where end user can distnguish between an array and an object, at least from tpl layer 
+- soap calls: implement returning something where end user can distinguish between an array and an object, at least from tpl layer
 
 - client: implement oauth 2 client capabilities
 
@@ -13,6 +27,7 @@
 - replace method(), setmethod(), setOptions('method') with corresponding 'verb' ? clarify / unify this naming conundrum
 
 - client: implement per-server fixed parameters, useful for eg. rest client where the type=json is more or less fixed
+  + test if it works already by simply putting query string in server url in ini file
 
 - support for wssecurity
 
@@ -36,7 +51,7 @@
   + wsdl 2.0 support
   + in wsdl 2.0, add more binding descriptions (rest, xmlrpc, ...)
 
-- server: return in-protocol error messages instead of html error page when access is denied ?
+- soap server: usage of proper soap error codes: VersionMismatch, MustUnderstand, Client, Server (see http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383510)s
 
 - server: add a soap controller based on ggphpsoap + webservicescontroller.php (instead of ezsoap)
 
@@ -60,7 +75,7 @@
   . throw exception on errors instead of returning response object
   . return response objects even on http errors (?)
 
-- add more client samples, eg. to call webservices on facebook, youtube, amazon, google
+- add even more client samples, eg. to call webservices on facebook, youtube, amazon, google
 
 - in debugger:
   + use templates for output of action.php
@@ -91,10 +106,8 @@
 
 - add siteaccess limitation to proxy view
 
-- add example tpl usage for Y.io.jsonrpc file
-
-- verify js changes in Y.io.ez from 1.0.0 to 1.0.2 and 1.1.0 and merge in Y.io.jsonrpc
-  + test loading Y.io.ez from Yui 3.1.0 in eZP 4.4 and later
+- verify js changes in Y.io.ez from 1.0.0 to 1.5.0 and merge in Y.io.jsonrpc
+  + test loading Y.io.ez from Yui in eZP 4.4 up to 4.7
 
 - debugger: use ezjscore to load yui 3 in debugger <= upgrade debugger to yui2in3
 
@@ -104,7 +117,7 @@
 
 - finish proxy module
   => add soap support. Need to create a new soap server class, too?
-  => add POST/GET (rest) support. Need to create a new server class, too? nb: could do with basically json/php serialized/ encoding of results (see solr-supported formats too)
+  => add POST/PUT/DELETE (rest) support. Need to create a new server class, too? nb: could do with basically json/php serialized/ encoding of results (see solr-supported formats too)
   => add fine-grained policy control with per_server_per_method limitations (this one needs server to support listMethods() call), possibly per_siteaccess?
   => move it away from usage of ggeZWebservicesClient::send() method
 

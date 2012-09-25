@@ -12,10 +12,10 @@ Installation instructions for the GG Webservices extension for eZ Publish
    the webservice logs to grow indefinitely and potentially fill up your
    hard disk, add the rotatewslogs.php cronjob script to a cronjob part
    you run periodically, such as 'infrequent', or schedule execution of the
-   ``rotatewslogs`` part (see the documentation aboyt cronjobs for more details
+   ``rotatewslogs`` part (see the documentation about cronjobs for more details
    on how to set it up)
 
 5. If you want to expose webservice functionality to logged-in users (such as for
-   ajax call using jronrpc), you should disable the ezformtoken extension
+   ajax calls using jronrpc), you should disable the ezformtoken extension
 
 For usage instructions, head on to doc/usage.rst

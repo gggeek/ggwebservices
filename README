@@ -1,5 +1,5 @@
 GG Webservices extension for eZ Publish
-========================================
+=======================================
 
 An extension that adds/improves the native capabilities of eZ Publish to work as
 - webservices server
@@ -7,38 +7,36 @@ An extension that adds/improves the native capabilities of eZ Publish to work as
 with a visual webservices debugger thrown in for good measure
 
 
-Goals
------
-Allow to easily execute calls to remote servers using JSONRPC, XMLRPC and SOAP
+Features
+--------
+Allows to easily execute calls to remote servers using JSONRPC, XMLRPC and SOAP
 protocols or REST schemes (both from within php code and templates)
 
-Allow to expose existing functionality as JSONRPC or XMLRPC, REST (and eventually
-better SOAP) webservices, much as it can already be done with SOAP and eZJSCore
-in any eZ Publish installation
+Allows to expose existing functionality as JSONRPC or XMLRPC, REST and (better
+than eZ native) SOAP webservices, similar to what can already be done with SOAP
+and eZJSCore in any eZ Publish installation
 
-Allow to expose functionality as webservice regardless of the protocol used by
+Allows to expose functionality as webservice regardless of the protocol used by
 the client - without having to duplicate code
 
-Provide a proxy module allowing javascript code served by an eZ Publish server
-to execute cross-domain webservice calls (without resorting to html tricks) and
-even cross-protocol calls
+Provides a proxy module allowing javascript code served by an eZ Publish server
+to execute cross-domain webservice calls (without resorting to jsonp or html tricks)
+and even cross-protocol calls
 
-Allow easy debugging of webservice calls via inclusion of a complete debugging
-interface
+Allows easy debugging of webservice calls by providing a complete graphical
+interface for debugging
 
-Improve support for WSDL in SOAP calls (both server-side and client-side)
+Adds support for WSDL in SOAP calls (both server-side and client-side)
 
-Improve the existing http client adding features such as support for more
+Improves the existing http client adding features such as support for more
 authentication schemes, compressed requests etc...
 
-Allow usage of JSONRPC or XMLRPC (and eventually SOAP) to call functions exposed
+Allows usage of JSONRPC or XMLRPC (and eventually SOAP) to call functions exposed
 via the ezjscore extension API
 
-Keep the same API as the existing eZP SOAP classes for maximum interoperability
+Keeps the same API as the existing eZP SOAP classes for maximum interoperability
 
-Long term, the existing SOAP client and server could be replaced with a new one,
-based either on PHP::SOAP or NuSOAP
-
+And much more :-)
 
 Prerequisites
 -------------
@@ -50,8 +48,8 @@ Prerequisites
 - to integrate with the ezjscore extension, eZP 4.2 is needed (and the ezjscore
   extension too, of course)
 - to make ajax calls to the server itself using the integrated javascript library
-  the ezjscore extension is recommended for loading js files. Any other javascript
-  library for xmlrpc/jsorpc can also do.
+  the ezjscore extension is recommended. Any other javascript library for xmlrpc/
+  jsorpc can also do.
 - to receive soap/xmlrpc/jsonrpc/rest+post calls from users authenticated via the
   standard session mechanism (such as e.g. ajax calls), the ezformtoken extension
   has to be disabled
@@ -63,6 +61,8 @@ Server (eZPublish exposes webservices):
   1. modify the configuration in ``wsproviders.ini`` and possibly in ``site.ini.append.php``
   2. create a file ``extension/<xxx>/<jsonrpc|xmlrpc|rest>/initialize.php`` with the
      php code to be exposed as webservice
+  3. manage access control to the exposed services via the administration interface
+     and/or configuration settings
 
 Client (eZPublish accesses webservices exposed by other systems):
 - every remote webservice server that has to be accessed from the eZ Publish
@@ -79,13 +79,13 @@ For more details on usage of the extension, look in the doc/ directory.
 
 Known limitations
 -----------------
-- support for WSDL is limited
+- support for WSDL is limited, as is support for SOAP 1.2
 - jsonrpc support is only available for version 1.0, not for 2.0
 - the ws client does not support automatic cookie management
 - the ws client does not support oauth authentication
 - the proxy view works exposing an xmlrpc+jsonrpc api. This means that it can not
   be used to emulate the richer semantics of soap/rest calls. E.g. at the moment
-  it can not be used to send POST calls to rest webservices
+  it can not be used to send POST calls to upstream rest webservices
 - rest support is far from perfect, as the extension was developed based on rpc
   semantics (call a *method* which takes a *hash of parameters*).
   Currently:
