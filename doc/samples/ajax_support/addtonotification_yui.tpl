@@ -11,7 +11,8 @@
 {ezscript_load( array( 'ezjsc::yui3', 'ggwstemplate::yui3::jsonrpc' ) )}
 <script type="text/javascript">
 {literal}
-    YUI( YUI3_config ).use( 'event', 'io-jsonrpc', function( Y ){
+    // q: do we need to declare usage of any Yui module to use Y.one and Node.on ?
+    YUI ( YUI3_config ).use( 'io-jsonrpc', function( Y ){
         Y.one("#goy").on(
             'click',
             function( e )
