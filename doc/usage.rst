@@ -4,7 +4,7 @@ Usage instructions for the GG Webservices extension for eZ Publish
 SERVER-SIDE: exposing your webservices
 --------------------------------------
 
-5. to receive jsonrpc or xmlrpc or rest webservice calls:
+1. to receive jsonrpc or xmlrpc or rest webservice calls:
 
    + define the php functions you want to expose as webservices in a file
      ``initialize.php`` in either a ``phpxmlrpc``, ``jsonrpc`` or ``rest`` folder
@@ -30,9 +30,11 @@ SERVER-SIDE: exposing your webservices
      the administration interface.
 
      A good starting point is to give to the Anonymous role access limited to:
+
      - system.listMethods
      - system.methodHelp
      - system.methodSignature
+
      With this, non-logged-in-users will be able to see the complete list of
      available webservices and their signature, but execute none.
 
@@ -45,28 +47,28 @@ SERVER-SIDE: exposing your webservices
     on the encapsulated webservices
 
   + if your webservice client is remote (non-ajax) and it does not support
-    session cookies, you can still use auth mechanisms to allow	it to log-in and
+    session cookies, you can still use auth mechanisms to allow    it to log-in and
     execute calls:
 
     I) using fixed-IPs
 
        If the client makes calls from a known (list of) fixed IP address
-	   a. edit the value of the settings ValidateClientIPs and ValidClientIPs in
-	      wsproviders.ini. This way no other client IP will be allowed
+       a. edit the value of the settings ValidateClientIPs and ValidClientIPs in
+          wsproviders.ini. This way no other client IP will be allowed
        b. in the 'roles and policies' panel in the administration interface, give
-	      full access to 'webservices/execute' to the Anonymous role
+          full access to 'webservices/execute' to the Anonymous role
 
     II) adding an eZP username/password in every webservice request
 
-	    a. give to the Anonymous role access to the ezp.authandexec webservice
-	    b. create a user account for your ws client, assign it to a new role
-	    c. assign to this new role access to the desired webservices
+        a. give to the Anonymous role access to the ezp.authandexec webservice
+        b. create a user account for your ws client, assign it to a new role
+        c. assign to this new role access to the desired webservices
         d. to execute webservice 'test' with parameters 'p1', 'p2', the client
-	       shall call the following webservice:
+           shall call the following webservice:
            ezp.authandexec( 'username', 'password', 'test', array( 'p1', 'p2' ) )
         e. use the built-in debugger to help with troubleshooting
 
-5b. an alternative to receive jsonrpc or xmlrpc webservice calls:
+2. an alternative to receive jsonrpc or xmlrpc webservice calls:
 
     + copy the files jsonrpc.php/xmlrpc.php to the eZ Publish installation root
       folder
@@ -95,7 +97,7 @@ SERVER-SIDE: exposing your webservices
       not possible to assign execution permissions to callers - all webservices
       will be available to everybody. TAKE CARE!
 
-6. to enable js code in the browser to call webservices on the local server
+3. to enable js code in the browser to call webservices on the local server
 
    + create the desired webservices, as per point 5 or 5b above
 
@@ -113,7 +115,7 @@ SERVER-SIDE: exposing your webservices
     For how to load the js libraries needed for those calls, look in the doc/samples
     folder.
 
-7. to enable usage of xmlrpc/jsonrpc protocols to call functions that have
+4. to enable usage of xmlrpc/jsonrpc protocols to call functions that have
    already been made available via the jscore extension:
 
    + make sure the JscoreIntegration parameter is set to "enabled" in wsproviders.ini.append.php
@@ -132,13 +134,14 @@ SERVER-SIDE: exposing your webservices
 CLIENT-SIDE: calling webservices on remote servers
 --------------------------------------------------
 
-8. to make webservice calls to external servers via templates:
+5. to make webservice calls to external servers via templates:
 
    + define the remote servers that will be made accessible in the
      wsproviders.ini.append.php file
 
    + use the fetch( 'webservices', 'call', hash( ... ) ) template fetch function.
      It takes 4 parameters in the hash:
+
      - server: name of the remote server
      - method: name of the ws method to execute
      - parameters: array of ws method parameters (optional)
@@ -147,16 +150,16 @@ CLIENT-SIDE: calling webservices on remote servers
    + raise the 'Logging' parameter in wsproviders.ini file to 'info' to have
      complete traces of webservice communication in var/<vardir>/log
 
-9. to make webservice calls to external servers via php code:
+6. to make webservice calls to external servers via php code:
 
    + define the remote servers that will be made accessible in the
      wsproviders.ini.append.php file
 
    + use the php function
-   ggeZWebServicesClient::call( $server, $metod, $params=array(), $options=array() );
+     ggeZWebServicesClient::call( $server, $metod, $params=array(), $options=array() );
 
-10. to enable js code in the browser to call webservices on remote servers
-    (cross domain requests) without the need for flash or other advanced techniques:
+7. to enable js code in the browser to call webservices on remote servers
+   (cross domain requests) without the need for flash or other advanced techniques:
 
    + define the remote servers that will be made accessible, in the
      wsproviders.ini.append.php file
@@ -179,4 +182,4 @@ CLIENT-SIDE: calling webservices on remote servers
      or
      {ezscript_require( array( 'ezjsc::yui3', 'ggwstemplate::yui3::jsonrpc' ) )}
 
-11. more information is available in the api.rst file
+8. more information is available in the api.rst file

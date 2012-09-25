@@ -1,14 +1,14 @@
 GG Webservices extension for eZ Publish: API
 ============================================
 
-See also the usage.rst document for instructions on usage
+See also the usage document for instructions on usage
 
 Modules and Views
 ~~~~~~~~~~~~~~~~~
-- webservices/debugger: view used to display a WS debugger in the admin interface
-- webservices/proxy: view used to allow javascript code in eZ Publish pages to
+- ``webservices/debugger``: view used to display a WS debugger in the admin interface
+- ``webservices/proxy``: view used to allow javascript code in eZ Publish pages to
   execute cross-domain webservice calls (ie. execute calls to other servers)
-- webservices/execute: view used to execute webservice calls when not using a
+- ``webservices/execute``: view used to execute webservice calls when not using a
   custom controller file
 
 
@@ -44,13 +44,13 @@ Javascript classes
 
 Webservices
 ~~~~~~~~~~~
-- ezp.authandexec: available in xmlrpc, jsonrpc and rest protocols, allows the
+- ``ezp.authandexec``: available in xmlrpc, jsonrpc and rest protocols, allows the
   caller to authenticate without session cookies or basic auth.
   Parameters:
   + string username
   + string password
   + string method to actually execute
   + hash parameters passed to te method
-- system.listMethods, system.methodHelp, system.methodSignature,
-  system.multiCall: available for xmlrpc and jronrpc protocols. These methods
+- ``system.listMethods``, ``system.methodHelp``, ``system.methodSignature``,
+  ``system.multiCall``: available for xmlrpc and jronrpc protocols. These methods
   follow the convention used by the original xmlrpp specification
