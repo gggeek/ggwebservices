@@ -156,6 +156,11 @@ class ggeZWebservices
             if ( $protocol == null || $protocol == $serverprotocol )
             {
                 $serverclass = 'gg' . strtoupper( $serverprotocol ) . 'Server';
+                // hack: currently there is no 'soap' server, only phpsoap'
+                if ( $serverclass == 'ggSOAPServer' )
+                {
+                    $serverclass = 'ggPhpSOAPServer';
+                }
                 $server = new $serverclass();
                 self::registerAvailableMethods( $server, $serverprotocol );
                 $function_list = array_merge( $function_list, $server->registeredMethods() );
