@@ -2,6 +2,9 @@ Changes from 0.13 to 0.14 - released 2013/xx/yy
 
 *Added:
 
+- make the webservices/execute view respect ValidateClientIPs even when server
+  is behind a reverse proxy (needs eZP 4.5 or later and config in site.ini)
+
 * Changed
 
 - all the response classes now save http headers in $this->headers() when decoding

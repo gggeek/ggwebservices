@@ -94,7 +94,8 @@ $wsINI = eZINI::instance( 'wsproviders.ini' );
 // auth: validate incoming IP address first
 if ( $wsINI->variable( 'GeneralSettings', 'ValidateClientIPs' ) == 'enabled' )
 {
-    if ( !in_array( $_SERVER['REMOTE_ADDR'], $wsINI->variable( 'GeneralSettings', 'ValidClientIPs' ) ) )
+    $ip = is_callable( 'eZSys::clientIP' ) ? eZSys::clientIP() : eZSys::serverVariable( 'REMOTE_ADDR' );
+    if ( !in_array( $ip, $wsINI->variable( 'GeneralSettings', 'ValidClientIPs' ) ) )
     {
         // Error: access denied. We respond using an answer which is correct according
         // to the protocol used by the caller, instead of going through the standard
