@@ -4,7 +4,7 @@
  *
  * @version $Id$
  * @author Gaetano Giunta
- * @copyright (c) 2010-2012 G. Giunta
+ * @copyright (c) 2010-2013 G. Giunta
  * @license code licensed under the GNU GPL. See LICENSE file
  */
 

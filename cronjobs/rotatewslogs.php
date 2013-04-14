@@ -6,7 +6,7 @@
  * instead of relying on eZ default one, and a number of rotated files to be kept, too!
  *
  * @author G. Giunta
- * @copyright (C) 2009-2012 G. Giunta
+ * @copyright (C) 2009-2013 G. Giunta
  */
 
 $ini = eZINI::instance( 'wsproviders.ini' );

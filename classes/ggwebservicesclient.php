@@ -4,7 +4,7 @@
  * API taken from eZSOAPClient and expanded
  *
  * @author G. Giunta
- * @copyright (C) 2009-2012 G. Giunta
+ * @copyright (C) 2009-2013 G. Giunta
  *
  * @see eZSOAPClient
  *

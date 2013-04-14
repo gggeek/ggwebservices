@@ -4,7 +4,7 @@
  * @deprecated use a plain ggWebservicesClient instead of this
  *
  * @author G. Giunta
- * @copyright (C) 2009-2012 G. Giunta
+ * @copyright (C) 2009-2013 G. Giunta
  */
 
 class ggJSONRPCClient extends ggWebservicesClient

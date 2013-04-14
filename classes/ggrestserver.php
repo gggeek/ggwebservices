@@ -2,7 +2,7 @@
 /**
  *
  * @author G. Giunta
- * @copyright (C) 2010-2012 G. Giunta
+ * @copyright (C) 2010-2013 G. Giunta
  *
  * @todo implement validateparams
  * @todo send back a "vary: Accept" header in responses

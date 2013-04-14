@@ -3,7 +3,7 @@
  * Class used to communicate with plain http servers
  *
  * @author G. Giunta
- * @copyright (C) 2009-2012 G. Giunta
+ * @copyright (C) 2009-2013 G. Giunta
  */
 
 class ggHTTPClient extends ggWebservicesClient

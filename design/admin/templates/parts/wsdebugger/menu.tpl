@@ -1,7 +1,7 @@
 {* Left-col menu for ws debugger
  *
  * @author G. Giunta
- * @copyright (C) 2009-2012 G. Giunta
+ * @copyright (C) 2009-2013 G. Giunta
  *}
 {* DESIGN: Header START *}<div class="box-header"><div class="box-tc"><div class="box-ml"><div class="box-mr"><div class="box-tl"><div class="box-tr">
 <h4>{'Local server'|i18n('extension/ggwebservices')}</h4>

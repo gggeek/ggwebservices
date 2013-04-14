@@ -4,9 +4,8 @@
  * Sample soap client that uses the ggws classes outside of an eZ Publish context
  * The server endpoint in use is the public one from mssoapinterop.org
  *
- * @version $Id$
  * @author Gaetano Giunta
- * @copyright (c) 2010-2012 G. Giunta
+ * @copyright (c) 2010-2013 G. Giunta
  * @license code licensed under the GNU GPL. See LICENSE file
  */
 

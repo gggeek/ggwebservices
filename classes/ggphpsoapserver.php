@@ -4,7 +4,7 @@
  * limit it to soap 1.1
  *
  * @author G. Giunta
- * @copyright (C) 2011-2012 G. Giunta
+ * @copyright (C) 2011-2013 G. Giunta
  *
  * @todo finish support for soap 1.2
  */

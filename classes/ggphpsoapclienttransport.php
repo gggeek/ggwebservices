@@ -4,7 +4,7 @@
  * by routing it back to the ggPhpSOAPClient client itself
  *
  * @author G. Giunta
- * @copyright (C) 2010-2012 G. Giunta
+ * @copyright (C) 2010-2013 G. Giunta
  */
 
 class ggPhpSOAPClientTransport extends SoapClient {
