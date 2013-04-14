@@ -12,3 +12,5 @@ Changes from 0.13 to 0.14 - released 2013/xx/yy
   authentication schemes
 
 *Bugfixes:
+
+- avoid strict errors with eZP5 LS

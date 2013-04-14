@@ -569,7 +569,7 @@ class ggeZWebservices
     public static function ezpI18ntr( $context, $message, $comment = null, $argument = null )
     {
         // eZ Publish < 4.3 => use old i18n system
-        if( eZPublishSDK::majorVersion() >= 4 && eZPublishSDK::minorVersion() < 3 )
+        if( eZPublishSDK::majorVersion() == 4 && eZPublishSDK::minorVersion() < 3 )
         {
             include_once( 'kernel/common/i18n.php' );
             return ezi18n( $context, $message, $comment, $argument );
@@ -586,7 +586,7 @@ class ggeZWebservices
      */
     public static function eZTemplateFactory()
     {
-        if( eZPublishSDK::majorVersion() >= 4 && eZPublishSDK::minorVersion() < 3 )
+        if( eZPublishSDK::majorVersion() == 4 && eZPublishSDK::minorVersion() < 3 )
         {
             include_once( 'kernel/common/template.php' );
             return templateInit();
