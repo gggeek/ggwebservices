@@ -85,6 +85,7 @@ class ggRESTResponse extends ggWebservicesResponse
     function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200" )
     {
         $this->Cookies = $cookies;
+        $this->Headers = $headers;
         $this->StatusCode = $statuscode;
 
         // allow request to force an expected response type
@@ -187,11 +188,6 @@ class ggRESTResponse extends ggWebservicesResponse
         }
     }
 
-    function responseHeaders()
-    {
-        return array( 'Vary' => 'Accept' );
-    }
-
     /// @todo (!important) we could filter here accepted types instead of in payload()
     function setContentType( $type )
     {
@@ -216,6 +212,8 @@ class ggRESTResponse extends ggWebservicesResponse
         'text/xml' => 'text/xml',
         'application/xml' => 'application/xml'
     );
+
+    protected $Headers = array( 'Vary' => 'Accept' );
 }
 
 ?>

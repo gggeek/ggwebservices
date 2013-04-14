@@ -41,6 +41,7 @@ class ggXMLRPCResponse extends ggWebservicesResponse
     function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200" )
     {
         $this->Cookies = $cookies;
+        $this->Headers = $headers;
         $this->StatusCode = $statuscode;
 
         /// @todo test if this automatically groks encoding from xml or not...

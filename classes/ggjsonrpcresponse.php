@@ -44,6 +44,7 @@ class ggJSONRPCResponse extends ggWebservicesResponse
     function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200"  )
     {
         $this->Cookies = $cookies;
+        $this->Headers = $headers;
         $this->StatusCode = $statuscode;
 
         $results = json_decode( $stream, true );

@@ -145,7 +145,7 @@ abstract class ggWebservicesResponse
 
     function responseHeaders()
     {
-        return array();
+        return $this->Headers;
     }
 
     function cookies()
@@ -175,6 +175,8 @@ abstract class ggWebservicesResponse
     protected $Cookies = array();
 
     protected $StatusCode = null;
+
+    protected $Headers = array();
 }
 
 ?>

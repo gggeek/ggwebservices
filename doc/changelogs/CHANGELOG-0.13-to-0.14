@@ -1,0 +1,11 @@
+Changes from 0.13 to 0.14 - released 2013/xx/yy
+
+*Added:
+
+* Changed
+
+- all the response classes now save http headers in $this->headers() when decoding
+  a payload. This makes it easier to execute further processing, eg. support custom
+  authentication schemes
+
+*Bugfixes:

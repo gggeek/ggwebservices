@@ -341,8 +341,8 @@ abstract class ggWebservicesServer
             return false;
         }
 
-        // allow to use the dot as namespace separator in webservices
-        $fname = str_replace( array( '.' ), '_', $name );
+        // allow to use the dot and slash as namespace separator in webservices names
+        $fname = str_replace( array( '.', '/' ), '_', $name );
 
         if ( function_exists( $fname ) )
         {
