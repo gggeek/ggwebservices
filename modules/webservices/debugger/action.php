@@ -313,6 +313,10 @@ if ( $action )
         flush();
     }
 
+    // avoid locking in case we are using a session for executing the action which
+    // is the sane session as used by the debugger and plain php session storage
+    eZSession::stop();
+
     // execute method(s)
 	$response = null;
     $responses = array();

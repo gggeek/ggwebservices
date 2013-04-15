@@ -14,3 +14,6 @@ Changes from 0.13 to 0.14 - released 2013/xx/yy
 *Bugfixes:
 
 - avoid strict errors with eZP5 LS
+
+- make the debugger work correctly when testing the current server by using the
+  admin siteaccess and plain php session handler
