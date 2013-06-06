@@ -1,0 +1,10 @@
+{
+    "name": "gggeek/ggwebservices",
+    "type": "ezpublish-legacy-extension",
+    "description": "Adds/improves the native capabilities of eZ Publish to work as webservices server or webservices client, with a visual webservices debugger thrown in for good measure",
+    "license": "GNU General Public License v2.0",
+    "minimum-stability": "dev",
+    "require": {
+        "ezsystems/ezpublish-legacy-extension-installer": "*"
+    }
+}
