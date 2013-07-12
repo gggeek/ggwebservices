@@ -181,6 +181,9 @@ class ggRESTResponse extends ggWebservicesResponse
                     $this->FaultString = ggRESTResponse::INVALIDRESPONSESTRING . ' xml. ' . $e->getMessage();
                 }
                 break;
+            case 'text/plain':
+            case 'text/html':
+                $this->Value = $stream;
             default:
                 $this->IsFault = true;
                 $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
