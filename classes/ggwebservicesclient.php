@@ -102,6 +102,7 @@ class ggWebservicesClient
 
     /**
      * Sends a request and returns the response object. 0 on error
+     * @param ggWebServicesRequest $request
      */
     function send( $request )
     {
@@ -513,7 +514,7 @@ class ggWebservicesClient
     /**
     * HTTP parsing code taken from the phpxmlrpc lib - should be battle worn.
     * @todo look at PEAR, ZEND, other libs, if they do it better...
-    * @todo when gettig 204, 205 responses, we should not return body
+    * @todo when getting 204, 205 responses, we should not return body
     */
     protected function parseHTTPResponse( &$data, $headers_processed=false )
     {

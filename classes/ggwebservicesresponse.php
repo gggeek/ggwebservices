@@ -30,7 +30,9 @@ abstract class ggWebservicesResponse
 
     /**
     * Decodes the response from a text stream (usually the http response body).
-    * Sets internal members value, isFault, faultString and faultCode
+    * Sets internal members: Value, IsFault, FaultString and FaultCode
+    * Should also set: StatusCode, Charset, ContentType, Headers, Cookies - @see decodeStreamCommon for an easy way to do that
+    * Otoh it does not have to care about http status code, as handling http is left to client class
     * Name is not set to response from request - a bit weird... but client injects name using the request one anyway
     * The API is a bit whacky because we want too keep compat with the eZP original version
     * @param ggWebservicesRequest $request the original request object
@@ -158,6 +160,51 @@ abstract class ggWebservicesResponse
         return $this->StatusCode;
     }
 
+    /**
+     * @param string $header
+     * @return array 1st element: content-type, 2nd element: charset
+     */
+    protected function parseContentTypeHeader( $header )
+    {
+        $type = $header;
+        $charset = '';
+        if ( ( $pos = strpos( $type, ';' ) ) !== false )
+        {
+            $type = trim( substr( $type, 0, $pos ) );
+            if ( preg_match( '/charset=([^ ]+)/', substr( $header, $pos ), $matches ) )
+            {
+                $charset = $matches[1];
+            }
+        }
+        return array( $type, $charset );
+    }
+
+    /**
+     * Sets internal members from http data, resets response to be not faulty.
+     * We make this code available here instead of in  decodeStream, to force child classes them to write their own handlers
+     * @param $request
+     * @param $stream
+     * @param bool $headers
+     * @param array $cookies
+     * @param string $statuscode
+     */
+    protected function decodeStreamCommon( $request, $stream, $headers=false, $cookies=array(), $statuscode="200" )
+    {
+        $this->Cookies = $cookies;
+        $this->Headers = $headers;
+        $this->StatusCode = $statuscode;
+        $this->ContentType = '';
+        $this->Charset = '';
+        if ( isset( $headers['content-type'] ) )
+        {
+            list ( $this->ContentType, $this->Charset ) = $this->parseContentTypeHeader( $headers['content-type'] );
+        }
+
+        $this->IsFault = false;
+        $this->FaultString = false;
+        $this->FaultCode = false;
+    }
+
     /// Contains the response value
     protected $Value = false;
     /// Contains fault string
@@ -171,11 +218,8 @@ abstract class ggWebservicesResponse
 
     protected $ContentType = '';
     protected $Charset = 'UTF-8';
-
     protected $Cookies = array();
-
     protected $StatusCode = null;
-
     protected $Headers = array();
 }
 

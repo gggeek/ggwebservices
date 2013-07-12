@@ -160,6 +160,7 @@ class ggRESTRequest extends ggWebservicesRequest
     }
 
     /**
+     * Method used server-side to retrieve the accepted value from HTTP.
      * Same logic as used by ezjscore for the 'call' view, but tries to respect
      * weights in http Accept header
      *
@@ -240,6 +241,9 @@ class ggRESTRequest extends ggWebservicesRequest
         return $this->ContentType;
     }
 
+    /*
+     * Content types we know how to serialize
+     */
     static function knownContentTypes()
     {
         return array_unique( self::$KnownContentTypes );
@@ -249,7 +253,7 @@ class ggRESTRequest extends ggWebservicesRequest
     {
         /// shall we declare support for insecure stuff such as php and serialized php?
         /// NB: this must be accompanied by code that can decode the format in ggRESTResponse
-        return array( 'Accept' => 'application/json, text/xml; q=0.5' );
+        return $this->Accept != '' ? array( 'Accept' => $this->Accept ) : array();
     }
 
     /// New method in this subclass
@@ -324,6 +328,8 @@ class ggRESTRequest extends ggWebservicesRequest
         'phps' => 'application/vnd.php.serialized',
         'application/vnd.php.serialized' => 'application/vnd.php.serialized'
     );
+
+    protected $Accept = 'application/json, text/xml; q=0.5';
 }
 
 ?>

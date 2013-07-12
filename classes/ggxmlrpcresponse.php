@@ -40,9 +40,9 @@ class ggXMLRPCResponse extends ggWebservicesResponse
     */
     function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200" )
     {
-        $this->Cookies = $cookies;
-        $this->Headers = $headers;
-        $this->StatusCode = $statuscode;
+        $this->decodeStreamCommon( $request, $stream, $headers, $cookies, $statuscode );
+
+        /// @todo refuse bad content-types?
 
         /// @todo test if this automatically groks encoding from xml or not...
         $results = xmlrpc_decode( $stream );
@@ -59,9 +59,6 @@ class ggXMLRPCResponse extends ggWebservicesResponse
 
             if ( !is_array( $results ) || count( $results ) != 2 || !isset( $results['faultCode'] ) || !isset( $results['faultString'] ) )
             {
-                $this->IsFault = false;
-                $this->FaultString = false;
-                $this->FaultCode = false;
                 $this->Value = $results;
             }
             else

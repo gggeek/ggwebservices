@@ -40,12 +40,13 @@ class ggJSONRPCResponse extends ggWebservicesResponse
     * Decodes the JSONRPC response stream.
     * Request is used for matching id.
     * @todo Name is not set to response from request - a bit weird...
+    * @param ggJSONRPCRequest $request
     */
     function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200"  )
     {
-        $this->Cookies = $cookies;
-        $this->Headers = $headers;
-        $this->StatusCode = $statuscode;
+        $this->decodeStreamCommon( $request, $stream, $headers, $cookies, $statuscode );
+
+        /// @todo refuse bad content-types?
 
         $results = json_decode( $stream, true );
         if ( !is_array($results) ||
@@ -74,9 +75,6 @@ class ggJSONRPCResponse extends ggWebservicesResponse
             {
                 /// NB: spec is formally strange: what if both error and result are null???
 
-                $this->IsFault = false;
-                $this->FaultString = false;
-                $this->FaultCode = false;
                 $this->Value = $results['result'];
             }
             else

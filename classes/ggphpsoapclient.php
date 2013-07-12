@@ -141,7 +141,7 @@ class ggPhpSOAPClient extends ggWebservicesClient
             //$response->decodeStream( $request, $rawResponse );
             if ( is_soap_fault( $results ) )
             {
-                $response->setValue( new ggWebservicesFault( $result->faultcode, $result->faultstring ) );
+                $response->setValue( new ggWebservicesFault( $results->faultcode, $results->faultstring ) );
             }
             else
             {

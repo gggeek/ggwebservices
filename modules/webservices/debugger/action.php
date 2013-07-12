@@ -392,52 +392,52 @@ if ( $action )
                 $v = $response->value();
                 if ( is_array( $v ) && array_keys( $v ) == range( 0, count( $v ) -1 ) )
                 {
-          $max = count( $v );
-          echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
-          echo "<thead>\n<tr><th>Method ($max found)</th><th>Description</th></tr>\n</thead>\n<tbody>\n";
-          for($i=0; $i < $max; $i++)
-          {
-            $rec = $v[$i];
-            if ($i%2) $class=' class="oddrow"'; else $class = ' class="evenrow"';
-            echo "<tr><td$class>".htmlspecialchars( $rec )."</td><td$class>";
-            echo "<form action=\"../controller/\" method=\"get\" target=\"frmcontroller\">".
-              "<input type=\"hidden\" name=\"host\" value=\"".htmlspecialchars($host)."\" />".
-              "<input type=\"hidden\" name=\"port\" value=\"".htmlspecialchars($port)."\" />".
-              "<input type=\"hidden\" name=\"path\" value=\"".htmlspecialchars($path)."\" />".
-              "<input type=\"hidden\" name=\"id\" value=\"".htmlspecialchars($id)."\" />".
-              "<input type=\"hidden\" name=\"debug\" value=\"$debug\" />".
-              "<input type=\"hidden\" name=\"username\" value=\"".htmlspecialchars($username)."\" />".
-              "<input type=\"hidden\" name=\"password\" value=\"".htmlspecialchars($password)."\" />".
-              "<input type=\"hidden\" name=\"authtype\" value=\"$authtype\" />".
-              "<input type=\"hidden\" name=\"verifyhost\" value=\"$verifyhost\" />".
-              "<input type=\"hidden\" name=\"verifypeer\" value=\"$verifypeer\" />".
-              "<input type=\"hidden\" name=\"cainfo\" value=\"".htmlspecialchars($cainfo)."\" />".
-              "<input type=\"hidden\" name=\"proxy\" value=\"".htmlspecialchars($proxy)."\" />".
-              "<input type=\"hidden\" name=\"proxyuser\" value=\"".htmlspecialchars($proxyuser)."\" />".
-              "<input type=\"hidden\" name=\"proxypwd\" value=\"".htmlspecialchars($proxypwd)."\" />".
-              "<input type=\"hidden\" name=\"responsecompression\" value=\"$responsecompression\" />".
-              "<input type=\"hidden\" name=\"requestcompression\" value=\"$requestcompression\" />".
-              "<input type=\"hidden\" name=\"clientcookies\" value=\"".htmlspecialchars($clientcookies)."\" />".
-              "<input type=\"hidden\" name=\"protocol\" value=\"$protocol\" />".
-              "<input type=\"hidden\" name=\"timeout\" value=\"$timeout\" />".
-              "<input type=\"hidden\" name=\"wsmethod\" value=\"".htmlspecialchars( $rec )."\" />".
-              "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
-              "<input type=\"hidden\" name=\"wsdl\" value=\"$wsdl\" />".
-              "<input type=\"hidden\" name=\"soapversion\" value=\"$soapversion\" />".
-              "<input type=\"hidden\" name=\"wsaction\" value=\"describe\" />".
-              //"<input type=\"hidden\" name=\"run\" value=\"now\" />".
-              "<input type=\"submit\" value=\"Describe\" /></form>";
-            echo "</td>";
+                  $max = count( $v );
+                  echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+                  echo "<thead>\n<tr><th>Method ($max found)</th><th>Description</th></tr>\n</thead>\n<tbody>\n";
+                  for($i=0; $i < $max; $i++)
+                  {
+                    $rec = $v[$i];
+                    if ($i%2) $class=' class="oddrow"'; else $class = ' class="evenrow"';
+                    echo "<tr><td$class>".htmlspecialchars( $rec )."</td><td$class>";
+                    echo "<form action=\"../controller/\" method=\"get\" target=\"frmcontroller\">".
+                      "<input type=\"hidden\" name=\"host\" value=\"".htmlspecialchars($host)."\" />".
+                      "<input type=\"hidden\" name=\"port\" value=\"".htmlspecialchars($port)."\" />".
+                      "<input type=\"hidden\" name=\"path\" value=\"".htmlspecialchars($path)."\" />".
+                      "<input type=\"hidden\" name=\"id\" value=\"".htmlspecialchars($id)."\" />".
+                      "<input type=\"hidden\" name=\"debug\" value=\"$debug\" />".
+                      "<input type=\"hidden\" name=\"username\" value=\"".htmlspecialchars($username)."\" />".
+                      "<input type=\"hidden\" name=\"password\" value=\"".htmlspecialchars($password)."\" />".
+                      "<input type=\"hidden\" name=\"authtype\" value=\"$authtype\" />".
+                      "<input type=\"hidden\" name=\"verifyhost\" value=\"$verifyhost\" />".
+                      "<input type=\"hidden\" name=\"verifypeer\" value=\"$verifypeer\" />".
+                      "<input type=\"hidden\" name=\"cainfo\" value=\"".htmlspecialchars($cainfo)."\" />".
+                      "<input type=\"hidden\" name=\"proxy\" value=\"".htmlspecialchars($proxy)."\" />".
+                      "<input type=\"hidden\" name=\"proxyuser\" value=\"".htmlspecialchars($proxyuser)."\" />".
+                      "<input type=\"hidden\" name=\"proxypwd\" value=\"".htmlspecialchars($proxypwd)."\" />".
+                      "<input type=\"hidden\" name=\"responsecompression\" value=\"$responsecompression\" />".
+                      "<input type=\"hidden\" name=\"requestcompression\" value=\"$requestcompression\" />".
+                      "<input type=\"hidden\" name=\"clientcookies\" value=\"".htmlspecialchars($clientcookies)."\" />".
+                      "<input type=\"hidden\" name=\"protocol\" value=\"$protocol\" />".
+                      "<input type=\"hidden\" name=\"timeout\" value=\"$timeout\" />".
+                      "<input type=\"hidden\" name=\"wsmethod\" value=\"".htmlspecialchars( $rec )."\" />".
+                      "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
+                      "<input type=\"hidden\" name=\"wsdl\" value=\"$wsdl\" />".
+                      "<input type=\"hidden\" name=\"soapversion\" value=\"$soapversion\" />".
+                      "<input type=\"hidden\" name=\"wsaction\" value=\"describe\" />".
+                      //"<input type=\"hidden\" name=\"run\" value=\"now\" />".
+                      "<input type=\"submit\" value=\"Describe\" /></form>";
+                    echo "</td>";
 
-            echo("</tr>\n");
-          }
-          echo "</tbody>\n</table>";
-        }
-        else
-        {
-        	echo "<p>Unexpected response: " . htmlspecialchars( print_r( $v, true ) ) ."</p>";
-        }
-        break;
+                    echo("</tr>\n");
+                  }
+                  echo "</tbody>\n</table>";
+                }
+                else
+                {
+                    echo "<p>Unexpected response: " . htmlspecialchars( print_r( $v, true ) ) ."</p>";
+                }
+                break;
 
             case 'describe':
                 $r1 = $responses[0]->value();
@@ -458,125 +458,125 @@ if ( $action )
                     }
                 }
 
-        echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
-        echo "<thead>\n<tr><th>Method</th><th colspan=\"2\">".htmlspecialchars($method)."</th></tr>\n</thead>\n<tbody>\n";
-        $desc = htmlspecialchars($r1);
-        if ($desc == "")
-          $desc = "-";
-        echo "<tr><td class=\"evenrow\">Description</td><td colspan=\"2\" class=\"evenrow\">$desc</td></tr>\n";
+            echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+            echo "<thead>\n<tr><th>Method</th><th colspan=\"2\">".htmlspecialchars($method)."</th></tr>\n</thead>\n<tbody>\n";
+            $desc = htmlspecialchars($r1);
+            if ($desc == "")
+              $desc = "-";
+            echo "<tr><td class=\"evenrow\">Description</td><td colspan=\"2\" class=\"evenrow\">$desc</td></tr>\n";
 
-        if ( !is_array( $r2) )
-          echo "<tr><td class=\"oddrow\">Signature</td><td class=\"oddrow\">Unknown</td><td class=\"oddrow\">&nbsp;</td></tr>\n";
-        else
-        {
-          for($i=0; $i < count( $r2 ); $i++)
-          {
-          	$p = array();
-          	$payload="";
-          	$alt_payload="";
-            if ($i+1%2) $class=' class="oddrow"'; else $class = ' class="evenrow"';
-            echo "<tr><td$class>Signature&nbsp;".($i+1)."</td><td$class>";
-            $x = $r2[$i];
-            if ( is_array( $x ) )
-            {
-              $ret = array_shift( $x );
-              echo "<code>OUT:&nbsp;" . htmlspecialchars( $ret ) . "<br />IN: (";
-              if ( count( $x ) > 0 )
-              {
-                $k = 0;
-                foreach( $x as $key => $y )
-                {
-                  //$y = $x[$k];
-                  if ( $wstype == 3 )
-                  {
-                      echo htmlspecialchars( $key ). ': ';
-                  }
-                  echo htmlspecialchars( $y );
-                  /*if ($wstype != 1 && $wstype != 2  && $wstype != 3)
-                  {
-                    $payload = $payload . '<param><value><'.htmlspecialchars($y).'></'.htmlspecialchars($y)."></value></param>\n";
-                  }
-                  $alt_payload .= $y;*/
-                  if ( $k < count( $x )-1 )
-                  {
-                    //$alt_payload .= ';';
-                    echo ", ";
-                  }
-                	switch( strtolower( $y ) )
-                	{
-                		case 'array':
-                			$p[] = '[ ]';
-                			break;
-                		case 'int':
-                		case 'integer':
-                		case 'i4':
-                			$p[] = '1';
-                			break;
-                		case 'bool':
-                		case 'boolean':
-                			$p[] = 'true';
-                			break;
-                		case 'struct':
-                			$p[] = '{ }';
-                			break;
-                		case 'null':
-                			$p[] = 'null';
-                			break;
-                		/// @todo cases: double, base64, datetime.iso8601
-                		default:
-                			$p[] = '"..."';
-                	}
-                    $k++;
-                }
-              }
-              echo ")</code>";
-              $payload = '[' . implode( ",\n", $p ) . ']';
-              $alt_payload = implode( ',', $x );
-            }
+            if ( !is_array( $r2) )
+              echo "<tr><td class=\"oddrow\">Signature</td><td class=\"oddrow\">Unknown</td><td class=\"oddrow\">&nbsp;</td></tr>\n";
             else
             {
-              echo 'Unknown';
-            }
-            echo '</td>';
+              for($i=0; $i < count( $r2 ); $i++)
+              {
+                $p = array();
+                $payload="";
+                $alt_payload="";
+                if ($i+1%2) $class=' class="oddrow"'; else $class = ' class="evenrow"';
+                echo "<tr><td$class>Signature&nbsp;".($i+1)."</td><td$class>";
+                $x = $r2[$i];
+                if ( is_array( $x ) )
+                {
+                  $ret = array_shift( $x );
+                  echo "<code>OUT:&nbsp;" . htmlspecialchars( $ret ) . "<br />IN: (";
+                  if ( count( $x ) > 0 )
+                  {
+                    $k = 0;
+                    foreach( $x as $key => $y )
+                    {
+                      //$y = $x[$k];
+                      if ( $wstype == 3 )
+                      {
+                          echo htmlspecialchars( $key ). ': ';
+                      }
+                      echo htmlspecialchars( $y );
+                      /*if ($wstype != 1 && $wstype != 2  && $wstype != 3)
+                      {
+                        $payload = $payload . '<param><value><'.htmlspecialchars($y).'></'.htmlspecialchars($y)."></value></param>\n";
+                      }
+                      $alt_payload .= $y;*/
+                      if ( $k < count( $x )-1 )
+                      {
+                        //$alt_payload .= ';';
+                        echo ", ";
+                      }
+                        switch( strtolower( $y ) )
+                        {
+                            case 'array':
+                                $p[] = '[ ]';
+                                break;
+                            case 'int':
+                            case 'integer':
+                            case 'i4':
+                                $p[] = '1';
+                                break;
+                            case 'bool':
+                            case 'boolean':
+                                $p[] = 'true';
+                                break;
+                            case 'struct':
+                                $p[] = '{ }';
+                                break;
+                            case 'null':
+                                $p[] = 'null';
+                                break;
+                            /// @todo cases: double, base64, datetime.iso8601
+                            default:
+                                $p[] = '"..."';
+                        }
+                        $k++;
+                    }
+                  }
+                  echo ")</code>";
+                  $payload = '[' . implode( ",\n", $p ) . ']';
+                  $alt_payload = implode( ',', $x );
+                }
+                else
+                {
+                  echo 'Unknown';
+                }
+                echo '</td>';
 
-            echo "<td$class><form action=\"../controller/\" target=\"frmcontroller\" method=\"get\">".
-            "<input type=\"hidden\" name=\"host\" value=\"".htmlspecialchars($host)."\" />".
-            "<input type=\"hidden\" name=\"port\" value=\"".htmlspecialchars($port)."\" />".
-            "<input type=\"hidden\" name=\"path\" value=\"".htmlspecialchars($path)."\" />".
-            "<input type=\"hidden\" name=\"id\" value=\"".htmlspecialchars($id)."\" />".
-            "<input type=\"hidden\" name=\"debug\" value=\"$debug\" />".
-            "<input type=\"hidden\" name=\"username\" value=\"".htmlspecialchars($username)."\" />".
-            "<input type=\"hidden\" name=\"password\" value=\"".htmlspecialchars($password)."\" />".
-            "<input type=\"hidden\" name=\"authtype\" value=\"$authtype\" />".
-            "<input type=\"hidden\" name=\"verifyhost\" value=\"$verifyhost\" />".
-            "<input type=\"hidden\" name=\"verifypeer\" value=\"$verifypeer\" />".
-            "<input type=\"hidden\" name=\"cainfo\" value=\"".htmlspecialchars($cainfo)."\" />".
-            "<input type=\"hidden\" name=\"proxy\" value=\"".htmlspecialchars($proxy)."\" />".
-            "<input type=\"hidden\" name=\"proxyuser\" value=\"".htmlspecialchars($proxyuser)."\" />".
-            "<input type=\"hidden\" name=\"proxypwd\" value=\"".htmlspecialchars($proxypwd)."\" />".
-            "<input type=\"hidden\" name=\"responsecompression\" value=\"$responsecompression\" />".
-            "<input type=\"hidden\" name=\"requestcompression\" value=\"$requestcompression\" />".
-            "<input type=\"hidden\" name=\"clientcookies\" value=\"".htmlspecialchars($clientcookies)."\" />".
-            "<input type=\"hidden\" name=\"protocol\" value=\"$protocol\" />".
-            "<input type=\"hidden\" name=\"timeout\" value=\"".htmlspecialchars($timeout)."\" />".
-            "<input type=\"hidden\" name=\"wsmethod\" value=\"".htmlspecialchars($method)."\" />".
-            "<input type=\"hidden\" name=\"methodpayload\" value=\"".htmlspecialchars($payload)."\" />".
-            "<input type=\"hidden\" name=\"altmethodpayload\" value=\"".htmlspecialchars($alt_payload)."\" />".
-            "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
-            "<input type=\"hidden\" name=\"wsdl\" value=\"$wsdl\" />".
-            "<input type=\"hidden\" name=\"soapversion\" value=\"$soapversion\" />".
-            "<input type=\"hidden\" name=\"wsaction\" value=\"execute\" />";
-            if ($wstype != 1 && $wstype != 2)
-              echo "<input type=\"submit\" value=\"Load method synopsis\" />";
-            echo "</form></td>\n";
+                echo "<td$class><form action=\"../controller/\" target=\"frmcontroller\" method=\"get\">".
+                "<input type=\"hidden\" name=\"host\" value=\"".htmlspecialchars($host)."\" />".
+                "<input type=\"hidden\" name=\"port\" value=\"".htmlspecialchars($port)."\" />".
+                "<input type=\"hidden\" name=\"path\" value=\"".htmlspecialchars($path)."\" />".
+                "<input type=\"hidden\" name=\"id\" value=\"".htmlspecialchars($id)."\" />".
+                "<input type=\"hidden\" name=\"debug\" value=\"$debug\" />".
+                "<input type=\"hidden\" name=\"username\" value=\"".htmlspecialchars($username)."\" />".
+                "<input type=\"hidden\" name=\"password\" value=\"".htmlspecialchars($password)."\" />".
+                "<input type=\"hidden\" name=\"authtype\" value=\"$authtype\" />".
+                "<input type=\"hidden\" name=\"verifyhost\" value=\"$verifyhost\" />".
+                "<input type=\"hidden\" name=\"verifypeer\" value=\"$verifypeer\" />".
+                "<input type=\"hidden\" name=\"cainfo\" value=\"".htmlspecialchars($cainfo)."\" />".
+                "<input type=\"hidden\" name=\"proxy\" value=\"".htmlspecialchars($proxy)."\" />".
+                "<input type=\"hidden\" name=\"proxyuser\" value=\"".htmlspecialchars($proxyuser)."\" />".
+                "<input type=\"hidden\" name=\"proxypwd\" value=\"".htmlspecialchars($proxypwd)."\" />".
+                "<input type=\"hidden\" name=\"responsecompression\" value=\"$responsecompression\" />".
+                "<input type=\"hidden\" name=\"requestcompression\" value=\"$requestcompression\" />".
+                "<input type=\"hidden\" name=\"clientcookies\" value=\"".htmlspecialchars($clientcookies)."\" />".
+                "<input type=\"hidden\" name=\"protocol\" value=\"$protocol\" />".
+                "<input type=\"hidden\" name=\"timeout\" value=\"".htmlspecialchars($timeout)."\" />".
+                "<input type=\"hidden\" name=\"wsmethod\" value=\"".htmlspecialchars($method)."\" />".
+                "<input type=\"hidden\" name=\"methodpayload\" value=\"".htmlspecialchars($payload)."\" />".
+                "<input type=\"hidden\" name=\"altmethodpayload\" value=\"".htmlspecialchars($alt_payload)."\" />".
+                "<input type=\"hidden\" name=\"wstype\" value=\"$wstype\" />".
+                "<input type=\"hidden\" name=\"wsdl\" value=\"$wsdl\" />".
+                "<input type=\"hidden\" name=\"soapversion\" value=\"$soapversion\" />".
+                "<input type=\"hidden\" name=\"wsaction\" value=\"execute\" />";
+                if ($wstype != 1 && $wstype != 2)
+                  echo "<input type=\"submit\" value=\"Load method synopsis\" />";
+                echo "</form></td>\n";
 
-            echo "<td$class>";
-          	echo "</td></tr>\n";
+                echo "<td$class>";
+                echo "</td></tr>\n";
 
-          } // loop on sigs
-        } // loop on methods
-        echo "</tbody>\n</table>";
-        break;
+              } // loop on sigs
+            } // loop on methods
+            echo "</tbody>\n</table>";
+            break;
 
             case 'execute':
                 $note = "";
@@ -586,7 +586,11 @@ if ( $action )
                     $note = "<u>NB</u>: actual response is an object of class 'ggSimpleTemplateXML', it is shown as an array for convenience\n\n";
                     $value = $value->toArray();
                 }
-                echo '<div id="response"><h2>Response:</h2>'. $note . htmlspecialchars( print_r( $value, true ) ).'</div>';
+                echo '<div id="response"> ' .
+                '<h2>Status code: ' . $response->statusCode() . '</h2>' .
+                '<h2>Content type: ' . htmlspecialchars( $response->contentType() ) . '</h2>' .
+                '<h2>Charset: ' . htmlspecialchars( $response->charset() ) . '</h2>' .
+                '<h2>Response:</h2>'. $note . htmlspecialchars( print_r( $value, true ) ).'</div>';
                 break;
 
             default: // give a warning

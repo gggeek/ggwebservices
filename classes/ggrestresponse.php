@@ -21,6 +21,11 @@ class ggRESTResponse extends ggWebservicesResponse
     function payload( )
     {
         $contentType = $this->ContentType;
+        // accommodate re-serializing content after we got a forced content-type
+        if ( $pos = strpos( $contentType, ';' ) !== false )
+        {
+            $contentType = substr( $contentType, 0, $pos );
+        }
         if ( $contentType == '' )
         {
             $contentType = $this->defaultContentType;
@@ -69,6 +74,11 @@ class ggRESTResponse extends ggWebservicesResponse
                     $json = $this->JsonpCallback . '(' . $json . ')';
                 }
                 return $json;
+            case 'text/plain':
+                return is_string( $value ) ? $value : var_export( $value, true );
+            case 'text/html':
+                // in theory both html and body tags are not mandatory. But getting here is just a case of bad coding anyway
+                return is_string( $value ) ? $value : '<html><body>' . htmlspecialchars( print_r( $value, true ) ) . '</body></html>';
             default:
                 header('HTTP/1.1 406 Not Acceptable');
                 // two 'non standard but existing' mimetype defs for php code and serialized
@@ -81,21 +91,25 @@ class ggRESTResponse extends ggWebservicesResponse
     * Decodes the REST response stream.
     * Request is not used, kept for compat with sibling classes
     * Name is not set to response from request - a bit weird...
+    * @param ggRESTRequest $request
     */
     function decodeStream( $request, $stream, $headers=false, $cookies=array(), $statuscode="200" )
     {
-        $this->Cookies = $cookies;
-        $this->Headers = $headers;
-        $this->StatusCode = $statuscode;
+        $this->decodeStreamCommon( $request, $stream, $headers, $cookies, $statuscode );
+
+        $contentType = $this->ContentType;
+        $charset = $this->Charset;
 
         // allow request to force an expected response type
-        // this is useful if servers do respons with eg. text/plain content-header
-        if ( ( $contentType = $request->responseType() ) == '' )
+        // this is useful if servers do respond with eg. text/plain content-header for json or xml
+        if ( ( $forcedType = $request->responseType() ) != '' )
         {
-            $contentType = isset( $headers['content-type'] ) ? $headers['content-type'] : '';
-            if ( ( $pos = strpos( $contentType, ';' ) ) !== false )
+            list ( $contentType, $charset2 ) = $this->parseContentTypeHeader( $forcedType );
+            $this->ContentType = $contentType . '; received="' . $this->ContentType . '"';
+            if ( $charset2 != '' )
             {
-                $contentType = substr( $contentType, 0, $pos );
+                $charset = $charset2;
+                $this->Charset = $charset . '; received="' . $this->Charset . '"';
             }
         }
 
@@ -105,9 +119,6 @@ class ggRESTResponse extends ggWebservicesResponse
             if ( $stream == '' && ( !isset( $headers['content-length'] ) || $headers['content-length'] == 0 ) )
             {
                 $this->Value = null;
-                $this->IsFault = false;
-                $this->FaultString = false;
-                $this->FaultCode = false;
                 return;
             }
             else
@@ -118,6 +129,8 @@ class ggRESTResponse extends ggWebservicesResponse
                 $this->FaultString = ggRESTResponse::INVALIDRESPONSESTRING . " (received http response 204/205 with a body. Not valid http)";
             }
         }
+
+        /// @todo take into account charset when decoding json / xml
 
         switch( $contentType )
         {
@@ -167,11 +180,6 @@ class ggRESTResponse extends ggWebservicesResponse
                     }
                     libxml_use_internal_errors( $prev );
                     $this->Value = new ggSimpleTemplateXML( $node );
-                    //$xml = new SimpleXMLElement( $stream );
-                    //$this->Value = $xml;
-                    $this->IsFault = false;
-                    $this->FaultString = false;
-                    $this->FaultCode = false;
 
                 }
                 catch ( Exception $e )
@@ -184,6 +192,7 @@ class ggRESTResponse extends ggWebservicesResponse
             case 'text/plain':
             case 'text/html':
                 $this->Value = $stream;
+                break;
             default:
                 $this->IsFault = true;
                 $this->FaultCode = ggRESTResponse::INVALIDRESPONSEERROR;
