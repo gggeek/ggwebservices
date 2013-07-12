@@ -4,3 +4,5 @@ var
 build
 dist
 pakefile.php
+.gitignore
+composr.phar
