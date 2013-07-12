@@ -281,11 +281,11 @@ class ggRESTRequest extends ggWebservicesRequest
         $this->NameVar = $var;
     }
 
-    function setContentType( $type )
+    function setContentType( $typeAlias )
     {
-        if ( isset( self::$KnownContentTypes[$type] ) )
+        if ( isset( self::$KnownContentTypes[$typeAlias] ) )
         {
-            $this->ContentType = self::$KnownContentTypes[$type];
+            $this->ContentType = self::$KnownContentTypes[$typeAlias];
             return true;
         }
         return false;
@@ -311,8 +311,9 @@ class ggRESTRequest extends ggWebservicesRequest
     protected $JsonpCallback = false;
 
     protected $ContentType = 'application/x-www-form-urlencoded';
+    // All of these we should be able to serialize in _payload()
     protected static $KnownContentTypes = array(
-        'application/x-www-form-urlencoded',
+        'application/x-www-form-urlencoded' => 'application/x-www-form-urlencoded',
 
         'json' => 'application/json',
         'application/json' => 'application/json',

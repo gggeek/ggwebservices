@@ -26,7 +26,7 @@ class ggHTTPResponse extends ggWebservicesResponse
         $this->Headers = $headers;
         $this->StatusCode = $statuscode;
 
-	    $this->Value = $stream;
+        $this->Value = $stream;
     }
 }
 

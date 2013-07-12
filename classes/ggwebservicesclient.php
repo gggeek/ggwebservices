@@ -41,6 +41,7 @@ class ggWebservicesClient
 
     /**
      * Creates a new client.
+     * @param string $server
      * @param int|string $port 'ssl' can be used for https connections, or port number
      * @param string $protocol use 'https' (or bool true, for backward compatibility) to specify https connections
      * @todo add a simplfied syntax for constructor, using parse_url and a single string
