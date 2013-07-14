@@ -81,7 +81,7 @@ class ggRESTRequest extends ggWebservicesRequest
 
     protected function _payload( $params )
     {
-        switch( $this->ContentType )
+        switch( $this->mimeTypeToEncodeType( $this->ContentType ) )
         {
             case 'application/x-www-form-urlencoded':
                 $results = array();
@@ -110,7 +110,6 @@ class ggRESTRequest extends ggWebservicesRequest
             case 'application/vnd.php.serialized':
                 return serialize( $params );
         }
-
     }
 
     /**
@@ -210,7 +209,7 @@ class ggRESTRequest extends ggWebservicesRequest
             $weightedList = array_keys( $weightedList );
 
             // try first we the types that responses can serialize to
-            /// @todo add txt, html, php, phps to the list
+            /// @todo add txt, html, php, phps to the list - be loyal to other class methods
             $aliasList = array( 'json' => 'application/json', 'javascript' => 'application/json', /*'xml' => 'text/xml', 'html' => 'text/xhtml', 'text' => 'text'*/ );
             foreach( $weightedList as $accept )
             {
@@ -234,7 +233,7 @@ class ggRESTRequest extends ggWebservicesRequest
 
     function contentType()
     {
-        if ( $this->Verb == 'GET' )
+        if ( $this->Verb == 'GET' || $this->Verb == 'HEAD' || $this->Verb == 'TRACE' )
         {
             return '';
         }
@@ -242,7 +241,8 @@ class ggRESTRequest extends ggWebservicesRequest
     }
 
     /*
-     * Content types we know how to serialize
+     * Content types we know how to serialize.
+     * NB: list is incomplete, as there are also regexp-based rules at play
      */
     static function knownContentTypes()
     {
@@ -285,14 +285,52 @@ class ggRESTRequest extends ggWebservicesRequest
         $this->NameVar = $var;
     }
 
+    /**
+     * Only sets content-type header if we know how to serialize it later
+     * @param string $typeAlias
+     * @return bool
+     * @todo should we allow more freedom to caller, and only map very obviously wrong things like "php", json" etc
+     */
     function setContentType( $typeAlias )
     {
+        // expand short-hand notation for "php", json" etc
         if ( isset( self::$KnownContentTypes[$typeAlias] ) )
         {
             $this->ContentType = self::$KnownContentTypes[$typeAlias];
             return true;
         }
+        // accept as well other mimetypes, as long as we later know how to encode them
+        $decodableType = $this->mimeTypeToEncodeType( $typeAlias );
+        if ( isset( self::$KnownContentTypes[$decodableType] ) )
+        {
+            $this->ContentType = $typeAlias;
+            return true;
+        }
         return false;
+    }
+
+    function setAccept( $value )
+    {
+        $this->Accept = $value;
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     * @todo make more generic, incl. usage of self::$KnownContentTypes
+     */
+    protected function mimeTypeToEncodeType( $type )
+    {
+        if ( preg_match( '#^application/(vnd|prs|x)\.(.+)\+(xml|json|phps|php)$#', $type, $matches ) )
+        {
+            return $matches[3];
+        }
+        /*$reversed = array_flip( self::$KnownContentTypes );
+        if ( isset( $reversed[$type] ) )
+        {
+            $reversed[$type];
+        }*/
+        return $type;
     }
 
     protected $Verb = 'GET';
@@ -315,7 +353,7 @@ class ggRESTRequest extends ggWebservicesRequest
     protected $JsonpCallback = false;
 
     protected $ContentType = 'application/x-www-form-urlencoded';
-    // All of these we should be able to serialize in _payload()
+    // All of these (values) we should be able to serialize in _payload()
     protected static $KnownContentTypes = array(
         'application/x-www-form-urlencoded' => 'application/x-www-form-urlencoded',
 
@@ -324,6 +362,7 @@ class ggRESTRequest extends ggWebservicesRequest
 
         'php' => 'application/x-httpd-php',
         'application/x-httpd-php' => 'application/x-httpd-php',
+        'application/x-php' => 'application/x-httpd-php',
 
         'phps' => 'application/vnd.php.serialized',
         'application/vnd.php.serialized' => 'application/vnd.php.serialized'

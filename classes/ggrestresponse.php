@@ -59,6 +59,7 @@ class ggRESTResponse extends ggWebservicesResponse
         {
             $value = $this->Value;
         }
+
         switch( $contentType )
         {
             case 'php':
@@ -132,8 +133,9 @@ class ggRESTResponse extends ggWebservicesResponse
 
         /// @todo take into account charset when decoding json / xml
 
-        switch( $contentType )
+        switch( $this->mimeTypeToEncodeType( $contentType ) )
         {
+            case 'json':
             case 'application/json':
                 $val = json_decode( $stream, true );
                 if ( function_exists( 'json_last_error' ) )
@@ -155,6 +157,7 @@ class ggRESTResponse extends ggWebservicesResponse
                     $this->Value = $val;
                 }
                 break;
+            case 'xml':
             case 'text/xml':
             case 'application/xml':
                 try
@@ -214,6 +217,25 @@ class ggRESTResponse extends ggWebservicesResponse
     static function knownContentTypes()
     {
         return array_unique( self::$KnownContentTypes );
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     * @todo make more generic, incl. usage of self::$KnownContentTypes
+     */
+    protected function mimeTypeToEncodeType( $type )
+    {
+        if ( preg_match( '#^application/(vnd|prs|x)\.(.+)\+(xml|json|phps|php)$#', $type, $matches ) )
+        {
+            return $matches[3];
+        }
+        /*$reversed = array_flip( self::$KnownContentTypes );
+        if ( isset( $reversed[$type] ) )
+        {
+            $reversed[$type];
+        }*/
+        return $type;
     }
 
     protected $defaultContentType = 'application/json';

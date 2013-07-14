@@ -9,16 +9,12 @@
 
 class ggRESTClient extends ggWebservicesClient
 {
-    /*function __construct( $server, $path = '/', $port = 80, $protocol = null )
-    {
-        $this->ResponseClass = 'ggRESTResponse';
-        $this->UserAgent = 'gg eZ REST client';
-        //$this->Verb = 'GET';
-        parent::__construct( $server, $path, $port, $protocol );
-    }*/
-
-    /// NB: this assumes we're sending a ggRESTrequest
-    /// @todo do not error if we're sending a plain request (test if methods exist)
+    /**
+     * NB: this assumes we're sending a ggRESTRequest
+     * @param ggRESTRequest $request
+     * @return ggRESTResponse
+     * @todo do not error if we're sending a plain request? (test if methods exist)
+     */
     function send( $request )
     {
         if ( $this->Verb != '' )
@@ -38,26 +34,54 @@ class ggRESTClient extends ggWebservicesClient
         {
             $request->setContentType( $this->RequestType );
         }
+        if ( $this->Accept !== null )
+        {
+            $request->setAccept( $this->Accept );
+        }
         return parent::send( $request );
     }
 
     public function setOption( $option, $value )
     {
-        if ( $option == 'nameVariable' )
+        switch( $option )
         {
-            $this->NameVar = $value;
+            case 'nameVariable':
+                $this->NameVar = $value;
+                return true;
+            case 'responseType':
+                $this->ResponseType = $value;
+                return true;
+            case 'requestType':
+                $this->RequestType = $value;
+                return true;
+            case 'accept':
+                $this->Accept = $value;
+                return true;
+            default:
+                return parent::setOption( $option, $value );
         }
-        else if ( $option == 'responseType' )
+    }
+
+    /// @todo move this to constructor
+    function availableOptions()
+    {
+        return array_merge( $this->Options, array( 'nameVariable', 'responseType', 'requestType', 'accept' ) );
+    }
+
+    function getOption( $option )
+    {
+        switch( $option )
         {
-            $this->ResponseType = $value;
-        }
-        else if ( $option == 'requestType' )
-        {
-            $this->RequestType = $value;
-        }
-        else
-        {
-            return parent::setOption( $option, $value );
+            case 'nameVariable':
+                return $this->NameVar;
+            case 'responseType':
+                return$this->ResponseType;
+            case 'requestType':
+                return$this->RequestType;
+            case 'accept':
+                return$this->Accept;
+            default:
+                return parent::getOption( $option );
         }
     }
 
@@ -66,8 +90,10 @@ class ggRESTClient extends ggWebservicesClient
     // also injected in the requests if not null
     protected $ResponseType = null;
     // this one too. In the request it is actually called ContentType, but the
-    // default ContenType in the client is not null, so we need an extra variable
+    // default ContentType in the client is not null, so we need an extra variable
     protected $RequestType = null;
+    // this one too.
+    protected $Accept = null;
 
     // override default value from ggwsclient: if the user sets this via a
     // setOption call, we will later inject it into the request object
