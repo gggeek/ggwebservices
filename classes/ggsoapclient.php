@@ -8,22 +8,15 @@
 
 class ggSOAPClient extends ggWebservicesClient
 {
-    /// @deprecated the ggWebservicesClient parent class can do by itself all of this
-    /*function __construct( $server, $path = '/', $port = 80, $protocol=null )
-    {
-        $this->ResponseClass = 'ggSOAPResponse';
-        $this->UserAgent = 'gg eZ SOAP client';
-        //$this->ContentType = 'text/xml';
-        parent::__construct( $server, $path, $port, $protocol );
-    }*/
-
     /**
-      Sends a soap message and returns the response object.
-      NB: we define extra headers here and not in request obj because here we
-          switch between soap 1.1 and 1.2 protocols in the client - but we need
-          the request's name+ns for creating the soap 1.1 header...
-          This could be probably be pushed down unto the request anyway
-      @todo raise an error if the request is not a soap one and has no ->ns() method
+     * Sends a soap message and returns the response object.
+     * NB: we define extra headers here and not in request obj because here we
+     *     switch between soap 1.1 and 1.2 protocols in the client - but we need
+     *     the request's name+ns for creating the soap 1.1 header...
+     *     This could be probably be pushed down unto the request anyway
+     * @param ggSOAPRequest $request
+     * @return ggSOAPResponse
+     * @todo raise an error if the request is not a soap one and has no ->ns() method
     */
     function send( $request )
     {
@@ -36,13 +29,30 @@ class ggSOAPClient extends ggWebservicesClient
 
     public function setOption( $option, $value )
     {
-        if ( $option == 'soapVersion' )
+        switch( $option )
         {
-             $this->SoapVersion = $value;
+            case 'soapVersion':
+                $this->SoapVersion = $value;
+                return true;
+            default:
+                return parent::setOption( $option, $value );
         }
-        else
+    }
+
+    /// @todo move this to constructor
+    function availableOptions()
+    {
+        return array_merge( $this->Options, array( 'soapVersion' ) );
+    }
+
+    function getOption( $option )
+    {
+        switch( $option )
         {
-            return parent::setOption( $option, $value );
+            case 'soapVersion':
+                return $this->SoapVersion;
+            default:
+                return parent::getOption( $option );
         }
     }
 

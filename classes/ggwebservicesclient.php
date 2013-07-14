@@ -797,13 +797,15 @@ class ggWebservicesClient
      * without having to write a hundred method calls
      * @param string $option
      * @param mixed $value
-     * @throws Exception if option does not exist
+     * @return bool false if option does not exist
      */
     function setOption( $option, $value )
     {
         if ( !in_array( $option, $this->Options ) )
         {
-            throw new Exception( "Option $option not supported" );
+            // throwing an exception would make more sense, but we did not before - keep this for compat
+            return false;
+            //throw new Exception( "Option $option not supported" );
         }
 
         switch( $option )
@@ -868,7 +870,7 @@ class ggWebservicesClient
                 $this->SSLCAInfo = $value;
                 break;
         }
-
+        return true;
     }
 
     /**
