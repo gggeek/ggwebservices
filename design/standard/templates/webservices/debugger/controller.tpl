@@ -164,6 +164,7 @@ Debugger</h1>
 <option value="HEAD"{if eq($params.verb|upcase, 'HEAD')} selected="selected"{/if}>HEAD</option>
 <option value="OPTIONS"{if eq($params.verb|upcase, 'OPTIONS')} selected="selected"{/if}>OPTIONS</option>
 <option value="TRACE"{if eq($params.verb|upcase, 'TRACE')} selected="selected"{/if}>TRACE</option>
+<option value="PATCH"{if eq($params.verb|upcase, 'PATCH')} selected="selected"{/if}>PATCH</option>
 </select><br/>
 <input name="accept" value=""/>
 </td>
