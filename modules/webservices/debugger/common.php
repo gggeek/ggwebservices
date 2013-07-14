@@ -102,6 +102,8 @@
     else
       $params['responsecompression'] = 0;
 
+    $params['accept'] = isset($_GET['accept']) ? $_GET['accept'] : '';
+
     $params['clientcookies'] = isset($_GET['clientcookies']) ? $_GET['clientcookies'] : '';
     // soap
   	$params['wsdl'] = isset($_GET['wsdl']) ? (int)$_GET['wsdl'] : 0;
@@ -134,6 +136,7 @@
     $params['timeout'] = 0;
     $params['requestcompression'] = 0;
     $params['responsecompression'] = 0;
+    $params['accept'] = '';
     $params['clientcookies'] = '';
     // soap
   	$params['wsdl'] = 0;

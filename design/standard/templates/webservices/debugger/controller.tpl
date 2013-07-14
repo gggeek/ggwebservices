@@ -150,6 +150,7 @@
       document.frmaction.inspectwsdl.disabled = true;
       document.frmaction.wsdl.disabled = true;
       document.frmaction.soapversion.disabled = true;
+      document.frmaction.accept.disabled = true;
     }
     else if (wstype == 1)
     {
@@ -171,6 +172,7 @@
       document.frmaction.inspectwsdl.disabled = true;
       document.frmaction.wsdl.disabled = true;
       document.frmaction.soapversion.disabled = true;
+      document.frmaction.accept.disabled = true;
     }
     else if (wstype == 2)
     {
@@ -192,6 +194,7 @@
       document.frmaction.inspectwsdl.disabled = true;
       document.frmaction.wsdl.disabled = true;
       document.frmaction.soapversion.disabled = true;
+      document.frmaction.accept.disabled = true;
     }
     else if (wstype == 3)
     {
@@ -212,6 +215,7 @@
       document.frmaction.wsdl.disabled = false;
       document.frmaction.inspectwsdl.disabled = false;
       document.frmaction.soapversion.disabled = false;
+      document.frmaction.accept.disabled = true;
     }
     else if (wstype == 4)
     {
@@ -232,6 +236,7 @@
       document.frmaction.wsdl.disabled = true;
       document.frmaction.inspectwsdl.disabled = true;
       document.frmaction.soapversion.disabled = true;
+      document.frmaction.accept.disabled = false;
       switchmethod();
     }
     // used to make sure the 'edit' link to the visual editor gets reset properly
@@ -430,7 +435,8 @@ Debugger</h1>
 <td class="labelcell">REST:</td>
 <td class="labelcell">Name variable:</td><td><input type="text" name="namevariable" value="{$params.namevariable|wash()}"/></td>
 
-<td class="labelcell">Verb:</td><td><select name="verb" onclick="switchmethod();">
+<td class="labelcell">Verb:<p>Accept:</p></td>
+<td><select name="verb" onclick="switchmethod();">
 <option value="GET"{if eq($params.verb|upcase, 'GET')} selected="selected"{/if}>GET</option>
 <option value="POST"{if eq($params.verb|upcase, 'POST')} selected="selected"{/if}>POST</option>
 <option value="PUT"{if eq($params.verb|upcase, 'PUT')} selected="selected"{/if}>PUT</option>
@@ -438,7 +444,9 @@ Debugger</h1>
 <option value="HEAD"{if eq($params.verb|upcase, 'HEAD')} selected="selected"{/if}>HEAD</option>
 <option value="OPTIONS"{if eq($params.verb|upcase, 'OPTIONS')} selected="selected"{/if}>OPTIONS</option>
 <option value="TRACE"{if eq($params.verb|upcase, 'TRACE')} selected="selected"{/if}>TRACE</option>
-</select></td>
+</select><br/>
+<input name="accept" value=""/>
+</td>
 
 <td class="labelcell">Request type:<p>Response type:</p></td>
 <td><select name="requesttype">

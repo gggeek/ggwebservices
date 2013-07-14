@@ -235,6 +235,10 @@ if ( $action )
         {
             $client->setOption( 'requestType', $requesttype );
         }
+        if ( $accept != '' )
+        {
+            $client->setOption( 'accept', $accept );
+        }
     }
 
     // prepare an array of ws calls to execute (can be one or two)
