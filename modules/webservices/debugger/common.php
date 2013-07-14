@@ -111,7 +111,7 @@
     // rest
     $params['namevariable'] = isset($_GET['namevariable']) ? $_GET['namevariable'] :'';
     $params['responsetype'] = isset($_GET['responsetype']) ? $_GET['responsetype'] :'';
-    $params['requesttype'] = isset($_GET['requesttype']) ? $_GET['requesttype'] :'';
+    $params['requesttype'] = isset($_GET['requesttypeCombo']) ? $_GET['requesttypeCombo'] :'';
     $params['verb'] = isset($_GET['verb']) ? $_GET['verb'] :'';
   }
   else

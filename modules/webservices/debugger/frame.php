@@ -12,7 +12,7 @@
 $wsINI = eZINI::instance( 'wsproviders.ini' );
 
 // calculate params for local server, for consistency with what we do below
-foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap' ) as  $i => $protocol ) // soap has to be last!
+foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap', 'rest v1', 'rest v2' ) as  $i => $protocol ) // soap has to be last!
 {
     if ( $protocol == 'ezjscore' )
     {
@@ -23,13 +23,26 @@ foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap' ) as  $i => $protocol )
 		$wsINI = eZINI::instance( 'soap.ini' );
 		$uri = "webservices/wsdl";
 	}
+    else if ( $protocol == 'rest v1' )
+    {
+        $uri = "api/ezp/v1";
+    }
+    else if ( $protocol == 'rest v2' )
+    {
+        $uri = "api/ezp/v2";
+    }
     else
     {
         $uri = "webservices/execute/$protocol";
     }
     eZURI::transformURI( $uri , false, 'full' );
-/// @todo disable link if ezjscore not active ...
-    if ( ( $protocol == 'ezjscore' && in_array( 'ezjscore', eZExtension::activeExtensions() ) ) || ( $protocol != 'ezjscore' && $wsINI->variable( 'GeneralSettings', 'Enable' . strtoupper( $protocol ) ) == 'true' ) )
+
+    /// @todo disable link if ezjscore not active, enable rest v1 and rest v2 ...
+    if ( ( $protocol == 'ezjscore' && in_array( 'ezjscore', eZExtension::activeExtensions() ) ) ||
+         ( $protocol != 'ezjscore' && $protocol != 'rest v1' && $protocol != 'rest v2' && $wsINI->variable( 'GeneralSettings', 'Enable' . strtoupper( $protocol ) ) == 'true' ) ||
+         ( $protocol == 'rest v1' && false ) ||
+         ( $protocol == 'rest v2' && false )
+       )
     {
         $url = parse_url( $uri );
         $params = '?wsaction=';
@@ -40,6 +53,8 @@ foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap' ) as  $i => $protocol )
         {
             $params .= '&protocol=2';
         }
+        if ( $i > 4 )
+            $i = 4;
         $params .= "&wstype=$i";
         /// @todo filtyer out all cookies except the one for current session ?
         $ccookies = array();
@@ -173,6 +188,7 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
         }
     }
 }
+
 // display the iframe_based template
 $tpl = ggeZWebservices::eZTemplateFactory();
 //$tpl->setVariable( 'query_string', $query_string );
