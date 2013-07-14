@@ -16,6 +16,8 @@ Changes from 0.13 to 0.14 - released 2013/xx/yy
 
 - methods ggWebservicesClient::getOption() and ggWebservicesClient::availableOptions()
 
+- example code to interact with eZPublish REST API v2 in doc/samples
+
 * Changed
 
 - REST requests will happily receive a plaintext or html response without trying to decode it.
