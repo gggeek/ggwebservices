@@ -232,6 +232,7 @@
       document.frmaction.wsdl.disabled = true;
       document.frmaction.inspectwsdl.disabled = true;
       document.frmaction.soapversion.disabled = true;
+      switchmethod();
     }
     // used to make sure the 'edit' link to the visual editor gets reset properly
     switchaction();
@@ -284,13 +285,27 @@
       {
           document.frmaction.action = document.frmaction.action.replace(/\/\?usepost=(true|false)/, '') + '/?usepost=true';
           document.frmaction.method = 'post';
+          document.frmaction.requesttype.disabled = false;
       }
       else
       {
           document.frmaction.action = document.frmaction.action.replace(/\/\?usepost=(true|false)/, '') + '/?usepost=false';
           document.frmaction.method = 'get';
+          document.frmaction.requesttype.disabled = true;
       }
       return true;
+  }
+
+  function switchmethod()
+  {
+      if ( document.frmaction.verb.value == 'GET' || document.frmaction.verb.value == 'HEAD' || document.frmaction.verb.value == 'TRACE' )
+      {
+          document.frmaction.requesttype.disabled = true;
+      }
+      else
+      {
+          document.frmaction.requesttype.disabled = false;
+      }
   }
 
 {/literal}//-->
@@ -415,7 +430,7 @@ Debugger</h1>
 <td class="labelcell">REST:</td>
 <td class="labelcell">Name variable:</td><td><input type="text" name="namevariable" value="{$params.namevariable|wash()}"/></td>
 
-<td class="labelcell">Verb:</td><td><select name="verb">
+<td class="labelcell">Verb:</td><td><select name="verb" onclick="switchmethod();">
 <option value="GET"{if eq($params.verb|upcase, 'GET')} selected="selected"{/if}>GET</option>
 <option value="POST"{if eq($params.verb|upcase, 'POST')} selected="selected"{/if}>POST</option>
 <option value="PUT"{if eq($params.verb|upcase, 'PUT')} selected="selected"{/if}>PUT</option>
