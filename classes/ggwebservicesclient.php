@@ -42,9 +42,10 @@ class ggWebservicesClient
     /**
      * Creates a new client.
      * @param string $server
+     * @param string $path
      * @param int|string $port 'ssl' can be used for https connections, or port number
      * @param string $protocol use 'https' (or bool true, for backward compatibility) to specify https connections
-     * @todo add a simplfied syntax for constructor, using parse_url and a single string
+     * @todo add a simplified syntax for constructor, using parse_url and a single string
      */
     function __construct( $server, $path = '/', $port = 80, $protocol=null )
     {
@@ -103,6 +104,7 @@ class ggWebservicesClient
     /**
      * Sends a request and returns the response object. 0 on error
      * @param ggWebServicesRequest $request
+     * @return ggWebservicesResponse
      */
     function send( $request )
     {
@@ -361,12 +363,13 @@ class ggWebservicesClient
         if ( $ResponseClass == 'ggWebservicesResponse' )
         {
             // the client subclass in use did not bother to specify a class for responses:
-            // assume the reponse class is named after the request
+            // assume the response class is named after the request
             if ( preg_match( '/^(.+)Request$/', get_class( $request ), $matches ) && class_exists( $matches[1] . 'Response' ) )
             {
                 $ResponseClass = $matches[1] . 'Response';
             }
         }
+        /// @var ggWebservicesResponse $response
         $response = new $ResponseClass( $request->name() );
         $response->decodeStream( $request, $rawResponse, $respArray['headers'], $respArray['cookies'], $respArray['status_code'] );
         return $response;
@@ -375,7 +378,8 @@ class ggWebservicesClient
     /**
      * Build and return full HTTP payload out of a request obj (and other server status vars)
      * @param ggWebservicesRequest $request
-     * @return string
+     * @param bool $forCurl
+     * @return string|array
      * @todo the API and code of this function is quite ugly ($forCurl usage)
      */
     protected function payload( $request, $forCurl=false )
@@ -512,10 +516,10 @@ class ggWebservicesClient
     }
 
     /**
-    * HTTP parsing code taken from the phpxmlrpc lib - should be battle worn.
-    * @todo look at PEAR, ZEND, other libs, if they do it better...
-    * @todo when getting 204, 205 responses, we should not return body
-    */
+     * HTTP parsing code taken from the phpxmlrpc lib - should be battle worn.
+     * @todo look at PEAR, ZEND, other libs, if they do it better...
+     * @todo when getting 204, 205 responses, we should not return body
+     */
     protected function parseHTTPResponse( &$data, $headers_processed=false )
     {
         if ( $data == '' )
@@ -735,7 +739,7 @@ class ggWebservicesClient
     }
 
     /**
-     * decode a string that is encoded w. "chunked" transfer encoding
+     * Decode a string that is encoded w. "chunked" transfer encoding
      * as defined in rfc2068 par. 19.4.6
      * Code shamelessly stolen from nusoap library by Dietrich Ayala
      *
@@ -788,14 +792,20 @@ class ggWebservicesClient
         return $new;
     }
 
-    /*
-       One-stop shop for setting all configuration options
-       without haviong to write a haundred method calls
-       @todo move all of these values to an array, for commodity
-       @todo return true if option exists, false otherwise?
-   */
+    /**
+     * One-stop shop for setting all configuration options
+     * without having to write a hundred method calls
+     * @param string $option
+     * @param mixed $value
+     * @throws Exception if option does not exist
+     */
     function setOption( $option, $value )
     {
+        if ( !in_array( $option, $this->Options ) )
+        {
+            throw new Exception( "Option $option not supported" );
+        }
+
         switch( $option )
         {
             case 'timeout':
@@ -830,7 +840,7 @@ class ggWebservicesClient
                 $this->ProxyPort = ( (int)$value != 0 ? (int)$value : 8080 );
                 break;
             case 'proxyUser':
-                $this->ProxyUser = $value;
+                $this->ProxyLogin = $value;
                 break;
             case 'proxyPassword':
                 $this->ProxyPassword = $value;
@@ -862,9 +872,10 @@ class ggWebservicesClient
     }
 
     /**
-    *  Set many options in one fell swoop
-    * @param array $optionArray
-    */
+     * Set many options in one fell swoop
+     * @param array $optionArray
+     * @throws Exception if an option does not exist
+     */
     function setOptions( $optionArray )
     {
         foreach( $optionArray as $name => $value )
@@ -874,45 +885,110 @@ class ggWebservicesClient
     }
 
     /**
-     Set timeout value
+     * Retrieves the current value for any option
+     * @param string $option
+     * @return bool|int|string
+     * @throws Exception if option does not exist
+     */
+    function getOption( $option )
+    {
+        if ( !in_array( $option, $this->Options ) )
+        {
+            throw new Exception( "Option $option not supported" );
+        }
 
-     @param int $timeout value in seconds. Set to 0 for unlimited.
-     @deprecated use setOption instead
-    */
+        switch( $option )
+        {
+            case 'timeout':
+                return $this->Timeout;
+            case 'login':
+                return $this->Login;
+            case 'password':
+                return $this->Password;
+            case 'authType':
+                return $this->AuthType;
+            case 'requestCompression':
+                return $this->RequestCompression;
+            case 'method':
+                return $this->Verb;
+            case 'acceptedCompression':
+                return $this->AcceptedCompression;
+            case 'proxyHost':
+                return $this->Proxy;
+            case 'proxyPort':
+                return $this->ProxyPort;
+            case 'proxyUser':
+                return $this->ProxyLogin;
+            case 'proxyPassword':
+                return $this->ProxyPassword;
+            case 'proxyAuthType':
+                return $this->ProxyAuthType;
+            case 'forceCURL':
+                return $this->ForceCURL;
+            case 'debug':
+                return $this->Debug;
+            case 'SSLVerifyHost':
+                return $this->SSLVerifyHost;
+            case 'SSLVerifyPeer':
+                return $this->SSLVerifyPeer;
+            case 'SSLCAInfo':
+                return $this->SSLCAInfo;
+        }
+    }
+
+    /**
+     * Lists all options which can be set
+     * @return array
+     */
+    function availableOptions()
+    {
+        return $this->Options;
+    }
+
+    /**
+     * Set timeout value
+     *
+     * @param int $timeout value in seconds. Set to 0 for unlimited.
+     * @deprecated use setOption instead
+     */
     function setTimeout( $timeout )
     {
         $this->setOption( 'timeout', $timeout );
     }
 
     /**
-     Sets the HTTP login
-     @deprecated use setOption instead
-    */
+     * Sets the HTTP login
+     * @deprecated use setOption instead
+     */
     function setLogin( $login  )
     {
         $this->setOption( 'login', $login );
     }
 
     /**
-      Returns the login, used for HTTP authentification
-    */
+     * Returns the login, used for HTTP authentification
+     * @return string
+     * @deprecated use getOption instead
+     */
     function login()
     {
         return $this->Login;
     }
 
     /**
-     Sets the HTTP password
-     @deprecated use setOption instead
-    */
+     * Sets the HTTP password
+     * @deprecated use setOption instead
+     */
     function setPassword( $password  )
     {
         $this->setOption( 'password', $password );
     }
 
     /**
-      Returns the password, used for HTTP authentification
-    */
+     * Returns the password, used for HTTP authentification
+     * @return string
+     * @deprecated use getOption instead
+     */
     function password()
     {
         return $this->Password;
@@ -1043,6 +1119,10 @@ class ggWebservicesClient
     protected $Debug = 0;
     var $RequestPayload = '';
     protected $ResponsePayload = '';
+
+    protected $Options = array( 'timeout', 'login', 'password', 'authType', 'requestCompression',
+        'method', 'acceptedCompression', 'proxyHost', 'proxyPort', 'proxyUser','proxyPassword',
+        'proxyAuthType', 'forceCURL', 'debug', 'SSLVerifyHost', 'SSLVerifyPeer', 'SSLCAInfo' );
 }
 
 ?>
