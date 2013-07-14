@@ -73,7 +73,9 @@ class ggeZWebservicesClient
      * @param string $method the webservice method to be executed
      * @param array $parameters parameters for the webservice method
      * @param array $options extra options to be set into the ws client
-     * @return mixed an object instance of a ggWebservicesResponse subclass
+     * @return ggWebservicesResponse (a subclass of generally)
+     *
+     * @throws Exception
      */
     static private function _call( $server, $method, $parameters, $options = array() )
     {
