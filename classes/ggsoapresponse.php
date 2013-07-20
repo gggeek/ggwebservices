@@ -291,8 +291,13 @@ TODO: add encoding checks with schema validation.
         }
     }
 
-    protected $ContentType = 'application/soap+xml';
+    function ns()
+    {
+        return $this->ns;
+    }
 
+    protected $ContentType = 'application/soap+xml';
+    protected $ns = '';
 }
 
 ?>

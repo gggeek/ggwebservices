@@ -1,9 +1,12 @@
 Changes from 0.13 to 0.14 - released 2013/xx/yy
 
+NB: new php classes added. Please regenerate autoloads when upgrading!
+
 *Added:
 
 - compatibility with the eZ Publish REST API v2!
-  Implemented both in the php layer and in the debugger (using REST type)
+  Implemented both in the php layer and in the debugger (using REST type).
+  For best results, use the json variant of all the calls for now.
 
 - make the webservices/execute view respect ValidateClientIPs even when server
   is behind a reverse proxy (needs eZP 4.5 or later and config in site.ini)
@@ -16,9 +19,12 @@ Changes from 0.13 to 0.14 - released 2013/xx/yy
 
 - methods ggWebservicesClient::getOption() and ggWebservicesClient::availableOptions()
 
-- new methods in class ggRESTRequest to set Accept header, or any custom header
+- new methods in class ggRESTRequest to set Accept header, or any custom header for that matter
 
 - example code to interact with eZPublish REST API v2 in doc/samples
+
+- the template fetch function webservices/call has a new parameter. When set, the response object
+  is returned instead of just the data
 
 * Changed
 

@@ -2,8 +2,6 @@ Roughly sorted by priority:
 
 - allow users to specify more options for $.jsonrpc (same as Y.io.jsonrpc does)
 
-- add a fetch function for templates which allows to get the full response wrapped in a tpl object
-
 - add a better version of ezwsclient::send() that does not wrap response in an array
 
 - make sure we convert charsets where possible / do not break json/xml decoding in responses because of it
@@ -92,7 +90,6 @@ Roughly sorted by priority:
   + ezjscore methods: improve parsing of phpdoc comments to get signature
   + test fix 4 bug: "url for local server in debugger is wrong when using forcevhost w.out rewriting rules (also without forcevhost?)"
   + parse all Options from wsproviders.ini for loading remote server config from left col (some are not yest supported)
-  + fix: why using the same session cookie of admin session to send a ws call stalls the debugger?
 
 - add jsonrpc 2.0 support (both client and server)
 

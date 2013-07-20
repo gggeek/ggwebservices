@@ -214,6 +214,11 @@ class ggRESTResponse extends ggWebservicesResponse
         $this->JsonpCallback = $callback;
     }
 
+    function jsonpCallback()
+    {
+        return $this->JsonpCallback;
+    }
+
     static function knownContentTypes()
     {
         return array_unique( self::$KnownContentTypes );

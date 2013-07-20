@@ -29,6 +29,11 @@ $FunctionList['call'] = array(
                                 array( 'name'     => 'options',
                                        'type'     => 'array',
                                        'required' => false,
-                                       'default'  => array() ) ) );
+                                       'default'  => array() ),
+                                array( 'name'     => 'return_response',
+                                       'type'     => 'bool',
+                                       'required' => false,
+                                       'default'  => false )
+    ) );
 
 ?>

@@ -105,6 +105,11 @@ class ggJSONRPCResponse extends ggWebservicesResponse
         $this->Id = $id;
     }
 
+    function id()
+    {
+        return $this->Id;
+    }
+
     protected $Id;
     protected $ContentType = 'application/json';
 }

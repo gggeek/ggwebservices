@@ -162,6 +162,11 @@ abstract class ggWebservicesResponse
         return $this->StatusCode;
     }
 
+    function name()
+    {
+        return $this->Name;
+    }
+
     /**
      * @param string $header
      * @return array 1st element: content-type, 2nd element: charset

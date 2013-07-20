@@ -17,9 +17,18 @@ class ggeZWebservicesClient
     *
     * @todo allow template-level code to grab error messages if it wants to
     */
-    static function call( $server, $method, $parameters = array(), $options = array() )
+    static function call( $server, $method, $parameters = array(), $options = array(), $return_response_obj=false )
     {
-        return self::send(  $server, $method, $parameters, false, $options );
+        if ( $return_response_obj )
+        {
+            $res = self::send(  $server, $method, $parameters, true, $options );
+            if ( isset( $res['result'] ) )
+                return  array( 'result' => new ggeZWebservicesResponse( $res['result'] ) );
+            else
+                return $res;
+        }
+        else
+            return self::send(  $server, $method, $parameters, false, $options );
     }
 
     /**
