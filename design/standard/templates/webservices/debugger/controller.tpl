@@ -153,7 +153,10 @@ Debugger</h1>
 
 <tr id="restcell">
 <td class="labelcell">REST:</td>
-<td class="labelcell">Name variable:</td><td><input type="text" name="namevariable" value="{$params.namevariable|wash()}"/></td>
+<td class="labelcell">Name variable:<p>Extra headers:</p></td>
+<td><input type="text" name="namevariable" value="{$params.namevariable|wash()}"/><br/>
+<input name="extraheaders" value=""/>
+</td>
 
 <td class="labelcell">Verb:<p>Accept:</p></td>
 <td><select name="verb" onclick="switchmethod();">

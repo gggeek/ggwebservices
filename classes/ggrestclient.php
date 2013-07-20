@@ -38,6 +38,13 @@ class ggRESTClient extends ggWebservicesClient
         {
             $request->setAccept( $this->Accept );
         }
+        if ( count( $this->RequestHeaders ) )
+        {
+            foreach( $this->RequestHeaders  as $name => $value )
+            {
+                $request->setExtraHeader( $name, $value );
+            }
+        }
         return parent::send( $request );
     }
 
@@ -57,6 +64,9 @@ class ggRESTClient extends ggWebservicesClient
             case 'accept':
                 $this->Accept = $value;
                 return true;
+            case 'requestHeaders':
+                $this->RequestHeaders = $value;
+                return true;
             default:
                 return parent::setOption( $option, $value );
         }
@@ -65,7 +75,7 @@ class ggRESTClient extends ggWebservicesClient
     /// @todo move this to constructor
     function availableOptions()
     {
-        return array_merge( $this->Options, array( 'nameVariable', 'responseType', 'requestType', 'accept' ) );
+        return array_merge( $this->Options, array( 'nameVariable', 'responseType', 'requestType', 'accept', 'RequestHeaders' ) );
     }
 
     function getOption( $option )
@@ -75,14 +85,21 @@ class ggRESTClient extends ggWebservicesClient
             case 'nameVariable':
                 return $this->NameVar;
             case 'responseType':
-                return$this->ResponseType;
+                return $this->ResponseType;
             case 'requestType':
-                return$this->RequestType;
+                return $this->RequestType;
             case 'accept':
-                return$this->Accept;
+                return $this->Accept;
+            case 'requestHeaders':
+                return $this->RequestHeaders;
             default:
                 return parent::getOption( $option );
         }
+    }
+
+    function setRequestHeader( $name, $value )
+    {
+        $this->RequestHeaders[$name] = $value;
     }
 
     // store this in the client to inject it in requests

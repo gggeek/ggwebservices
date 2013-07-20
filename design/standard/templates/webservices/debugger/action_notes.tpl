@@ -30,6 +30,8 @@
             <li>When using GET, the Payload is serialized into the query string. For POST/PUT, it is serialized into the request body, using the format defined by the "Request type" option</li>
             <li><u>NB: You can specify custom formats for the request body, but it currently can only serialize to JSON, PHP, serialized PHP</u></li>
             <li>The "Response type" option is used to force proper parsing of response from servers that send incorrect Content-type headers. application/json and text/xml supported so far</li>
+            <li>The format for extra http headers for the response is header=value, separated by commas</li>
+            <li>The format for the request type can be any, as long as the library is able to encode the request using it. Most variations of json are accepted</li>
         </ul></li>
     <li>OAUTH authentication is not supported yet</li>
 </ul>

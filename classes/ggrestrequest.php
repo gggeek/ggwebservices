@@ -79,6 +79,10 @@ class ggRESTRequest extends ggWebservicesRequest
         return $return;
     }
 
+    /**
+     * @param array $params
+     * @return string
+     */
     protected function _payload( $params )
     {
         switch( $this->mimeTypeToEncodeType( $this->ContentType ) )
@@ -253,7 +257,7 @@ class ggRESTRequest extends ggWebservicesRequest
     {
         /// shall we declare support for insecure stuff such as php and serialized php?
         /// NB: this must be accompanied by code that can decode the format in ggRESTResponse
-        return $this->Accept != '' ? array( 'Accept' => $this->Accept ) : array();
+        return $this->Accept != '' ? array_merge( $this->ExtraHeaders, array( 'Accept' => $this->Accept ) ) : $this->ExtraHeaders;
     }
 
     /// New method in this subclass
@@ -273,13 +277,19 @@ class ggRESTRequest extends ggWebservicesRequest
         return $this->JsonpCallback;
     }
 
-    // allow easily swapping REST requests from GET to POST and viceversa
+    /**
+     * Allow easily swapping REST requests from GET to POST and viceversa
+     * @param string $method
+     */
     function setMethod( $method )
     {
         $this->Verb = $method;
     }
 
-    // allow easily changing the format of serialized requests: where to put called method name (GET/POST var, if null as last element in url path)
+    /**
+     * Allow easily changing the format of serialized requests: where to put called method name (GET/POST var, if null as last element in url path)
+     * @param string $var
+     */
     function setNameVar( $var )
     {
         $this->NameVar = $var;
@@ -309,9 +319,22 @@ class ggRESTRequest extends ggWebservicesRequest
         return false;
     }
 
+    /**
+     * @param string $value
+     */
     function setAccept( $value )
     {
         $this->Accept = $value;
+    }
+
+    /**
+     * Used to add custom HTTP headers besides common ones (content-type, accept, auth, proxies, content-encoding, accept-encoding)
+     * @param string $name
+     * @param string $value
+     */
+    function setExtraHeader( $name, $value )
+    {
+        $this->ExtraHeaders[$name] = $value;
     }
 
     /**
@@ -337,9 +360,9 @@ class ggRESTRequest extends ggWebservicesRequest
     protected $ResponseType = '';
 
     /// name of GET variable used to specify method name.
-    /// If empty; method name is serialized as last element in url path
+    /// If empty method name is serialized as last element in url path
     protected $NameVar = null;
-    /// name of GET variable used to specify output format.
+    /// name of GET variable used to specify desired output format.
     /// ContentType comes from ezjszcore. flickr uses 'format'
     protected $FormatVar = 'ContentType';
     /// name of GET variable used for jsonp output
@@ -369,6 +392,8 @@ class ggRESTRequest extends ggWebservicesRequest
     );
 
     protected $Accept = 'application/json, text/xml; q=0.5';
+
+    protected $ExtraHeaders = array();
 }
 
 ?>

@@ -217,6 +217,7 @@ if ( $action )
         $client->setOption( 'cacheWSDL', WSDL_CACHE_NONE );
     }
 
+    /// @todo instead of modifying client here we should manipulate directly the request later on
     if ( $wsprotocol == 'REST' )
     {
         if ( $verb != '' )
@@ -238,6 +239,17 @@ if ( $action )
         if ( $accept != '' )
         {
             $client->setOption( 'accept', $accept );
+        }
+        if ( $extraheaders != '' )
+        {
+            foreach( explode( ',', $extraheaders ) as $header )
+            {
+                $h = explode( '=', $header, 2 );
+                if ( count( $h ) == 2 )
+                {
+                    $client->setRequestheader( trim( $h[0] ), trim( $h[1] ) );
+                }
+            }
         }
     }
 

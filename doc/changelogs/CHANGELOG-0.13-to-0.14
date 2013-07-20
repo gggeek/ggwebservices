@@ -16,6 +16,8 @@ Changes from 0.13 to 0.14 - released 2013/xx/yy
 
 - methods ggWebservicesClient::getOption() and ggWebservicesClient::availableOptions()
 
+- new methods in class ggRESTRequest to set Accept header, or any custom header
+
 - example code to interact with eZPublish REST API v2 in doc/samples
 
 * Changed
