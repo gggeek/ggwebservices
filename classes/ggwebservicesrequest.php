@@ -42,6 +42,8 @@ abstract class ggWebservicesRequest
     * Useful for protocols that encode parameters in the URL and use GET instead
     * of POST. Default is not to touch the url received and give it back intact.
     * Override it in case of need.
+    * @param string $uri
+    * @return string
     */
     function requestURI( $uri )
     {
@@ -60,12 +62,17 @@ abstract class ggWebservicesRequest
     * This call should be reversed: addParameter( $value, $name='' ) to better
     * support protocols with positional params. Alas we keep compatibility with
     * the eZP soap request class.
+    * @param string $name
+    * @param mixed $value
     */
     function addParameter( $name, $value )
     {
         $this->Parameters[$name] = $value;
     }
 
+    /**
+     * @param array $params
+     */
     function addParameters( $params )
     {
         foreach( $params as $name => $value )

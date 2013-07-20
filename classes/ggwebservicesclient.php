@@ -499,6 +499,7 @@ class ggWebservicesClient
             }
         }
 
+        /// @todo should we avoid sending header if value === ''? This way we allow users to unset them
         foreach ( $RequestHeaders as $key => $val )
         {
             $RequestHeaders[$key] = "$key: $val";

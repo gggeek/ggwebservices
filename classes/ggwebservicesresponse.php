@@ -22,10 +22,10 @@ abstract class ggWebservicesResponse
     }
 
     /**
-      Returns the payload for the response (in HTTP terms, the 'message body').
-      Uses internal members name, value, isFault, faultString and faultCode
-      @return string
-    */
+     * Returns the payload for the response (in HTTP terms, the 'message body').
+     * Uses internal members name, value, isFault, faultString and faultCode
+     * @return string
+     */
     abstract function payload();
 
     /**
@@ -101,16 +101,18 @@ abstract class ggWebservicesResponse
     }
 
     /**
-     Returns the fault string
-    */
+     * Returns the fault string
+     * @return string
+     */
     function faultString()
     {
         return $this->FaultString;
     }
 
     /**
-      Returns the response value as plain php value
-    */
+     * Returns the response value as plain php value
+     * @return mixed
+     */
     function value()
     {
         return $this->Value;
@@ -211,7 +213,7 @@ abstract class ggWebservicesResponse
     protected $FaultString = false;
     /// Contains the fault code
     protected $FaultCode = false;
-    /// Contains true if the response was an fault
+    /// Contains true if the response was a fault
     protected $IsFault = false;
     /// Contains the name of the response, i.e. function call name
     protected $Name;

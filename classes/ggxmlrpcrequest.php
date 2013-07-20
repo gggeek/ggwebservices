@@ -10,7 +10,7 @@ class ggXMLRPCRequest extends ggWebservicesRequest
 {
     function __construct( $name='', $parameters=array() )
     {
-        // strip our param names, since xmlrpc only uses postional params
+        // strip out param names, since xmlrpc only uses positional params
         parent::__construct( $name, array_values( $parameters ) );
     }
 

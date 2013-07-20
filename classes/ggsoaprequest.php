@@ -71,9 +71,13 @@ class ggSOAPRequest extends ggWebservicesRequest
     }
 
     /**
-      Encodes a PHP variable into a SOAP datatype.
-      @todo move this logic into ggWSDLParser class
-    */
+     * Encodes a PHP variable into a SOAP datatype.
+     * @todo move this logic into ggWSDLParser class
+     * @param DOMDocument $doc
+     * @param string $name
+     * @param mixed $value
+     * @return DOMElement|false
+     */
     static function encodeValue( $doc, $name, $value )
     {
         switch ( gettype( $value ) )
@@ -189,12 +193,16 @@ class ggSOAPRequest extends ggWebservicesRequest
         }
     }
 
+    /**
+     * @return int
+     * @todo for uniformity, this should be renamed soapVersion()
+     */
     public function getSoapVersion()
     {
         return $this->SoapVersion;
     }
 
-    public function ContentType()
+    public function contentType()
     {
         if ( $this->SoapVersion == 2 )
         {

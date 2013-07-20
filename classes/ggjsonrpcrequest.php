@@ -10,7 +10,7 @@ class ggJSONRPCRequest extends ggWebservicesRequest
 {
     function __construct( $name='', $parameters=array(), $id=1 )
     {
-        // strip our param names, since jsonrpc only uses postional params
+        // strip out param names, since jsonrpc only uses positional params
         parent::__construct( $name, array_values( $parameters ) );
         $this->Id = $id;
     }
@@ -57,7 +57,6 @@ class ggJSONRPCRequest extends ggWebservicesRequest
 
     protected $Verb = 'POST';
     protected $ContentType = 'application/json';
-
 
 }
 
