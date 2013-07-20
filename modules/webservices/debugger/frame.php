@@ -14,6 +14,7 @@ $wsINI = eZINI::instance( 'wsproviders.ini' );
 // calculate params for local server, for consistency with what we do below
 foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap', 'rest v1', 'rest v2' ) as  $i => $protocol ) // soap has to be last!
 {
+    $method = '';
     if ( $protocol == 'ezjscore' )
     {
         $uri = "ezjscore/call";
@@ -26,10 +27,15 @@ foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap', 'rest v1', 'rest v2' )
     else if ( $protocol == 'rest v1' )
     {
         $uri = "api/ezp/v1";
+        $restv1 = in_array( 'ezprestapiprovider', eZExtension::activeExtensions() );
+        $method = '/';
     }
     else if ( $protocol == 'rest v2' )
     {
         $uri = "api/ezp/v2";
+        $ver = eZPublishSDK::majorVersion();
+        $restv2 = ( $ver >= 2012 & eZPublishSDK::minorVersion() >= 9 ) || ( $ver >= 5 && $ver < 2011 ) ;
+        $method = '/';
     }
     else
     {
@@ -37,11 +43,18 @@ foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap', 'rest v1', 'rest v2' )
     }
     eZURI::transformURI( $uri , false, 'full' );
 
+    if ( $protocol == 'rest v2' || $protocol == 'rest v1' )
+    {
+        // for now, manually remove siteaccess name if found in url
+        $sa = $GLOBALS['eZCurrentAccess']['name'];
+        $uri = str_replace( "/$sa/", "/", $uri );
+    }
+
     /// @todo disable link if ezjscore not active, enable rest v1 and rest v2 ...
     if ( ( $protocol == 'ezjscore' && in_array( 'ezjscore', eZExtension::activeExtensions() ) ) ||
          ( $protocol != 'ezjscore' && $protocol != 'rest v1' && $protocol != 'rest v2' && $wsINI->variable( 'GeneralSettings', 'Enable' . strtoupper( $protocol ) ) == 'true' ) ||
-         ( $protocol == 'rest v1' && false ) ||
-         ( $protocol == 'rest v2' && false )
+         ( $protocol == 'rest v1' && $restv1 ) ||
+         ( $protocol == 'rest v2' && $restv2 )
        )
     {
         $url = parse_url( $uri );
@@ -56,13 +69,17 @@ foreach ( array( 'xmlrpc', 'jsonrpc', 'ezjscore', 'soap', 'rest v1', 'rest v2' )
         if ( $i > 4 )
             $i = 4;
         $params .= "&wstype=$i";
-        /// @todo filtyer out all cookies except the one for current session ?
+        /// @todo filter out all cookies except the one for current session ?
         $ccookies = array();
         foreach ( $_COOKIE as $cn => $cv )
         {
             $ccookies[] = $cn.urlencode('=').$cv;
         }
         $params .= '&clientcookies=' . implode( ', ', $ccookies );
+        if ( $method != '' )
+        {
+            $params .= '&wsmethod=' . urlencode( $method );
+        }
         $server_list[$protocol] = $params;
     }
     else
@@ -164,6 +181,14 @@ foreach ( $wsINI->groups() as $groupname => $groupdef )
                     if ( isset( $target_list[$groupname]['Options']['requestType'] ) )
                     {
                         $params .= '&requesttype=' . urlencode( $target_list[$groupname]['Options']['requestType'] );
+                    }
+                    if ( isset( $target_list[$groupname]['Options']['accept'] ) )
+                    {
+                        $params .= '&accept=' . urlencode( $target_list[$groupname]['Options']['accept'] );
+                    }
+                    if ( isset( $target_list[$groupname]['Options']['requestHeaders'] ) )
+                    {
+                        $params .= '&extraheaders=' . urlencode( $target_list[$groupname]['Options']['requestHeaders'] );
                     }
 
                     /// @todo also parse from ini forceCURL, requestCompression, acceptedCompression
