@@ -1,12 +1,18 @@
 Roughly sorted by priority:
 
-- allow users to specify more options for $.jsonrpc (same as Y.io.jsonrpc does)
-
-- add a better version of ezwsclient::send() that does not wrap response in an array
+- allow parsing of response bodies even in case of http errors (such as 404)
 
 - make sure we convert charsets where possible / do not break json/xml decoding in responses because of it
 
 - add support for http redirects when using the http1.0 client
+
+- client: allow usage of different patterns for call();
+  . throw exception on errors instead of returning response object
+  . allow user to add callbacks filtering headers/payloads
+
+- allow users to specify more options for $.jsonrpc (same as Y.io.jsonrpc does)
+
+- add a better version of ezwsclient::send() that does not wrap response in an array
 
 - add url parsing (both in/out) for rest where parameters are in path instead of query string
 
@@ -23,7 +29,7 @@ Roughly sorted by priority:
 - client: implement oauth 2 client capabilities
 
 - client: test POST, PUT, DELETE, HEAD methods for REST client:
-  + when not to put any payload? currently get/head, but should eb true for delete too
+  + when not to put any payload? currently get/head, but should be true for delete too
   + if nameVar is given, when doing POST/PUT/DELETE calls, keep the method name in the url or put it in the payload?
 
 - test proper support for cdata section, entities, in ggSimpleTemplateXML
@@ -72,10 +78,6 @@ Roughly sorted by priority:
 - client: add to ezwsclient support for proxy auth type, proxy conf via options[] (and in debugger too)
 
 - client: return more specific error codes than ERROR_BAD_RESPONSE when decoding response fails
-
-- client: allow usage of different patterns for call();
-  . throw exception on errors instead of returning response object
-  . return response objects even on http errors (?)
 
 - add even more client samples, eg. to call webservices on facebook, youtube, amazon, google
 
