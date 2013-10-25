@@ -1,8 +1,9 @@
 *.PHPEditProject
 *.bak
+.idea
 var
 build
 dist
-pakefile.php
 .idea
 composer.phar
+vendor/
