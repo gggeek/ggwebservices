@@ -6,4 +6,5 @@ build
 dist
 .idea
 composer.phar
+composer.lock
 vendor/
