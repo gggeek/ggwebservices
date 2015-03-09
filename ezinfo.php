@@ -15,8 +15,8 @@ class ggwebservicesInfo
                 'Copyright' => 'Copyright (c) 2010, Yahoo! Inc. All rights reserved.',
                 'License' => 'Licensed under the BSD License' ),
             'Includes the following third-party software (2)' => array(
-                'Name' => '<a href="http://phpxmlrpc.sourceforge.net">phpxmlrpc</a>',
-                'Version' => "3.0.0.beta",
+                'Name' => '<a href="https://github.com/gggeek/phpxmlrpc">phpxmlrpc</a>',
+                'Version' => "3.0.0",
                 'Copyright' => 'Copyright (c) 1999,2000,2002 Edd Dumbill.',
                 'License' => 'Licensed under the BSD License' ),
             'Includes the following third-party software (3)' => array(
