@@ -6,7 +6,7 @@ class ggwebservicesInfo
     {
         return array(
             'Name' => "<a href=\"http://projects.ez.no/ggwebservices\">GG Webservices extension</a>",
-            'Version' => "0.14-dev",
+            'Version' => "0.14.1",
             'Copyright' => "Copyright (C) 2009-2015 Gaetano Giunta",
             'License' => "GNU General Public License v2.0",
             'Includes the following third-party software' => array(
