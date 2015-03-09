@@ -2,13 +2,16 @@ GG Webservices extension for eZ Publish
 =======================================
 
 An extension that adds/improves the native capabilities of eZ Publish to work as
+
 - webservices server
 - webservices client
+
 with a visual webservices debugger thrown in for good measure
 
 
 Features
 --------
+
 Allows to easily execute calls to remote servers using JSONRPC, XMLRPC and SOAP
 protocols or REST schemes (both from within php code and templates)
 
@@ -40,6 +43,7 @@ And much more :-)
 
 Prerequisites
 -------------
+
 - PHP 5 / eZP 4.0+
 - to execute/receive jsonrpc calls, the php JSON extension is needed
 - to execute/receive rest calls, the php SIMPLEXML or JSON extensions are needed
@@ -57,14 +61,16 @@ Prerequisites
 Basics
 ------
 Server (eZPublish exposes webservices):
+
 - to receive xmlrpc, jsonrpc or 'rest' calls, you need to:
-  1. modify the configuration in ``wsproviders.ini`` and possibly in ``site.ini.append.php``
-  2. create a file ``extension/<xxx>/<jsonrpc|xmlrpc|rest>/initialize.php`` with the
-     php code to be exposed as webservice
-  3. manage access control to the exposed services via the administration interface
-     and/or configuration settings
+    1. modify the configuration in ``wsproviders.ini`` and possibly in ``site.ini.append.php``
+    2. create a file ``extension/<xxx>/<jsonrpc|xmlrpc|rest>/initialize.php`` with the
+       php code to be exposed as webservice
+    3. manage access control to the exposed services via the administration interface
+       and/or configuration settings
 
 Client (eZPublish accesses webservices exposed by other systems):
+
 - every remote webservice server that has to be accessed from the eZ Publish
   server itself has to be defined in ``wsproviders.ini``
 - to call remote webservices from within templates use the template fetch function
@@ -79,6 +85,7 @@ For more details on usage of the extension, look in the doc/ directory.
 
 Known limitations
 -----------------
+
 - support for WSDL is limited, as is support for SOAP 1.2
 - jsonrpc support is only available for version 1.0, not for 2.0
 - the ws client does not support automatic cookie management
@@ -89,26 +96,30 @@ Known limitations
 - rest support is far from perfect, as the extension was developed based on rpc
   semantics (call a *method* which takes a *hash of parameters*).
   Currently:
-  + for the rest client, the parameters will be translated into query
-    string or http request payload, not into a slash-separated part of the url.
-  + for the rest server, there is no support for having slash-separated
-    parameters or complex routing rules
+    * for the rest client, the parameters will be translated into query
+      string or http request payload, not into a slash-separated part of the url.
+    * for the rest server, there is no support for having slash-separated
+      parameters or complex routing rules
 - and much more: read doc/todo to get a detailed list of bits which could improve
 
 
 FAQ
 ---
   Q: how do I debug webservices without going insane?
+  
   A1: you're a lucky guy, since this extension provides a nice graphical debugger
       within the standard admin interface
+  
   A2: when DebugSettings/DebugOutput and TemplateSettings/DevelopmentMode are
       both enabled, the requests sent by the fetch function webservices/call
       will be displayed as part of the standard debug output
+  
   A3: by enabling logging, you n00b!
       There is an ini setting in wsproviders.ini that controls verbosity for a
       log file dedicated to webservices: var/<vardir>/log/webservices.log
 
   Q: how secure is this extension?
+  
   A: the main author prides himself with being an extremely security-focused
      developer - he learnt many things about webservices and security in the
      infamous "lupii worm" incident, and later even worked as security consultant
