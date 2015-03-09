@@ -525,7 +525,9 @@ class ggWebservicesClient
     {
         if ( $data == '' )
         {
-            return array( self::ERROR_NO_DATA, 'No data received from server.' );
+            $this->errorNumber = self::ERROR_NO_DATA;
+            $this->errorString = 'No data received from server.';
+            return false;
         }
 
         // Support "web-proxy-tunelling" connections for https through proxies
