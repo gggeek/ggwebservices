@@ -3,7 +3,7 @@
  * WSDL helper functions
  *
  * @author G. Giunta
- * @copyright (C) 2011-2013 G. Giunta
+ * @copyright (C) 2011-2015 G. Giunta
  * @license code licensed under the GPL License: see LICENSE file
  */
 

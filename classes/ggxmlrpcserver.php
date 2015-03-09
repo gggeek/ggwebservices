@@ -2,7 +2,7 @@
 /**
  *
  * @author G. Giunta
- * @copyright (C) 2009-2013 G. Giunta
+ * @copyright (C) 2009-2015 G. Giunta
  *
  * @see http://www.xmlrpc.com/spec
  */

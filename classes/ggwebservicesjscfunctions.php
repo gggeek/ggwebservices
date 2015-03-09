@@ -4,7 +4,7 @@
  * protocol the system.* methods that are standard for xmlrpc
  *
  * @author G. Giunta
- * @copyright (C) 2010-2013 G. Giunta
+ * @copyright (C) 2010-2015 G. Giunta
  * @license code licensed under the GNU GPL 2.0: see README
  *
  */

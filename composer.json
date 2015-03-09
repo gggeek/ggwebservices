@@ -10,5 +10,11 @@
     },
     "require-dev": {
         "gggeek/ezextensionbuilder": "*"
-    }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "file://D:/htdocs/ezp/github/misc/ezcs_gggeek"
+        }
+    ]
 }

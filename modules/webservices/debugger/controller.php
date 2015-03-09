@@ -3,7 +3,7 @@
  * WS debugger: top frame
  *
  * @author G. Giunta
- * @copyright (C) 2010-2013 Gaetano Giunta
+ * @copyright (C) 2010-2015 G. Giunta
  * @license code licensed under the GPL License: see LICENSE file
  *
  * @todo add support for more options, such as ntlm auth to proxy, or request charset encoding
