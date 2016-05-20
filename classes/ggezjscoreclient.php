@@ -4,7 +4,7 @@
  * @deprecated use a plain ggWebservicesClient instead of this
  *
  * @author G. Giunta
- * @copyright (C) 2011-2015 G. Giunta
+ * @copyright (C) 2011-2016 G. Giunta
  */
 
 class ggeZJSCoreClient extends ggWebservicesClient

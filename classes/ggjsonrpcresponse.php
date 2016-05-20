@@ -4,7 +4,7 @@
  * Needs the json extension
  *
  * @author G. Giunta
- * @copyright (C) 2009-2015 G. Giunta
+ * @copyright (C) 2009-2016 G. Giunta
  */
 
 class ggJSONRPCResponse extends ggWebservicesResponse

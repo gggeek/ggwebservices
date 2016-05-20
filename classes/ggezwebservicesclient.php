@@ -3,7 +3,7 @@
  * generic WebServices client, with ini-based setup and logging
  *
  * @author G. Giunta
- * @copyright (C) 2009-2015 G. Giunta
+ * @copyright (C) 2009-2016 G. Giunta
  *
  * @todo move ini file name to class constant
  * @todo modify logging mechanism to use debug level instead of useless labels

@@ -15,7 +15,7 @@
  * the same name: in this case to access the child use $element.children.childname
  *
  * @author G. Giunta
- * @copyright (C) 2011-2015 G. Giunta
+ * @copyright (C) 2011-2016 G. Giunta
  * @license code licensed under the GPL License: see LICENSE file
  *
  * @todo give a look at xpath usage for attribute(): is it faster?

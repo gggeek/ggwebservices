@@ -2,7 +2,7 @@
 /**
  * WS debugger: Dialog for visually editing trees of values
  *
- * @copyright (C) 2006-2015 G. Giunta
+ * @copyright (C) 2006-2016 G. Giunta
  * @author Gaetano Giunta
  * @license code licensed under the GPL License: see LICENSE file
  *

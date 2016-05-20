@@ -3,7 +3,7 @@
  * Generic class used to wrap webservices responses. Modeled after eZP Soap equivalent.
  *
  * @author G. Giunta
- * @copyright (C) 2009-2015 G. Giunta
+ * @copyright (C) 2009-2016 G. Giunta
  */
 
 abstract class ggWebservicesResponse

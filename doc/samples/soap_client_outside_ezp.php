@@ -5,7 +5,7 @@
  * The server endpoint in use is the public one from mssoapinterop.org
  *
  * @author Gaetano Giunta
- * @copyright (c) 2010-2015 G. Giunta
+ * @copyright (c) 2010-2016 G. Giunta
  * @license code licensed under the GNU GPL. See LICENSE file
  */
 

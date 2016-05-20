@@ -3,7 +3,7 @@
  * Class used to communicate with soap servers via the native soap extension
  *
  * @author G. Giunta
- * @copyright (C) 2009-2015 G. Giunta
+ * @copyright (C) 2009-2016 G. Giunta
  *
  * The BIG difference with the eZ soap class is that this one groks WSDL
  *

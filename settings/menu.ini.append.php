@@ -11,6 +11,7 @@ Name=WS Debugger
 Tooltip=Debug calls to jsonrpc and xmlrpc servers
 URL[default]=webservices/debugger
 NavigationPartIdentifier=wsdebuggerhubpart
+PolicyList[]=webservices/debugger
 
 Enabled[default]=true
 Enabled[browse]=false
