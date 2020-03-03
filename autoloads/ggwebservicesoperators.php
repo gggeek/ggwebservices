@@ -5,8 +5,8 @@
  * @license code licensed under the GPL License: see LICENSE file
  **/
 
-class ggWebservicesOperators {
-
+class ggWebservicesOperators
+{
      static $operators = array(
          'washxml' => array(),
          'washxmlcomment' => array(),
