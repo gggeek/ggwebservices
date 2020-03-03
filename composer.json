@@ -9,6 +9,10 @@
     "require": {
         "ezsystems/ezpublish-legacy-installer": "*"
     },
+    "suggest":{
+        "ext-json": "Needed to support JSON-RPC calls",
+        "ext-xmlrpc": "Needed to support XML-RPC calls"
+    },
     "require-dev": {
         "gggeek/ezextensionbuilder": "*"
     }
