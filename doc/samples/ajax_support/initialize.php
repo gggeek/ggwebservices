@@ -48,5 +48,3 @@ function notification_addtonotification( $nodeID )
     // notification already exists
     return 2;
 }
-
-?>

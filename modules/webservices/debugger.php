@@ -3,7 +3,7 @@
  * Main view for the WS module
  *
  * @author G. Giunta
- * @copyright (C) 2010-2016 G. Giunta
+ * @copyright (C) 2010-2020 G. Giunta
  * @license code licensed under the GPL License: see LICENSE file
  */
 
@@ -26,5 +26,3 @@ if ( $patchtarget == 'action' || $patchtarget == 'controller' )
 
 /// @todo come back to a subdir_based structure
 include( dirname( __FILE__ ) . "/debugger/$target.php" );
-
-?>

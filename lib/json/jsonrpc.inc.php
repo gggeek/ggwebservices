@@ -8,7 +8,7 @@
  *
  * @version $Id: jsonrpc.inc,v 1.36 2009/02/05 09:50:59 ggiunta Exp $
  * @author Gaetano Giunta
- * @copyright (c) 2005-2009 G. Giunta
+ * @copyright (c) 2005-2020 G. Giunta
  * @license code licensed under the BSD License: http://phpxmlrpc.sourceforge.net/license.txt
  *
  * @todo the JSON proposed RFC states that when making json calls, we should
@@ -1576,4 +1576,3 @@
                 }
             }
 	}
-?>

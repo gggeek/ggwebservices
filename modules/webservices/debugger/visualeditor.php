@@ -2,7 +2,7 @@
 /**
  * WS debugger: Dialog for visually editing trees of values
  *
- * @copyright (C) 2006-2016 G. Giunta
+ * @copyright (C) 2006-2020 G. Giunta
  * @author Gaetano Giunta
  * @license code licensed under the GPL License: see LICENSE file
  *
@@ -90,5 +90,3 @@ $tpl->setVariable( 'paramscount', $paramscount );
 //$tpl->setVariable( 'named_params', $named_params );
 $Result['content'] = $tpl->fetch( "design:webservices/debugger/visualeditor.tpl" );
 $Result['pagelayout'] = 'debugger_pagelayout.tpl';
-
-?>

@@ -22,4 +22,4 @@ Class=ggwebservicesJSCFunctions
 [ezjscServer_ggwstemplate]
 TemplateFunction=true
 
-*/ ?>
+*/

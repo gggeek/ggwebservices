@@ -4,7 +4,7 @@
  * Needs the simplexml extension when serializing in xml, the json ext. for json
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  */
 
 class ggRESTResponse extends ggWebservicesResponse
@@ -254,5 +254,3 @@ class ggRESTResponse extends ggWebservicesResponse
 
     protected $Headers = array( 'Vary' => 'Accept' );
 }
-
-?>

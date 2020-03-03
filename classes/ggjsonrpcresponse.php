@@ -4,7 +4,7 @@
  * Needs the json extension
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  */
 
 class ggJSONRPCResponse extends ggWebservicesResponse
@@ -113,5 +113,3 @@ class ggJSONRPCResponse extends ggWebservicesResponse
     protected $Id;
     protected $ContentType = 'application/json';
 }
-
-?>

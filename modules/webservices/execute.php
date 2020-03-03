@@ -3,7 +3,7 @@
  * View that executes webservice calls
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  * @license code licensed under the GPL License: see LICENSE file
  */
 
@@ -163,5 +163,3 @@ else
 }
 
 eZExecution::cleanExit();
-
-?>

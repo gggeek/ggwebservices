@@ -9,4 +9,4 @@ providerType=PhpSOAP
 providerUri=
 WSDL=http://mssoapinterop.org/asmx/simple.asmx?WSDL
 
-*/ ?>
+*/

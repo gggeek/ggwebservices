@@ -20,4 +20,4 @@ CacheItems[]=webservices
 name=ggWebservices server-side wsdl cache
 path=webservices
 
-*/ ?>
+*/

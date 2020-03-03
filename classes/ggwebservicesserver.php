@@ -16,7 +16,7 @@
  *        -- prepareResponse (adds to response obj any missing info gathered usually during parseRequest)
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  *
  * @todo add a better way to register methods, supporting definition of type of return value and per-param help text
  * @todo add propert property support, for $exception_handling and future ones
@@ -408,5 +408,3 @@ abstract class ggWebservicesServer
 
     protected $ResponseClass = 'ggWebservicesResponse';
 }
-
-?>

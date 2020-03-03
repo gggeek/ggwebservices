@@ -4,7 +4,7 @@
  * Needs the xmlrpc php extension
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  */
 
 class ggXMLRPCResponse extends ggWebservicesResponse
@@ -72,5 +72,3 @@ class ggXMLRPCResponse extends ggWebservicesResponse
 
     protected $ContentType = 'text/xml';
 }
-
-?>

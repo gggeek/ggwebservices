@@ -3,7 +3,7 @@
  * Class used to wrap soap requests, for use with the ggPhpSOAPClient.
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  *
  * @todo this class could be replaced with a subclass of ggsoaprequest:
  *       - when used by a ggphpsoapclient, only its methods name(), parameters() and ns() are used anyway
@@ -32,5 +32,3 @@ class ggPhpSOAPRequest extends ggSOAPRequest
 
     protected $_payload = '';
 }
-
-?>

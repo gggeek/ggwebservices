@@ -4,7 +4,7 @@
  * limit it to soap 1.1
  *
  * @author G. Giunta
- * @copyright (C) 2011-2016 G. Giunta
+ * @copyright (C) 2011-2020 G. Giunta
  *
  * @todo finish support for soap 1.2
  */
@@ -184,4 +184,3 @@ class ggPhpSOAPServer extends ggWebservicesServer
     protected $ResponseClass = 'ggSOAPResponse';
     //protected $SoapVersion = SOAP_1_1;
 }
-?>

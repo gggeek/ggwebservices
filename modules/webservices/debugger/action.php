@@ -3,7 +3,7 @@
  * WS debugger: bottom frame
  *
  * @author Gaetano Giunta
- * @copyright (C) 2005-2016 G. Giunta
+ * @copyright (C) 2005-2020 G. Giunta
  * @license code licensed under the BSD License: http://phpxmlrpc.sourceforge.net/license.txt
  *
  * @todo switch params for http compression from 0,1,2 to values to be used directly
@@ -630,4 +630,3 @@ if ( $action != 'inspect' || $debug )
 }
 
 eZExecution::cleanExit();
-?>

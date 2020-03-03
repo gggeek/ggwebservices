@@ -8,7 +8,7 @@
 * of the eZ Publish installation _before_ including this
 *
 * @author G. Giunta
-* @copyright (c) 2009-2013 G. Giunta
+* @copyright (c) 2009-2020 G. Giunta
 * @license code licensed under the GPL License: see LICENSE file
 *
 * @todo use closures instead of saving stuff around for later

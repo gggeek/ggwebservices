@@ -3,4 +3,4 @@
 [ExtensionSettings]
 DesignExtensions[]=ggwebservices
 
-*/ ?>
+*/

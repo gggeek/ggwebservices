@@ -4,7 +4,7 @@
  * of system.xx methods
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  *
  * @see http://json-rpc.org/wiki/specification
  */
@@ -50,5 +50,3 @@ class ggJSONRPCServer extends ggXMLRPCServer
     var $Id;
     protected $ResponseClass = 'ggJSONRPCResponse';
 }
-
-?>

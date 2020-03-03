@@ -11,5 +11,3 @@ $eZTemplateOperatorArray[] =
         'class' => 'ggWebservicesOperators',
         'operator_names' => array_keys( ggWebservicesOperators::$operators )
     );
-
-?>

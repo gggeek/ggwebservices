@@ -2,7 +2,7 @@
 /**
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  *
  * @see http://www.xmlrpc.com/spec
  */
@@ -213,5 +213,3 @@ class ggXMLRPCServer extends ggWebservicesServer
 
     protected $ResponseClass = 'ggXMLRPCResponse';
 }
-
-?>

@@ -6,4 +6,4 @@ EnableSOAP=true
 [ExtensionSettings]
 SOAPExtensions[]=yourextension
 
-*/ ?>
+*/

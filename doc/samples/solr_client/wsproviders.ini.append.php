@@ -8,4 +8,4 @@ Options[]
 # NB: do not forget to add a wt=json param in your requests
 Options[responseType]=application/json
 
-*/ ?>
+*/

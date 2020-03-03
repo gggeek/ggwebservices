@@ -8,7 +8,7 @@
  *
  * @version $Id: jsonrpcs.inc,v 1.12 2008/03/07 16:47:32 ggiunta Exp $
  * @author Gaetano Giunta
- * @copyright (c) 2005-2009 G. Giunta
+ * @copyright (c) 2005-2020 G. Giunta
  * @license code licensed under the BSD License: http://phpxmlrpc.sourceforge.net/license.txt
  *
  * @todo implement dispatching of multicall requests, json way
@@ -294,4 +294,3 @@
 		}
 
 	}
-?>

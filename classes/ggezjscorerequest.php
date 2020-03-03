@@ -3,7 +3,7 @@
  * Class used to wrap ezjscore requests. Needs the json extension
  *
  * @author G. Giunta
- * @copyright (C) 2011-2016 G. Giunta
+ * @copyright (C) 2011-2020 G. Giunta
  */
 
 class ggeZJSCoreRequest extends ggWebservicesRequest
@@ -71,5 +71,3 @@ class ggeZJSCoreRequest extends ggWebservicesRequest
     protected $ContentType = 'application/x-www-form-urlencoded';
 
 }
-
-?>

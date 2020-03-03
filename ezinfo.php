@@ -5,9 +5,9 @@ class ggwebservicesInfo
     static function info()
     {
         return array(
-            'Name' => "<a href=\"http://projects.ez.no/ggwebservices\">GG Webservices extension</a>",
+            'Name' => "<a href=\"https://github.com/gggeek/ggwebservices/\">GG Webservices extension</a>",
             'Version' => "0.14.2",
-            'Copyright' => "Copyright (C) 2009-2016 Gaetano Giunta",
+            'Copyright' => "Copyright (C) 2009-2020 Gaetano Giunta",
             'License' => "GNU General Public License v2.0",
             'Includes the following third-party software' => array(
                 'Name' => '<a href="http://developer.yahoo.com/yui">YUI</a>',
@@ -31,5 +31,3 @@ class ggwebservicesInfo
         );
     }
 }
-
-?>

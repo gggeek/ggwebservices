@@ -3,7 +3,7 @@
  * Class used to wrap soap requests. Code copy'n'pasted from eZ SOAP class
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  *
  * @todo (!important) add a nusoap version
  * @todo using SOAP 1.2 requests can be serialized using GET too...
@@ -245,5 +245,3 @@ class ggSOAPRequest extends ggWebservicesRequest
     protected $SoapVersion = 1;
 
 }
-
-?>

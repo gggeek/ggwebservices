@@ -3,7 +3,7 @@
  * Class used to wrap 'REST' requests.
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  */
 
 class ggRESTRequest extends ggWebservicesRequest
@@ -395,5 +395,3 @@ class ggRESTRequest extends ggWebservicesRequest
 
     protected $ExtraHeaders = array();
 }
-
-?>

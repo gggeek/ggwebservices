@@ -3,7 +3,7 @@
  * Class used to communicate with soap servers via the native soap extension
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  *
  * The BIG difference with the eZ soap class is that this one groks WSDL
  *
@@ -278,5 +278,3 @@ class ggPhpSOAPClient extends ggWebservicesClient
     protected $ResponseClass = 'ggPhpSOAPResponse';
     protected $UserAgent = 'gg eZ PHPSOAP client';
 }
-
-?>

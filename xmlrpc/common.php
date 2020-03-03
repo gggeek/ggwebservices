@@ -68,5 +68,3 @@ function ezp_authandexec( $user, $password, $functionName, $params )
     return new ggWebservicesFault( ggWebservicesServer::INVALIDAUTHERROR, ggWebservicesServer::INVALIDAUTHSTRING );
 
 }
-
-?>

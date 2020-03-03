@@ -22,5 +22,3 @@ function fetchSyndicationFeedObjectList( $feedID )
         return array( 'a', 'b', 'c' );
     }
 }
-
-?>

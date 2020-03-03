@@ -3,7 +3,7 @@
  * Class used to wrap soap responses. Modeled after the eZ Soap equivalent.
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  *
  * @todo add support for soap 1.2
  */
@@ -299,5 +299,3 @@ TODO: add encoding checks with schema validation.
     protected $ContentType = 'application/soap+xml';
     protected $ns = '';
 }
-
-?>

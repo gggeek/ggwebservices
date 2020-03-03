@@ -9,4 +9,4 @@ Options[nameVariable]=method
 # (note that this entails putting the two parameters format=json and nojsoncallback=1 in the call)
 Options[responseType]=application/json
 
-*/ ?>
+*/

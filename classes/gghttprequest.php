@@ -4,7 +4,7 @@
  * Supports many http methods - which are in this case taken from req. Name.
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  */
 
 class ggHTTPRequest extends ggWebservicesRequest
@@ -60,5 +60,3 @@ class ggHTTPRequest extends ggWebservicesRequest
 
     protected $ContentType = 'application/x-www-form-urlencoded';
 }
-
-?>

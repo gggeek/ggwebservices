@@ -9,4 +9,4 @@ Options[login]=admin
 Options[password]=publish
 Options[accept]=application/json
 
-*/ ?>
+*/

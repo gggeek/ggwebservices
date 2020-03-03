@@ -3,7 +3,7 @@
  * Generic class used to wrap webservices requests. Modeled after eZP Soap equivalent.
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  */
 
 abstract class ggWebservicesRequest
@@ -111,5 +111,3 @@ abstract class ggWebservicesRequest
 
     protected $ContentType = '';
 }
-
-?>

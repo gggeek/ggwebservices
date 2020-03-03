@@ -11,4 +11,4 @@ Options[]
 # json calls and further error checking done within the "sucess" callback handler
 #Options[responseType]=application/json
 
-*/ ?>
+*/

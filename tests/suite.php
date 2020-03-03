@@ -22,5 +22,3 @@ class ggwebservicesTestSuite extends ezpTestSuite
         return new self();
     }
 }
-
-?>

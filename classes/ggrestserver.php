@@ -2,7 +2,7 @@
 /**
  *
  * @author G. Giunta
- * @copyright (C) 2010-2016 G. Giunta
+ * @copyright (C) 2010-2020 G. Giunta
  *
  * @todo implement validateparams
  * @todo send back a "vary: Accept" header in responses
@@ -50,5 +50,3 @@ class ggRESTServer extends ggWebservicesServer
     protected $ResponseClass = 'ggRESTResponse';
     protected $JsonpCallback = false;
 }
-
-?>

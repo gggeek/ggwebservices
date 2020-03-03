@@ -3,7 +3,7 @@
  * Class used to wrap http responses.
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  */
 
 class ggHTTPResponse extends ggWebservicesResponse
@@ -27,5 +27,3 @@ class ggHTTPResponse extends ggWebservicesResponse
         $this->Value = $stream;
     }
 }
-
-?>

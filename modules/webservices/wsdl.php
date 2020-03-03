@@ -3,7 +3,7 @@
  * View that shows the wsdl used for receiving soap calls
  *
  * @author G. Giunta
- * @copyright (C) 2011-2016 G. Giunta
+ * @copyright (C) 2011-2020 G. Giunta
  * @license code licensed under the GPL License: see LICENSE file
  *
  * @todo add support for letting user choose WSDL 2.0
@@ -102,5 +102,3 @@ if ( $wsINI->variable( 'GeneralSettings', 'EnableSOAP' ) == 'true' )
 
 }
 eZExecution::cleanExit();
-
-?>

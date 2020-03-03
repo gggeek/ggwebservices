@@ -3,7 +3,7 @@
  * Class used to wrap XMLRPC requests. Needs the xmlrpc php extension
  *
  * @author G. Giunta
- * @copyright (C) 2009-2016 G. Giunta
+ * @copyright (C) 2009-2020 G. Giunta
  */
 
 class ggXMLRPCRequest extends ggWebservicesRequest
@@ -44,5 +44,3 @@ class ggXMLRPCRequest extends ggWebservicesRequest
     protected $ContentType = 'text/xml';
 
 }
-
-?>
