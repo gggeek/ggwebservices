@@ -497,7 +497,7 @@
 		* @param array $dispmap the dispatch map with definition of exposed services
 		* @param boolean $servicenow set to false to prevent the server from running upon construction
 		*/
-		function xmlrpc_server($dispMap=null, $serviceNow=true)
+		function __construct($dispMap=null, $serviceNow=true)
 		{
 			// if ZLIB is enabled, let the server by default accept compressed requests,
 			// and compress responses sent to clients that support them
@@ -527,6 +527,14 @@
 					$this->service();
 				}
 			}
+		}
+
+		/**
+		* @deprecated
+		*/
+		function xmlrpc_client($dispMap=null, $serviceNow=true)
+		{
+			self::__construct($dispMap, $serviceNow);
 		}
 
 		/**
@@ -587,7 +595,7 @@
 			if ($data === null)
 			{
 				// workaround for a known bug in php ver. 5.2.2 that broke $HTTP_RAW_POST_DATA
-                $data = file_get_contents('php://input');
+				$data = file_get_contents('php://input');
 			}
 			$raw_data = $data;
 
@@ -928,26 +936,28 @@
 			$GLOBALS['_xh']['rt']='';
 
 			// decompose incoming XML into request structure
+
 			if ($req_encoding != '')
 			{
-				if (!in_array($req_encoding, array('UTF-8', 'ISO-8859-1', 'US-ASCII')))
-				// the following code might be better for mb_string enabled installs, but
+				// Since parsing will fail if charset is not specified in the xml prologue,
+				// the encoding is not UTF8 and there are non-ascii chars in the text, we try to work round that...
+				// The following code might be better for mb_string enabled installs, but
 				// makes the lib about 200% slower...
-				//if (!is_valid_charset($req_encoding, array('UTF-8', 'ISO-8859-1', 'US-ASCII')))
-				{
-					error_log('XML-RPC: '.__METHOD__.': invalid charset encoding of received request: '.$req_encoding);
-					$req_encoding = $GLOBALS['xmlrpc_defencoding'];
+				//if (!is_valid_charset($req_encoding, array('UTF-8')))
+				if (!in_array($req_encoding, array('UTF-8', 'US-ASCII')) && !has_encoding($data)) {
+					if ($req_encoding == 'ISO-8859-1') {
+						$data = utf8_encode($data);
+					} else {
+						if (extension_loaded('mbstring')) {
+							$data = mb_convert_encoding($data, 'UTF-8', $req_encoding);
+						} else {
+							error_log('XML-RPC: ' . __METHOD__ . ': invalid charset encoding of received request: ' . $req_encoding);
+						}
+					}
 				}
-				/// @BUG this will fail on PHP 5 if charset is not specified in the xml prologue,
-				// the encoding is not UTF8 and there are non-ascii chars in the text...
-				/// @todo use an empty string for php 5 ???
-				$parser = xml_parser_create($req_encoding);
-			}
-			else
-			{
-				$parser = xml_parser_create();
 			}
 
+			$parser = xml_parser_create();
 			xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, true);
 			// G. Giunta 2005/02/13: PHP internally uses ISO-8859-1, so we have to tell
 			// the xml parser to give us back data in the expected charset
@@ -1227,7 +1237,7 @@
 
 		/**
 		* A debugging routine: just echoes back the input packet as a string value
-		* DEPRECATED!
+		* @deprecated
 		*/
 		function echoInput()
 		{
@@ -1235,3 +1245,4 @@
 			print $r->serialize();
 		}
 	}
+?>
