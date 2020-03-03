@@ -1,5 +1,12 @@
 Roughly sorted by priority:
 
+- include phpxmlrpc and phpjsonrpc via composer instead of bundling them
+
+- include the xmlrpc extension replacement from phpxmlrpc, in case php xmlrpc ext is missing
+
+- make constructors of objects that depend on existence of php methods such as xmlrpc_encode_request throw an
+  exception if the methods is not available
+
 - allow parsing of response bodies even in case of http errors (such as 404)
 
 - make sure we convert charsets where possible / do not break json/xml decoding in responses because of it

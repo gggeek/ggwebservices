@@ -11,6 +11,7 @@
     },
     "suggest":{
         "ext-json": "Needed to support JSON-RPC calls",
+        "ext-soap": "Needed to support SOAP calls",
         "ext-xmlrpc": "Needed to support XML-RPC calls"
     },
     "require-dev": {
