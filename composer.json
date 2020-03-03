@@ -5,16 +5,11 @@
     "license": "GPL-2.0-or-later",
     "homepage": "https://github.com/gggeek/ggwebservices/",
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "ezsystems/ezpublish-legacy-installer": "*"
     },
     "require-dev": {
         "gggeek/ezextensionbuilder": "*"
-    },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "file://D:/htdocs/ezp/github/misc/ezcs_gggeek"
-        }
-    ]
+    }
 }
