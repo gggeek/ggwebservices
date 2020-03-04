@@ -11,7 +11,6 @@
 
 class ggeZJSCoreResponse extends ggWebservicesResponse
 {
-
     /**
       Returns the payload for the response.
     */

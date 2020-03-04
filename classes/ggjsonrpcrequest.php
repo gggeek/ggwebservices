@@ -57,5 +57,4 @@ class ggJSONRPCRequest extends ggWebservicesRequest
 
     protected $Verb = 'POST';
     protected $ContentType = 'application/json';
-
 }

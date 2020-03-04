@@ -8,7 +8,6 @@
 
 class ggeZJSCoreRequest extends ggWebservicesRequest
 {
-
     /// @todo implement this
     function decodeStream( $rawResponse )
     {

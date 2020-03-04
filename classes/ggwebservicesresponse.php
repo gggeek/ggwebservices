@@ -15,7 +15,6 @@ abstract class ggWebservicesResponse
     const INVALIDRESPONSESTRING = 'Response received from server is not valid';
     const GENERICRESPONSESTRING = 'Server error';
 
-
     function __construct( $name='' )
     {
         $this->Name = $name;

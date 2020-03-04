@@ -9,7 +9,6 @@
 
 class ggHTTPRequest extends ggWebservicesRequest
 {
-
     function decodeStream( $rawRequest )
     {
         /// @todo... look at verb, and recover data from either query string or

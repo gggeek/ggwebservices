@@ -42,5 +42,4 @@ class ggXMLRPCRequest extends ggWebservicesRequest
 
     protected $Verb = 'POST';
     protected $ContentType = 'text/xml';
-
 }

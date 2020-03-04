@@ -12,7 +12,6 @@
 
 class ggPhpSOAPRequest extends ggSOAPRequest
 {
-
     function payload()
     {
         return $this->_payload;

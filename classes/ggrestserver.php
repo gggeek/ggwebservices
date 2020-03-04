@@ -10,7 +10,6 @@
 
 class ggRESTServer extends ggWebservicesServer
 {
-
     function prepareResponse( $response )
     {
         $response->setContentType( $this->ResponseType );

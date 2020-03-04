@@ -1,6 +1,6 @@
 <?php
 /**
- * wrapper for eZWebesrvicesResponse, to make it usable in templates
+ * wrapper for eZWebservicesResponse, to make it usable in templates
  *
  * @author G. Giunta
  * @copyright (C) 2013-2020 G. Giunta

@@ -8,7 +8,6 @@
 
 abstract class ggWebservicesRequest
 {
-
     function __construct( $name='', $parameters=array() )
     {
         $this->Name = (string)$name;

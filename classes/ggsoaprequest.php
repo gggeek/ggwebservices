@@ -243,5 +243,4 @@ class ggSOAPRequest extends ggWebservicesRequest
     protected $Verb = 'POST';
     /// 1 for SOAP_1_1, 2 for SOAP_1_2
     protected $SoapVersion = 1;
-
 }

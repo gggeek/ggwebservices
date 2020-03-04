@@ -7,8 +7,8 @@
  * @copyright (C) 2010-2020 G. Giunta
  */
 
-class ggPhpSOAPClientTransport extends SoapClient {
-
+class ggPhpSOAPClientTransport extends SoapClient
+{
     // store a pointer to the ggPhpSOAPClient client starting the call
     function __construct( $wsdl, $options, $client=null, $request=null )
     {
@@ -38,5 +38,4 @@ class ggPhpSOAPClientTransport extends SoapClient {
         // and forward it all to the original client for the doing the http call
         return $this->client->_send( $this->request, $location, $action, $version, $one_way );
     }
-
 }

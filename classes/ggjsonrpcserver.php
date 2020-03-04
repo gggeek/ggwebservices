@@ -11,7 +11,6 @@
 
 class ggJSONRPCServer extends ggXMLRPCServer
 {
-
     function prepareResponse( $response )
     {
         $response->setId( $this->Id );

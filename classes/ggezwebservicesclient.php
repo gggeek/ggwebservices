@@ -11,7 +11,6 @@
 
 class ggeZWebservicesClient
 {
-
     /**
     * The function called by the template fetch function webservices/call
     *
@@ -294,5 +293,4 @@ class ggeZWebservicesClient
             throw new Exception( "Error in user request: unsupported protocol $providerType" );
         }
     }
-
 }

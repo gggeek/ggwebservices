@@ -9,11 +9,9 @@
 
 class ggJSONRPCResponse extends ggWebservicesResponse
 {
-
     const INVALIDIDERROR = -350;
     const INVALIDRESPONSESTRING = 'Response received from server is not valid jsonrpc';
     const INVALIDIDSTRING = 'Response received from server does not match request id';
-
 
     /**
       Returns the json payload for the response.

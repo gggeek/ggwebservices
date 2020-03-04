@@ -11,7 +11,6 @@
 
 class ggPhpSOAPServer extends ggWebservicesServer
 {
-
     /**
     * We should reimplement this function, and test:
     * if value is an error, using a server to generate an error gives better results?

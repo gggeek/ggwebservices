@@ -8,7 +8,6 @@
 
 class ggPhpSOAPResponse extends ggWebservicesResponse
 {
-
     /// the use done of this function is a bit warped, ie. it does not conform
     /// to parent's class usage. @see ggPhpSOAPClient::_send()
     function payload( )

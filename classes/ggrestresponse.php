@@ -9,7 +9,6 @@
 
 class ggRESTResponse extends ggWebservicesResponse
 {
-
     const INVALIDRESPONSESTRING = 'Response received from server is not valid';
 
     /**

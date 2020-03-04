@@ -10,7 +10,6 @@
 
 class ggeZWebservices
 {
-
     static $errorlevels = array(
         'info' => 6,
         'notice' => 5,

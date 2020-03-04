@@ -61,5 +61,4 @@ class ggHTTPClient extends ggWebservicesClient
             return $response->Value();
         }
     }
-
 }

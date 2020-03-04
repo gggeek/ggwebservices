@@ -11,7 +11,6 @@
 
 class ggwebservicesJSCFunctions
 {
-
     /**
     * Returns the list of all webservices available on this server
     * @return array
@@ -142,5 +141,4 @@ class ggwebservicesJSCFunctions
 
         throw new Exception( ggWebservicesServer::INVALIDINTROSPECTIONERROR . ' ' . ggWebservicesServer::INVALIDINTROSPECTIONSTRING );
     }
-
 }

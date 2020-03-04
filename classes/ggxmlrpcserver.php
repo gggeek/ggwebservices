@@ -9,7 +9,6 @@
 
 class ggXMLRPCServer extends ggWebservicesServer
 {
-
     /**
       Processes the request and returns a request object (or false).
     */
