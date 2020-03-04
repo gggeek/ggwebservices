@@ -3,12 +3,12 @@ Changes from 0.3 to 0.4 - released 2010/1/24
 *Incompatible changes
 - some static functions and variables of class ggeZWebservicesClient have been moved to a new class ggeZWebservices
 - the files xmlrpc(s).inc, jsonrpc(s).inc have been renamed to xmlrpc(s).inc.php, jsonrpc(s).inc.php for ease of autoloading.
-   Please update the autoload configuration to accomodate the changes
+   Please update the autoload configuration to accommodate the changes
 
 *General:
 - added a cronjob to rotate logs of executed ws calls. By default added to infrequent set
 - added support for calling external services that require simple POST (a.k.a. html forms) to the template fetch function / ggeZWebservicesClient class
-- added a view to invoke webservices without the need of a specific controller file: /webesrvices/execute/$protocol (supported protocols are currently xmlrpc and jsonrpc)
+- added a view to invoke webservices without the need of a specific controller file: /webservices/execute/$protocol (supported protocols are currently xmlrpc and jsonrpc)
 - permissions to execute - with limitation on single webservices - can be granted on that view
 - add support of exposing ezjscore webservices to xmlrpc/jsonrpc calls via that view
 - moved javascript libraries to 'standard' design, so that they can be used for front-end interfaces too
@@ -21,4 +21,4 @@ Changes from 0.3 to 0.4 - released 2010/1/24
 
 *Bugfixes:
 - give a debuggable error message if soap extension is not enabled and user tries to create a ggPhpSOAPClient
-- bad php contants where used by ggXMLRPCServer if invalid params where received
+- bad php constants where used by ggXMLRPCServer if invalid params where received
