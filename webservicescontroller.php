@@ -24,7 +24,7 @@ ini_set( "display_errors" , "0" );
 //include_once( 'lib/ezutils/classes/ezsys.php' );
 //require_once( 'lib/ezutils/classes/ezexecution.php' );
 
-// Set a default time zone if none is given. The time zone can be overriden
+// Set a default time zone if none is given. The time zone can be overridden
 // in config.php or php.ini.
 if ( !ini_get( "date.timezone" ) )
 {
