@@ -1098,7 +1098,7 @@ class ggWebservicesClient
     protected $ProxyAuthType = 1;
     protected $AcceptedCompression = '';
     protected $SSLVerifyPeer = true;
-    protected $SSLVerifyHost = 1;
+    protected $SSLVerifyHost = 2;
     protected $SSLCAInfo = '';
 
     // below here: yet to be used...
