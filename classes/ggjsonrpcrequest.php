@@ -3,7 +3,7 @@
  * Class used to wrap jsonrpc requests. Needs the json extension
  *
  * @author G. Giunta
- * @copyright (C) 2009-2020 G. Giunta
+ * @copyright (C) 2009-2022 G. Giunta
  */
 
 class ggJSONRPCRequest extends ggWebservicesRequest

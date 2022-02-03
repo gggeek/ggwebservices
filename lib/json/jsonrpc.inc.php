@@ -7,7 +7,7 @@
  * http://json-rpc.org/
  *
  * @author Gaetano Giunta
- * @copyright (c) 2005-2020 G. Giunta
+ * @copyright (c) 2005-2022 G. Giunta
  * @license code licensed under the BSD License: see license.txt
  *
  * @todo the JSON proposed RFC states that when making json calls, we should

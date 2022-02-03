@@ -1,6 +1,6 @@
 {**
  * @author Gaetano Giunta
- * @copyright (C) 2005-2020 G. Giunta
+ * @copyright (C) 2005-2022 G. Giunta
  * @license code licensed under the BSD License: http://phpxmlrpc.sourceforge.net/license.txt
  *
  * @todo add links to documentation from every option caption

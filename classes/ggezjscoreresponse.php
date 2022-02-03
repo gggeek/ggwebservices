@@ -4,7 +4,7 @@
  * Needs the json extension
  *
  * @author G. Giunta
- * @copyright (C) 2012-2020 G. Giunta
+ * @copyright (C) 2012-2022 G. Giunta
  *
  * @todo add support for other serializations that json
  */

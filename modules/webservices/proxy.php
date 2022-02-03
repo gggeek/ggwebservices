@@ -6,7 +6,7 @@
  * Currently only supports XMLRPC and JSONRPC
  *
  * @author G. Giunta
- * @copyright (C) 2009-2020 G. Giunta
+ * @copyright (C) 2009-2022 G. Giunta
  * @license code licensed under the GPL License: see LICENSE file
  *
  * @bug for xmlrpc, datetime and base64 parameters will be sent to remote server as strings...

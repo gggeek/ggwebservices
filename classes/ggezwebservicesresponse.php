@@ -3,7 +3,7 @@
  * wrapper for eZWebservicesResponse, to make it usable in templates
  *
  * @author G. Giunta
- * @copyright (C) 2013-2020 G. Giunta
+ * @copyright (C) 2013-2022 G. Giunta
  */
 
 class ggeZWebservicesResponse

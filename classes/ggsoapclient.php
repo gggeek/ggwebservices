@@ -3,7 +3,7 @@
  * Class used to communicate with soap servers
  *
  * @author G. Giunta
- * @copyright (C) 2009-2020 G. Giunta
+ * @copyright (C) 2009-2022 G. Giunta
  */
 
 class ggSOAPClient extends ggWebservicesClient

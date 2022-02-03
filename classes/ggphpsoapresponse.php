@@ -3,7 +3,7 @@
  * Class used to wrap soap responses. Modeled after the eZ Soap equivalent.
  *
  * @author G. Giunta
- * @copyright (C) 2009-2020 G. Giunta
+ * @copyright (C) 2009-2022 G. Giunta
  */
 
 class ggPhpSOAPResponse extends ggWebservicesResponse
